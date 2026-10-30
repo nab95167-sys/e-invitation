@@ -64,6 +64,13 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    if (session.role === "GUEST") {
+      return NextResponse.json(
+        { error: "Access denied. Your account has restricted view-only permissions and cannot add guests." },
+        { status: 403 }
+      );
+    }
+
     const body = await req.json();
     const { eventId, name, phoneNumber, email, category, tableNumber, maxGuests, customCode } =
       body;
@@ -113,6 +120,13 @@ export async function PUT(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    if (session.role === "GUEST") {
+      return NextResponse.json(
+        { error: "Access denied. Your account has restricted view-only permissions and cannot modify guests." },
+        { status: 403 }
+      );
+    }
+
     const body = await req.json();
     const { id, name, phoneNumber, email, category, tableNumber, maxGuests, rsvpStatus, attendeesCount, notes, dietaryRestrictions } = body;
 
@@ -147,6 +161,13 @@ export async function DELETE(req: NextRequest) {
     const session = await getSession();
     if (!session) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    if (session.role === "GUEST") {
+      return NextResponse.json(
+        { error: "Access denied. Your account has restricted view-only permissions and cannot delete guests." },
+        { status: 403 }
+      );
     }
 
     const { searchParams } = new URL(req.url);

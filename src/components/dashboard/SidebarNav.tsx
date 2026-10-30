@@ -11,6 +11,7 @@ import {
   MessageSquare,
   ShieldAlert,
   ChevronRight,
+  Lock,
 } from "lucide-react";
 
 interface SidebarNavProps {
@@ -58,10 +59,9 @@ const NAV_ITEMS: NavItem[] = [
   },
   {
     name: "Manage User Roles",
-    nameKm: "គ្រប់គ្រងអ្នកប្រើប្រាស់",
+    nameKm: "គ្រប់គ្រងអ្នកប្រើ & សិទ្ធិ",
     href: "/dashboard/users",
     icon: ShieldAlert,
-    superadminOnly: true,
   },
 ];
 
@@ -100,12 +100,16 @@ export default function SidebarNav({ userRole }: SidebarNavProps) {
 
   return (
     <nav className="p-3 space-y-1">
-      {NAV_ITEMS.filter((item) => !item.superadminOnly || userRole === "SUPERADMIN").map((item) => {
+      {NAV_ITEMS.map((item) => {
         const Icon = item.icon;
         const isActive =
           item.href === "/dashboard"
             ? activeRoute === "/dashboard"
             : activeRoute.startsWith(item.href);
+        const isRestricted =
+          item.href === "/dashboard/users" &&
+          userRole !== "SUPERADMIN" &&
+          userRole !== "COUPLE";
 
         return (
           <Link
@@ -144,11 +148,22 @@ export default function SidebarNav({ userRole }: SidebarNavProps) {
               </div>
             </div>
 
-            {isActive ? (
-              <span className="w-1.5 h-1.5 rounded-full bg-[#AA7C11] animate-pulse" />
-            ) : (
-              <ChevronRight className="w-3.5 h-3.5 text-stone-300 opacity-0 group-hover:opacity-100 transition-opacity" />
-            )}
+            <div className="flex items-center gap-1.5">
+              {isRestricted && (
+                <span
+                  title="Requires Admin Privileges"
+                  className="p-1 rounded-md bg-stone-100 text-stone-400 group-hover:text-amber-700 group-hover:bg-amber-50 transition-colors"
+                >
+                  <Lock className="w-3 h-3" />
+                </span>
+              )}
+
+              {isActive ? (
+                <span className="w-1.5 h-1.5 rounded-full bg-[#AA7C11] animate-pulse" />
+              ) : (
+                <ChevronRight className="w-3.5 h-3.5 text-stone-300 opacity-0 group-hover:opacity-100 transition-opacity" />
+              )}
+            </div>
           </Link>
         );
       })}

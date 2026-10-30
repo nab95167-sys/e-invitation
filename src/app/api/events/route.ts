@@ -66,6 +66,13 @@ export async function PUT(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    if (session.role === "GUEST") {
+      return NextResponse.json(
+        { error: "Access denied. Your account has restricted view-only permissions and cannot modify event settings." },
+        { status: 403 }
+      );
+    }
+
     const body = await req.json();
     const {
       id,

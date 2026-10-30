@@ -31,6 +31,13 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    if (session.role === "GUEST") {
+      return NextResponse.json(
+        { error: "Access denied. Your account has restricted view-only permissions and cannot upload media." },
+        { status: 403 }
+      );
+    }
+
     const { eventId, title, mediaType, url, caption, category } = await req.json();
 
     if (!eventId || !url) {
@@ -61,6 +68,13 @@ export async function PUT(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    if (session.role === "GUEST") {
+      return NextResponse.json(
+        { error: "Access denied. Your account has restricted view-only permissions and cannot modify media." },
+        { status: 403 }
+      );
+    }
+
     const { id, title, caption, category, sortOrder } = await req.json();
 
     if (!id) {
@@ -88,6 +102,13 @@ export async function DELETE(req: NextRequest) {
     const session = await getSession();
     if (!session) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    if (session.role === "GUEST") {
+      return NextResponse.json(
+        { error: "Access denied. Your account has restricted view-only permissions and cannot delete media." },
+        { status: 403 }
+      );
     }
 
     const { searchParams } = new URL(req.url);
