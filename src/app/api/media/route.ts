@@ -112,8 +112,53 @@ export async function DELETE(req: NextRequest) {
     }
 
     const { searchParams } = new URL(req.url);
-    const id = searchParams.get("id");
+    let id = searchParams.get("id");
+    let all = searchParams.get("all");
+    let eventId = searchParams.get("eventId");
 
+    if (!id && !all) {
+      try {
+        const body = await req.json();
+        id = body?.id;
+        all = body?.all ? "true" : all;
+        eventId = body?.eventId || eventId;
+      } catch (e) {}
+    }
+
+    // Bulk Delete All Media for an Event
+    if (all === "true" || all === "1") {
+      if (!eventId) {
+        return NextResponse.json(
+          { error: "eventId is required to delete all media." },
+          { status: 400 }
+        );
+      }
+
+      // Security check: non-superadmin can only delete their own event's media
+      if (session.role !== "SUPERADMIN") {
+        const event = await prisma.event.findFirst({
+          where: { id: eventId, userId: session.userId },
+        });
+        if (!event) {
+          return NextResponse.json(
+            { error: "Event not found or unauthorized." },
+            { status: 403 }
+          );
+        }
+      }
+
+      const result = await prisma.mediaItem.deleteMany({
+        where: { eventId },
+      });
+
+      return NextResponse.json({
+        success: true,
+        count: result.count,
+        message: `Successfully deleted all ${result.count} media items.`,
+      });
+    }
+
+    // Single item delete
     if (!id) {
       return NextResponse.json({ error: "ID required" }, { status: 400 });
     }

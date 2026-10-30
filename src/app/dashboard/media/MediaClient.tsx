@@ -49,6 +49,32 @@ export default function MediaClient({ initialMedia, eventId, eventSlug }: MediaC
   const [editingItem, setEditingItem] = useState<MediaItem | null>(null);
   const [editLoading, setEditLoading] = useState(false);
 
+  // Remove All state
+  const [isRemoveAllOpen, setIsRemoveAllOpen] = useState(false);
+  const [removeAllLoading, setRemoveAllLoading] = useState(false);
+
+  const handleRemoveAllConfirm = async () => {
+    setRemoveAllLoading(true);
+    setError(null);
+    setSuccess(null);
+    try {
+      const res = await fetch(`/api/media?all=true&eventId=${eventId}`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to remove all media items.");
+
+      setMedia([]);
+      setIsRemoveAllOpen(false);
+      setSuccess(`✓ បានលុបរូបភាព និងវីដេអូទាំងអស់ (${data.count ?? 0}) ដោយជោគជ័យ!`);
+      setTimeout(() => setSuccess(null), 4000);
+    } catch (err: any) {
+      setError(err.message || "Failed to delete all media.");
+    } finally {
+      setRemoveAllLoading(false);
+    }
+  };
+
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
@@ -215,6 +241,17 @@ export default function MediaClient({ initialMedia, eventId, eventSlug }: MediaC
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
+          {media.length > 0 && (
+            <button
+              onClick={() => setIsRemoveAllOpen(true)}
+              className="px-4 py-2.5 rounded-2xl bg-red-50 hover:bg-red-100 border border-red-200 text-xs font-semibold text-red-600 flex items-center gap-2 transition-all shadow-sm active:scale-95"
+              title="Delete all media files"
+            >
+              <Trash2 className="w-4 h-4 text-red-600" />
+              <span>លុបទាំងអស់ ({media.length}) / Remove All</span>
+            </button>
+          )}
+
           <a
             href={`/invite/${eventSlug || 'davita-and-meassa'}?code=vip-guest-01#gallery`}
             target="_blank"
@@ -458,6 +495,55 @@ export default function MediaClient({ initialMedia, eventId, eventSlug }: MediaC
                 {editLoading ? "Saving..." : "Save Details"}
               </button>
             </form>
+          </div>
+        </div>
+      )}
+      {/* Remove All Confirmation Modal */}
+      {isRemoveAllOpen && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200">
+          <div className="bg-white rounded-3xl border border-red-200 shadow-2xl max-w-md w-full overflow-hidden p-6 sm:p-8 space-y-4 animate-in zoom-in-95 duration-200">
+            <div className="w-14 h-14 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto shadow-inner">
+              <Trash2 className="w-7 h-7" />
+            </div>
+
+            <div className="text-center space-y-1.5">
+              <h3 className="font-serif font-bold text-xl text-[#2C2A29]">
+                តើអ្នកពិតជាចង់លុបរូបភាព និងវីដេអូទាំងអស់មែនទេ?
+              </h3>
+              <p className="text-xs text-stone-500 font-khmer leading-relaxed">
+                សកម្មភាពនេះនឹងលុបរូបភាព និងវីដេអូចំនួន <strong className="text-red-600 font-bold">{media.length} ឯកសារ</strong> ចេញពីវិចិត្រសាលមង្គលការរបស់អ្នកជាអចិន្ត្រៃយ៍។ សកម្មភាពនេះមិនអាចត្រឡប់វិញបានឡើយ។
+              </p>
+            </div>
+
+            <div className="p-3.5 rounded-2xl bg-red-50/70 border border-red-200/60 text-xs text-red-800 flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 text-red-500 shrink-0" />
+              <span>Are you sure you want to delete all {media.length} photos and videos? This action cannot be undone.</span>
+            </div>
+
+            <div className="flex items-center justify-center gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setIsRemoveAllOpen(false)}
+                className="px-5 py-2.5 text-xs font-semibold rounded-xl text-stone-600 hover:bg-stone-100 transition-all"
+              >
+                បោះបង់ (Cancel)
+              </button>
+              <button
+                type="button"
+                onClick={handleRemoveAllConfirm}
+                disabled={removeAllLoading}
+                className="px-6 py-2.5 text-xs font-bold rounded-xl bg-red-600 hover:bg-red-700 text-white shadow-md active:scale-95 disabled:opacity-50 transition-all flex items-center gap-1.5"
+              >
+                {removeAllLoading ? (
+                  <span>កំពុងលុប...</span>
+                ) : (
+                  <>
+                    <Trash2 className="w-4 h-4" />
+                    <span>យល់ព្រមលុបទាំងអស់ (Remove All)</span>
+                  </>
+                )}
+              </button>
+            </div>
           </div>
         </div>
       )}
