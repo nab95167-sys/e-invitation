@@ -1,0 +1,191 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600&family=Great+Vibes&family=Inter:wght@300;400;500;600;700&family=Kantumruy+Pro:ital,wght@0,100..700;1,100..700&family=Kantumruy:wght@300;400;700&family=Moul&family=Moulpali&family=Noto+Serif+Khmer:wght@300;400;500;600;700&family=Pinyon+Script&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --olive-950: #1d2010;
+  --olive-900: #2a2f16;
+  --olive-800: #3a4120;
+  --olive-700: #4f5a26;
+  --olive-500: #6b7536;
+  --olive-300: #a3aa72;
+  --foil-hi: #fbefc0;
+  --foil: #d9b15a;
+  --foil-lo: #9c7124;
+  --cream: #f5efdd;
+  --cream-dim: #d9d2bb;
+  --night: #120f0b;
+  --candle: #ffb65c;
+  --foil-grad: linear-gradient(105deg, var(--foil-lo) 0%, var(--foil) 22%, var(--foil-hi) 38%, var(--foil) 52%, var(--foil-lo) 70%, var(--foil) 86%, var(--foil-hi) 100%);
+
+  --font-khmer: 'Kantumruy Pro', 'Kantumruy', system-ui, sans-serif;
+  --font-khmer-serif: 'Noto Serif Khmer', 'Kantumruy Pro', serif;
+  --font-playfair: 'Cormorant Garamond', 'Noto Serif Khmer', Georgia, serif;
+  --font-inter: 'Inter', 'Kantumruy Pro', system-ui, sans-serif;
+  --font-great-vibes: 'Pinyon Script', 'Great Vibes', cursive;
+  --font-moul: 'Moul', 'Moulpali', serif;
+  --font-moulpali: 'Moulpali', 'Moul', serif;
+}
+
+body {
+  font-family: var(--font-khmer), var(--font-inter), sans-serif;
+  color: #2C2A29;
+  background-color: #FAF8F5;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+.font-serif {
+  font-family: var(--font-playfair);
+}
+
+.font-script {
+  font-family: var(--font-great-vibes);
+}
+
+.font-khmer {
+  font-family: var(--font-khmer);
+}
+
+.font-moul {
+  font-family: var(--font-moul);
+}
+
+.font-moulpali {
+  font-family: var(--font-moulpali);
+}
+
+/* Force Khmer text elements and Khmer lang to use Kantumruy */
+[lang="km"],
+.khmer-text {
+  font-family: var(--font-khmer) !important;
+}
+
+/* Luxury gold text gradient */
+.text-gold-gradient {
+  background: var(--foil-grad);
+  background-size: 260% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: 9s linear infinite foil-sweep;
+}
+
+.foil {
+  background: var(--foil-grad);
+  background-size: 260% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: 9s linear infinite foil-sweep;
+}
+
+@keyframes foil-sweep {
+  0% { background-position: 0%; }
+  to { background-position: 260%; }
+}
+
+/* Film grain texture */
+.grain {
+  z-index: 90;
+  pointer-events: none;
+  opacity: 0.06;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 .95  0 0 0 0 .85  0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  position: fixed;
+  top: -50%;
+  bottom: -50%;
+  left: -50%;
+  right: -50%;
+}
+
+/* Equalizer soundwave bars */
+.bars {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2.5px;
+  height: 14px;
+}
+.bars i {
+  width: 2.5px;
+  height: 100%;
+  background: currentColor;
+  transform-origin: bottom;
+  transform: scaleY(0.25);
+  transition: transform 0.2s ease;
+}
+.is-playing .bars i {
+  animation: bar 1s ease-in-out infinite alternate;
+}
+.bars i:nth-child(2) { animation-delay: -0.3s; }
+.bars i:nth-child(3) { animation-delay: -0.6s; }
+.bars i:nth-child(4) { animation-delay: -0.15s; }
+@keyframes bar { to { transform: scaleY(1); } }
+
+/* Wax seal pulse animation */
+@keyframes seal-pulse {
+  0% { opacity: 0.7; transform: scale(0.85); }
+  100% { opacity: 0; transform: scale(1.35); }
+}
+.animate-seal-pulse {
+  animation: seal-pulse 2.4s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+
+/* Candle flickering */
+.candle {
+  background: linear-gradient(90deg, #e9dfc6, #fff7e6 45%, #cfc3a5);
+  border-radius: 2px;
+  width: 10px;
+  height: 54px;
+  position: relative;
+}
+.candle:nth-child(odd) {
+  height: 72px;
+}
+.candle:before {
+  content: "";
+  width: 10px;
+  height: 22px;
+  animation: flicker 1.4s ease-in-out infinite alternate;
+  transform-origin: bottom;
+  background: radial-gradient(circle at 50% 70%, #fff6d8, #ffb65c 45%, rgba(255, 122, 42, 0) 75%);
+  border-radius: 50%/60% 60% 40% 40%;
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translate(-50%, 2px);
+}
+.candle:after {
+  content: "";
+  width: 90px;
+  height: 90px;
+  background: radial-gradient(circle, rgba(255, 182, 92, 0.35), transparent 65%);
+  border-radius: 50%;
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translate(-50%, 35%);
+}
+@keyframes flicker {
+  0% { transform: scale(1) rotate(-2deg); }
+  50% { transform: scale(0.92, 1.1) rotate(2deg); }
+  100% { transform: scale(1.04, 0.94) rotate(-1deg); }
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #1d2010;
+}
+::-webkit-scrollbar-thumb {
+  background: #d9b15a;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #fbefc0;
+}

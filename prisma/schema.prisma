@@ -1,0 +1,106 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  name         String
+  passwordHash String
+  role         String    @default("COUPLE") // SUPERADMIN, COUPLE, ORGANIZER, GUEST
+  avatarUrl    String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  events       Event[]
+}
+
+model Event {
+  id              String       @id @default(cuid())
+  slug            String       @unique
+  title           String
+  groomName       String
+  groomParents    String?
+  brideName       String
+  brideParents    String?
+  quote           String?
+  story           String?
+  eventDate       DateTime
+  receptionTime   String?
+  ceremonyTime    String?
+  venueName       String
+  venueAddress    String
+  googleMapsUrl   String?
+  coverImageUrl   String?
+  groomPhotoUrl   String?
+  bridePhotoUrl   String?
+  theme           String       @default("luxury_gold")
+  musicUrl        String?
+  videoUrl        String?
+  dressCode       String?
+  bankAccountInfo String?      // For digital gifts / red envelope
+  lunarDate       String?      // Khmer lunar calendar date
+  contacts        String?      // Contact phone numbers JSON
+  programme       String?      // Wedding ceremonies & schedule JSON
+  couplePhotoUrl  String?      // Center couple photo
+  venuePhotoUrl   String?      // Venue / location photo
+  isPublished     Boolean      @default(true)
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  userId          String
+  user            User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  guests          Guest[]
+  wishes          Wish[]
+  media           MediaItem[]
+}
+
+model Guest {
+  id                  String    @id @default(cuid())
+  eventId             String
+  event               Event     @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  name                String
+  phoneNumber         String?
+  email               String?
+  invitationCode      String    @unique // Secure unique token
+  category            String    @default("Friend") // VIP, Family, Colleague, Friend
+  tableNumber         String?
+  maxGuests           Int       @default(2)
+  rsvpStatus          String    @default("PENDING") // PENDING, ATTENDING, DECLINED
+  attendeesCount      Int       @default(1)
+  dietaryRestrictions String?
+  notes               String?
+  isOpened            Boolean   @default(false)
+  openedAt            DateTime?
+  viewsCount          Int       @default(0)
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+}
+
+model Wish {
+  id          String    @id @default(cuid())
+  eventId     String
+  event       Event     @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  senderName  String
+  message     String
+  relationship String?  // e.g. "College Friend", "Cousin"
+  isApproved  Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+}
+
+model MediaItem {
+  id           String    @id @default(cuid())
+  eventId      String
+  event        Event     @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  title        String?
+  mediaType    String    @default("PHOTO") // PHOTO, VIDEO
+  url          String
+  caption      String?
+  category     String    @default("GALLERY") // STORY, GALLERY, HIGHLIGHT
+  sortOrder    Int       @default(0)
+  createdAt    DateTime  @default(now())
+}

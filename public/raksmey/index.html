@@ -1,0 +1,3047 @@
+<!doctype html>
+<html lang="km">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#250e44" />
+  <title>សិរីសួស្តីអាពាហ៍ពិពាហ៍ · ផៃ រស្មី & មាស ភក្ដី</title>
+  <meta name="description" content="សូមគោរពអញ្ជើញចូលរួមពិធីអាពាហ៍ពិពាហ៍ ផៃ រស្មី & មាស ភក្ដី · Phay Raksmey & Meas Pheakdey wedding invitation" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="សិរីសួស្តីអាពាហ៍ពិពាហ៍ · រស្មី & ភក្ដី" />
+  <meta property="og:description" content="សូមគោរពអញ្ជើញ · You are warmly invited to the wedding of Phay Raksmey & Meas Pheakdey" />
+  <meta property="og:image" content="https://raksmey-pheakdey.vercel.app/og.jpg" />
+  <meta property="og:url" content="https://raksmey-pheakdey.vercel.app/" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="preload" as="image" imagesrcset="/img/hero-m-640.webp 640w, /img/hero-m-1280.webp 1280w, /img/hero-m-2000.webp 2000w" imagesizes="100vw" media="(max-aspect-ratio: 1/1)" />
+  <script>
+    (function() {
+      try {
+        var p = new URLSearchParams(window.location.search);
+        var to = p.get('to') || p.get('guest');
+        var code = p.get('code');
+        if (to) { window.__initialGuestName = to; }
+        if (code) {
+          window.__guestLookupPromise = fetch('/api/guests/lookup?code=' + encodeURIComponent(code) + '&_t=' + Date.now(), { cache: 'no-store' })
+            .then(function(r) { return r.ok ? r.json() : null; })
+            .catch(function() { return null; });
+        }
+        var pathParts = window.location.pathname.split('/').filter(Boolean);
+        var currentSlug = (pathParts[0] === 'invite' && pathParts[1]) ? pathParts[1] : '';
+        window.__eventSlug = currentSlug || '';
+        var apiUrl = currentSlug ? ('/api/events?slug=' + encodeURIComponent(currentSlug) + '&_t=' + Date.now()) : ('/api/events?_t=' + Date.now());
+
+        window.__eventPromise = fetch(apiUrl, { cache: 'no-store' })
+          .then(function(r) { return r.ok ? r.json() : null; })
+          .then(function(res) {
+            var ev = (res && res.event) ? res.event : res;
+            if (ev) {
+              window.__activeEventData = ev;
+              if (ev.slug) { window.__eventSlug = ev.slug; }
+              if (ev.musicUrl !== undefined) {
+                window.__customWeddingMusicUrl = ev.musicUrl;
+              }
+              if (ev.theme && typeof window.applyThemePalette === 'function') {
+                window.applyThemePalette(ev.theme);
+              }
+            }
+            return ev;
+          })
+          .catch(function() { return null; });
+      } catch (e) {}
+    })();
+  </script>
+  <script>
+    // Global Theme Palettes & Immediate Resolver in <head>
+    window.THEME_PALETTES = {
+      royal_khmer_purple: {
+        primary: '#250e44',
+        night: '#0e051c',
+        accent: '#d9b15a',
+        accentLight: '#fbefc0',
+        envelope: '#431475',
+        lining: '#2b0b4d',
+        card: '#280d4c',
+        cardInk: '#fbefc0',
+        cardInkDim: '#dfcba5',
+      },
+      luxury_gold: {
+        primary: '#1a160c',
+        night: '#0d0b06',
+        accent: '#e5b85c',
+        accentLight: '#fdf6e2',
+        envelope: '#2e2515',
+        lining: '#241d11',
+        card: '#19140b',
+        cardInk: '#fdf6e2',
+        cardInkDim: '#d5c4a1',
+      },
+      modern_obsidian: {
+        primary: '#141821',
+        night: '#0a0d13',
+        accent: '#e5c07b',
+        accentLight: '#fcf6e6',
+        envelope: '#202634',
+        lining: '#181e2a',
+        card: '#181e2b',
+        cardInk: '#fcf6e6',
+        cardInkDim: '#cfc6b2',
+      },
+      romantic_blossom: {
+        primary: '#331222',
+        night: '#16050e',
+        accent: '#f3a9b8',
+        accentLight: '#fff0f3',
+        envelope: '#4e1b34',
+        lining: '#3a1226',
+        card: '#381526',
+        cardInk: '#fff0f3',
+        cardInkDim: '#e8c4cc',
+      },
+      celestial_midnight: {
+        primary: '#081224',
+        night: '#030812',
+        accent: '#e9c46a',
+        accentLight: '#fdf8ea',
+        envelope: '#112344',
+        lining: '#0c1a33',
+        card: '#0c1932',
+        cardInk: '#fdf8ea',
+        cardInkDim: '#c7cbda',
+      },
+      emerald_green: {
+        primary: '#0b291d',
+        night: '#04140e',
+        accent: '#d4af37',
+        accentLight: '#eefdf6',
+        envelope: '#12432f',
+        lining: '#0d3424',
+        card: '#082016',
+        cardInk: '#eefdf6',
+        cardInkDim: '#b5d8c6',
+      },
+      ruby_red: {
+        primary: '#2b0b14',
+        night: '#140408',
+        accent: '#e5a93c',
+        accentLight: '#fdeef2',
+        envelope: '#4d1222',
+        lining: '#360b18',
+        card: '#22070f',
+        cardInk: '#fdeef2',
+        cardInkDim: '#e2bcc5',
+      },
+      midnight_sapphire: {
+        primary: '#0b1a30',
+        night: '#040a14',
+        accent: '#dfb76c',
+        accentLight: '#edf4fd',
+        envelope: '#132b4f',
+        lining: '#0f223e',
+        card: '#081324',
+        cardInk: '#edf4fd',
+        cardInkDim: '#b8c9df',
+      },
+      classic_ivory: {
+        primary: '#2c2720',
+        night: '#181511',
+        accent: '#d9b15a',
+        accentLight: '#fcf9f2',
+        envelope: '#473e33',
+        lining: '#342e26',
+        card: '#211d17',
+        cardInk: '#fcf9f2',
+        cardInkDim: '#dad1c4',
+      },
+    };
+
+    window.resolvePalette = function(themeVal) {
+      if (!themeVal) return window.THEME_PALETTES.royal_khmer_purple;
+      try {
+        if (typeof themeVal === 'string' && themeVal.startsWith('{')) {
+          var parsed = JSON.parse(themeVal);
+          // 1. If custom colors exist, ALWAYS use them directly
+          if (parsed.preset === 'custom' || parsed.primary) {
+            var primary = parsed.primary || '#250e44';
+            var accent = parsed.accent || '#d9b15a';
+            var envelope = parsed.envelope || primary;
+            var lining = parsed.lining || parsed.envelope || primary;
+            var card = parsed.card || primary;
+            return {
+              primary: primary,
+              night: '#07040d',
+              accent: accent,
+              accentLight: '#fbefc0',
+              envelope: envelope,
+              lining: lining,
+              card: card,
+              cardInk: '#fbefc0',
+              cardInkDim: '#dfcba5',
+            };
+          }
+          // 2. Preset lookup
+          if (parsed.preset && window.THEME_PALETTES[parsed.preset]) {
+            return window.THEME_PALETTES[parsed.preset];
+          }
+          // 3. Template style fallback
+          if (parsed.templateStyle === 'modern-minimal') return window.THEME_PALETTES.modern_obsidian;
+          if (parsed.templateStyle === 'romantic-floral') return window.THEME_PALETTES.romantic_blossom;
+          if (parsed.templateStyle === 'celestial-midnight') return window.THEME_PALETTES.celestial_midnight;
+          if (parsed.templateStyle === 'royal-heritage') return window.THEME_PALETTES.royal_khmer_purple;
+        }
+      } catch (e) {}
+
+      if (window.THEME_PALETTES[themeVal]) {
+        return window.THEME_PALETTES[themeVal];
+      }
+      return window.THEME_PALETTES.royal_khmer_purple;
+    };
+
+    window.applyThemePalette = function(themeVal) {
+      var staticTheme = document.getElementById('royal-purple-theme');
+      if (staticTheme) {
+        staticTheme.remove();
+      }
+
+      var pal = window.resolvePalette(themeVal);
+      var dynamicStyle = document.getElementById('dynamic-theme-style');
+      if (!dynamicStyle) {
+        dynamicStyle = document.createElement('style');
+        dynamicStyle.id = 'dynamic-theme-style';
+        document.head.appendChild(dynamicStyle);
+      }
+
+      var templateStyle = 'royal-heritage';
+      var sealStyle = 'crown';
+      var frameStyle = 'ornate-kbach';
+      var animationStyle = 'falling-petals';
+      try {
+        if (typeof themeVal === 'string' && themeVal.startsWith('{')) {
+          var parsed = JSON.parse(themeVal);
+          if (parsed.templateStyle) templateStyle = parsed.templateStyle;
+          if (parsed.sealStyle) sealStyle = parsed.sealStyle;
+          if (parsed.frameStyle) frameStyle = parsed.frameStyle;
+          if (parsed.animationStyle) animationStyle = parsed.animationStyle;
+        }
+      } catch (e) {}
+
+      if (document.body) {
+        document.body.dataset.templateStyle = templateStyle;
+        document.body.dataset.sealStyle = sealStyle;
+        document.body.dataset.frameStyle = frameStyle;
+        document.body.dataset.animationStyle = animationStyle;
+      }
+
+      if (typeof window.__switchAnimationMode === 'function') {
+        window.__switchAnimationMode(animationStyle, pal.accent);
+      }
+
+      if (typeof window.updateWaxSealEmblem === 'function') {
+        window.updateWaxSealEmblem(sealStyle, pal.accent);
+      }
+
+      var css = `
+        :root {
+          --olive-950: ${pal.primary} !important;
+          --olive-900: ${pal.primary} !important;
+          --olive-800: ${pal.envelope} !important;
+          --olive-700: ${pal.envelope} !important;
+          --olive-500: ${pal.accent} !important;
+          --olive-300: ${pal.accentLight} !important;
+          --bg: ${pal.primary} !important;
+          --night: ${pal.night} !important;
+          --teak: ${pal.envelope} !important;
+          --foil: ${pal.accent} !important;
+          --foil-hi: ${pal.accentLight} !important;
+          --paper: ${pal.card} !important;
+          --paper-ink: ${pal.cardInk} !important;
+          --paper-ink-dim: ${pal.cardInkDim} !important;
+          --paper-line: ${pal.accent} !important;
+        }
+        html, body, body.is-locked {
+          background-color: ${pal.primary} !important;
+          color: ${pal.cardInk} !important;
+        }
+        .gate, .gate__dim {
+          background: ${pal.night} !important;
+        }
+        #gate-guest-badge {
+          background: linear-gradient(180deg, ${pal.primary}f2, ${pal.night}fa) !important;
+          border: 1.5px solid ${pal.accent} !important;
+          box-shadow: 0 10px 30px rgba(0,0,0,0.7), 0 0 25px ${pal.accent}40 !important;
+        }
+        #gate-guest-category {
+          background: ${pal.accent} !important;
+          color: ${pal.night} !important;
+        }
+        /* ENVELOPE BOX EXTERIOR (ALL SIDES) */
+        .e2, .e2__back, .e2__pocket-l:before, .e2__pocket-r:before, .e2__pocket-b:before, .e2__flap-front {
+          background-color: ${pal.envelope} !important;
+          background-image: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(0,0,0,0.25)), url(/tex/paper-olive.webp) !important;
+          background-blend-mode: multiply !important;
+          filter: none !important;
+        }
+        /* ENVELOPE INNER FLAP (WHEN OPENING THE BOX) */
+        .e2__flap-back {
+          background-color: ${pal.lining} !important;
+          background-image: radial-gradient(circle at 50% 25%, ${pal.accent}33 0%, ${pal.lining} 75%, rgba(0,0,0,0.4) 100%), url(/tex/paper-lining.webp) !important;
+          background-blend-mode: multiply !important;
+          box-shadow: inset 0 -30px 40px rgba(0,0,0,0.5) !important;
+        }
+        /* ENVELOPE INNER CARD & LETTER PANELS (WHEN OPENING THE BOX) */
+        .e2__card, .tri__face, .tri__out, .tri__in, .paper, .card {
+          background-color: ${pal.card} !important;
+          background-image: linear-gradient(135deg, rgba(255,255,255,0.04), rgba(0,0,0,0.28)), url(/tex/paper-cream.webp) !important;
+          background-blend-mode: multiply !important;
+          color: ${pal.cardInk} !important;
+          border-color: ${pal.accent}40 !important;
+        }
+        .e2__card-invite, .paper p, .paper .pday__title, .prow__what, .tri-prog li {
+          color: ${pal.cardInk} !important;
+        }
+        .e2__card-frame {
+          border-color: ${pal.accent} !important;
+        }
+        /* EMBOSSED FOIL ORNAMENTS & BORDERS */
+        .e2__emboss .kb-fill, .e2__flap-border .kb-fill, .gate__florals path {
+          fill: ${pal.accent} !important;
+          stroke: ${pal.accent} !important;
+        }
+        .tri__line path, .e2__tri-crest svg path {
+          stroke: ${pal.accent} !important;
+        }
+        .e2__seal {
+          filter: drop-shadow(0 8px 18px rgba(0,0,0,0.65)) drop-shadow(0 0 15px ${pal.accent}40) !important;
+        }
+        /* SECTIONS */
+        .programme {
+          background: ${pal.night} !important;
+        }
+        .words, .couple, .countdown, .venue, .gift, .rsvp, .finale {
+          background-color: ${pal.primary} !important;
+        }
+        .hud, .chip, .rsvp-pill {
+          background: ${pal.primary}d9 !important;
+          border-color: ${pal.accent}80 !important;
+        }
+
+        /* HERO GUEST WELCOME & DEDICATION PLAQUE */
+        #hero-guest-welcome {
+          background: ${pal.primary}e6 !important;
+          border: 1.5px solid ${pal.accent} !important;
+          box-shadow: 0 8px 25px rgba(0,0,0,0.6), 0 0 18px ${pal.accent}40 !important;
+        }
+        #words-guest-dedication {
+          background: ${pal.accent}14 !important;
+          border: 1.5px solid ${pal.accent}66 !important;
+        }
+
+        /* RSVP & WISHES SECTION CARDS AND INPUTS */
+        .rsvp__grid .card, .rsvp .card {
+          background-color: ${pal.card} !important;
+          border: 1px solid ${pal.accent}40 !important;
+        }
+        .input, .textarea, .select, input[type="text"], input[type="tel"], select, textarea {
+          border-color: ${pal.accent}55 !important;
+        }
+        .btn--gold, button.btn--gold, .btn.btn--gold {
+          background: linear-gradient(135deg, ${pal.accentLight}, ${pal.accent}) !important;
+          color: ${pal.night} !important;
+          box-shadow: 0 4px 15px ${pal.accent}55 !important;
+        }
+      `;
+      dynamicStyle.textContent = css;
+    };
+  </script>
+  <script>
+    // Safeguard #gallery and #story sections from being removed by template scripts
+    (function() {
+      var origRemove = Element.prototype.remove;
+      if (origRemove) {
+        Element.prototype.remove = function() {
+          if (this && (this.id === 'gallery' || this.id === 'gallery-grid' || this.id === 'story')) {
+            return;
+          }
+          return origRemove.apply(this, arguments);
+        };
+      }
+      var origRemoveChild = Node.prototype.removeChild;
+      if (origRemoveChild) {
+        Node.prototype.removeChild = function(child) {
+          if (child && (child.id === 'gallery' || child.id === 'gallery-grid' || child.id === 'story')) {
+            return child;
+          }
+          return origRemoveChild.apply(this, arguments);
+        };
+      }
+    })();
+  </script>
+  <script type="module" crossorigin src="/assets/main-DM3xDQch.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/i18n-DctJJAsA.css">
+  <style id="royal-purple-theme">
+    :root {
+      --olive-950: #16092b !important;
+      --olive-900: #250e44 !important;
+      --olive-800: #35145f !important;
+      --olive-700: #4d1e87 !important;
+      --olive-500: #7633be !important;
+      --olive-300: #b387ed !important;
+      --bg: #250e44 !important;
+      --night: #0e051c !important;
+      --teak: #4a1554 !important;
+      --lotus: #d946ef !important;
+      --cream: #f8f0ff !important;
+      --cream-dim: #ddd0ee !important;
+      --foil: #d9b15a !important;
+      --foil-hi: #fbefc0 !important;
+      --paper: #280d4c !important;
+      --paper-ink: #fbefc0 !important;
+      --paper-ink-dim: #dfcba5 !important;
+      --paper-line: #d9b15a !important;
+    }
+    html, body {
+      background-color: #250e44 !important;
+      color: #f8f0ff !important;
+    }
+    body.is-locked {
+      background-color: #250e44 !important;
+    }
+    .gate__dim {
+      background: #0e051c !important;
+    }
+    /* 3D ENVELOPE BOX EXTERIOR (RICH ROYAL PURPLE & GOLD) */
+    .e2__back, .e2__pocket-l:before, .e2__pocket-r:before, .e2__pocket-b:before, .e2__flap-front {
+      background-color: #431475 !important;
+      background-image: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(0,0,0,0.3)), url(/tex/paper-olive.webp) !important;
+      background-blend-mode: multiply !important;
+      filter: none !important;
+    }
+    /* ENVELOPE INNER FLAP (WHEN OPENING THE BOX) */
+    .e2__flap-back {
+      background-color: #2b0b4d !important;
+      background-image: radial-gradient(circle, rgba(217, 177, 90, 0.2) 0%, rgba(18, 5, 34, 0.92) 100%), url(/tex/paper-lining.webp) !important;
+      background-blend-mode: multiply !important;
+      box-shadow: inset 0 -30px 40px rgba(0,0,0,0.6) !important;
+    }
+    /* ENVELOPE INNER CARD & LETTER PANELS (WHEN OPENING THE BOX) */
+    .e2__card, .tri__face, .tri__out, .tri__in, .paper {
+      background-color: #280d4c !important;
+      background-image: linear-gradient(135deg, rgba(255,255,255,0.04), rgba(0,0,0,0.28)), url(/tex/paper-cream.webp) !important;
+      background-blend-mode: multiply !important;
+      color: #fbefc0 !important;
+      border-color: rgba(217, 177, 90, 0.35) !important;
+    }
+    .e2__card-invite, .paper p, .paper .pday__title, .prow__what, .tri-prog li {
+      color: #fbefc0 !important;
+    }
+    .e2__card-frame {
+      border-color: #d9b15a !important;
+    }
+    /* EMBOSSED FOIL ORNAMENTS & BORDERS (GOLD INSTEAD OF GREEN) */
+    .e2__emboss .kb-fill, .e2__flap-border .kb-fill, .gate__florals path {
+      fill: #d9b15a !important;
+      stroke: #d9b15a !important;
+    }
+    .tri__line path, .e2__tri-crest svg path {
+      stroke: #d9b15a !important;
+    }
+    /* SECTIONS */
+    .programme {
+      background: #1b0a33 !important;
+    }
+    .words, .couple, .countdown, .venue, .gift, .rsvp, .finale {
+      background-color: #250e44 !important;
+    }
+    .hud, .chip, .rsvp-pill {
+      background: rgba(37, 14, 68, 0.85) !important;
+      border-color: rgba(217, 177, 90, 0.5) !important;
+    }
+  </style>
+  <style id="royal-invitation-core">
+    /* Luxury Royal Footer & Finale Enhancements - Permanent Structure */
+    .footer.royal-footer {
+      position: relative !important;
+      background: radial-gradient(ellipse 90% 80% at 50% 0%, #290f4c 0%, #17072d 45%, #090213 100%) !important;
+      border-top: 1px solid rgba(217, 177, 90, 0.4) !important;
+      box-shadow: 0 -20px 50px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(251, 239, 192, 0.2) !important;
+      padding: 4.5rem 1.5rem max(3rem, env(safe-area-inset-bottom)) !important;
+      text-align: center !important;
+      color: #fbefc0 !important;
+      overflow: hidden !important;
+    }
+    .footer.royal-footer::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 10%;
+      right: 10%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(251, 239, 192, 0.8), transparent);
+    }
+    .rf__container {
+      max-width: 860px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.8rem;
+      position: relative;
+      z-index: 2;
+    }
+    .rf__top-action {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 0.25rem;
+    }
+    .rf__btn-top {
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.65rem;
+      padding: 0.8rem 1.8rem;
+      border-radius: 9999px;
+      background: linear-gradient(135deg, rgba(77, 30, 135, 0.75), rgba(37, 14, 68, 0.9));
+      border: 1px solid rgba(217, 177, 90, 0.6);
+      color: #fbefc0;
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), 0 0 15px rgba(217, 177, 90, 0.2);
+      transition: all 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+      backdrop-filter: blur(8px);
+    }
+    .rf__btn-top:hover {
+      transform: translateY(-3px);
+      border-color: #d9b15a;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5), 0 0 25px rgba(217, 177, 90, 0.45);
+      background: linear-gradient(135deg, rgba(118, 51, 190, 0.9), rgba(53, 20, 95, 0.98));
+      color: #ffffff;
+    }
+    .rf__icon-arrow {
+      width: 16px !important;
+      height: 16px !important;
+      min-width: 16px !important;
+      min-height: 16px !important;
+      max-width: 16px !important;
+      max-height: 16px !important;
+      flex: none !important;
+      stroke: #d9b15a;
+      display: inline-block !important;
+      vertical-align: middle !important;
+      transition: transform 0.3s ease;
+    }
+    .rf__btn-top:hover .rf__icon-arrow {
+      transform: translateY(-2px);
+      stroke: #ffffff;
+    }
+    .rf__divider {
+      width: 100%;
+      max-width: 380px;
+      display: flex;
+      justify-content: center;
+      opacity: 0.9;
+    }
+    .rf__kbach-svg {
+      width: 100% !important;
+      height: auto !important;
+      max-width: 360px !important;
+      max-height: 28px !important;
+    }
+    .rf__crest-wrap {
+      margin: 0.25rem auto 0;
+    }
+    .rf__crest-ring {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1.25rem 2.4rem;
+      border-radius: 24px;
+      background: radial-gradient(circle at 50% 30%, rgba(118, 51, 190, 0.35), rgba(22, 9, 43, 0.75));
+      border: 1px solid rgba(217, 177, 90, 0.45);
+      box-shadow: inset 0 0 20px rgba(217, 177, 90, 0.15), 0 10px 25px rgba(0, 0, 0, 0.4);
+    }
+    .rf__crown-icon, .rf__crest-crown {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 0.35rem;
+    }
+    .rf__crown-icon svg {
+      width: 44px !important;
+      max-width: 44px !important;
+      height: auto !important;
+      display: block !important;
+      margin: 0 auto !important;
+    }
+    .rf__crest-initials {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-family: var(--f-serif, serif);
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #fbefc0;
+      letter-spacing: 0.05em;
+    }
+    .rf__initial-amp {
+      font-family: var(--f-script, cursive);
+      color: #d9b15a;
+      font-size: 1.3rem;
+      font-weight: 400;
+    }
+    .rf__crest-sub {
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      color: rgba(251, 239, 192, 0.75);
+      margin-top: 0.4rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    .rf__blessing-box {
+      max-width: 660px;
+      width: 100%;
+      background: rgba(37, 14, 68, 0.45);
+      border: 1px solid rgba(217, 177, 90, 0.25);
+      border-radius: 20px;
+      padding: 1.75rem 1.6rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+      backdrop-filter: blur(6px);
+    }
+    .rf__blessing-title {
+      font-size: 1.18rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      letter-spacing: 0.02em;
+    }
+    .rf__blessing-text {
+      font-size: 0.9rem;
+      line-height: 1.9;
+      color: #fbefc0;
+      opacity: 0.95;
+      margin-bottom: 0.75rem;
+      font-family: kantumruy pro, sans-serif;
+    }
+    .rf__blessing-en {
+      font-size: 0.82rem;
+      line-height: 1.6;
+      color: #d9b15a;
+      font-style: italic;
+      opacity: 0.85;
+      font-family: var(--f-serif, serif);
+    }
+    .rf__meta-capsule {
+      display: inline-flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      padding: 0.65rem 1.4rem;
+      border-radius: 9999px;
+      background: rgba(19, 6, 36, 0.65);
+      border: 1px solid rgba(217, 177, 90, 0.3);
+      font-size: 0.82rem;
+      color: #fbefc0;
+    }
+    .rf__meta-item {
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 0.45rem !important;
+    }
+    .rf__meta-icon {
+      width: 15px !important;
+      height: 15px !important;
+      min-width: 15px !important;
+      min-height: 15px !important;
+      max-width: 15px !important;
+      max-height: 15px !important;
+      flex: none !important;
+      stroke: #d9b15a !important;
+      display: inline-block !important;
+      vertical-align: middle !important;
+    }
+    .rf__meta-dot {
+      color: #d9b15a;
+      opacity: 0.6;
+    }
+    .rf__nav {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.6rem;
+      max-width: 680px;
+      margin: 0.4rem 0;
+    }
+    .rf__nav-link {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.45rem 1rem;
+      border-radius: 9999px;
+      background: rgba(37, 14, 68, 0.55);
+      border: 1px solid rgba(179, 135, 237, 0.25);
+      color: rgba(251, 239, 192, 0.9);
+      font-size: 0.78rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.25s ease;
+    }
+    .rf__nav-link:hover {
+      background: rgba(118, 51, 190, 0.4);
+      border-color: rgba(217, 177, 90, 0.6);
+      color: #ffffff;
+      transform: translateY(-1.5px);
+    }
+    .rf__copyright-wrap {
+      width: 100%;
+      max-width: 580px;
+      padding-top: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .rf__cr-line {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(217, 177, 90, 0.35), transparent);
+      margin-bottom: 0.8rem;
+    }
+    .rf__cr-title {
+      font-size: 0.68rem;
+      letter-spacing: 0.2em;
+      color: #d9b15a;
+      font-weight: 700;
+      margin: 0;
+    }
+    .rf__cr-names {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #ffffff;
+      margin: 0;
+    }
+    .rf__cr-sub {
+      font-size: 0.72rem;
+      color: rgba(251, 239, 192, 0.6);
+      margin: 0;
+    }
+
+    /* Finale share buttons enhancement */
+    .finale .share {
+      border: 1px solid rgba(217, 177, 90, 0.35) !important;
+      background: rgba(37, 14, 68, 0.6) !important;
+      color: #fbefc0 !important;
+      border-radius: 14px !important;
+      transition: all 0.3s ease !important;
+    }
+    .finale .share:hover {
+      border-color: #d9b15a !important;
+      background: rgba(118, 51, 190, 0.5) !important;
+      transform: translateY(-2px) !important;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4), 0 0 15px rgba(217, 177, 90, 0.3) !important;
+      color: #ffffff !important;
+    }
+    .finale__mono {
+      width: 96px !important;
+      max-width: 100px !important;
+      height: auto !important;
+      margin: 1.5rem auto 1rem !important;
+      filter: drop-shadow(0 0 14px rgba(217, 177, 90, 0.4)) !important;
+    }
+    .finale__mono .lockup {
+      max-width: 100px !important;
+    }
+    .toast {
+      background: #250e44 !important;
+      border: 1px solid #d9b15a !important;
+      color: #fbefc0 !important;
+    }
+    .lightbox {
+      background: rgba(14, 5, 28, 0.95) !important;
+    }
+    .pond__shade {
+      background: linear-gradient(#16092beb 0%, #16092bb3 55%, #16092b00 100%) !important;
+    }
+    ::selection {
+      background: #7633be !important;
+      color: #ffffff !important;
+    }
+  </style>
+  <script>
+    // Safeguard audio volume property against negative floating point values
+    try {
+      var origVol = Object.getOwnPropertyDescriptor(HTMLMediaElement.prototype, 'volume');
+      if (origVol && origVol.set) {
+        Object.defineProperty(HTMLMediaElement.prototype, 'volume', {
+          get: origVol.get,
+          set: function(v) {
+            var clamped = Math.max(0, Math.min(1, Number(v) || 0));
+            return origVol.set.call(this, clamped);
+          },
+          configurable: true,
+          enumerable: true
+        });
+      }
+    } catch(e) {}
+  </script>
+</head>
+<body class="is-locked" data-lang="km">
+  <!-- Ambient Particle Canvas for Wedding Animations & Particle Effects -->
+  <canvas id="ambient-particles" style="position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:2;opacity:0.85;"></canvas>
+  <!-- global SVG defs -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <linearGradient id="g-foil" x1="0" y1="0" x2="1" y2=".35" gradientUnits="objectBoundingBox">
+        <stop offset="0" stop-color="#9c7124" />
+        <stop offset=".25" stop-color="#d9b15a" />
+        <stop offset=".45" stop-color="#fbefc0" />
+        <stop offset=".62" stop-color="#d9b15a" />
+        <stop offset=".85" stop-color="#9c7124" />
+        <stop offset="1" stop-color="#d9b15a" />
+      </linearGradient>
+      <clipPath id="clip-scallop" clipPathUnits="objectBoundingBox"><path id="clip-scallop-path" d="M0 0H1V1H0Z" /></clipPath>
+    </defs>
+  </svg>
+
+  <div class="grain" aria-hidden="true"></div>
+
+  <!-- 0 · PRELOADER -->
+  <div class="preloader" id="preloader" aria-hidden="true">
+    <div class="preloader__inner">
+      <div id="pre-lotus"></div>
+      <div class="preloader__count" id="pre-count">០</div>
+    </div>
+    <div class="preloader__curtain"></div>
+  </div>
+
+  <!-- 0b · ENVELOPE GATE -->
+  <div class="gate" id="gate" role="dialog" aria-modal="true" aria-labelledby="gate-guest">
+    <picture class="gate__bg" aria-hidden="true">
+      <source media="(max-aspect-ratio: 1/1)" srcset="/img/words-640.webp 640w, /img/words-1280.webp 1280w" sizes="100vw" />
+      <img src="/img/cozy-1280.webp" srcset="/img/cozy-1280.webp 1280w, /img/cozy-2000.webp 2000w" sizes="100vw" alt="" />
+    </picture>
+    <svg class="gate__florals emboss" id="gate-florals" viewBox="0 0 400 800" preserveAspectRatio="xMidYMid slice" aria-hidden="true"></svg>
+    <div class="gate__stage">
+      <div class="gate__invite" style="text-align:center">
+        <div class="gate__kicker foil" data-t="kicker"></div>
+        <div class="gate__sub" data-t="weddingInvitation"></div>
+        
+        <!-- Personalized Envelope Guest Plaque -->
+        <div id="gate-guest-badge" style="margin: 0.85rem auto 0; padding: 0.75rem 1.6rem; background: linear-gradient(180deg, rgba(37,14,68,0.96), rgba(18,6,34,0.98)); border: 1.5px solid #d9b15a; border-radius: 999px; box-shadow: 0 10px 30px rgba(0,0,0,0.7), 0 0 25px rgba(179,135,237,0.35); display: inline-flex; flex-direction: column; align-items: center; gap: 0.2rem; max-width: 90vw;">
+          <span style="font-size: 0.72rem; letter-spacing: 2px; text-transform: uppercase; color: #fbefc0; font-family: var(--f-kantumruy, sans-serif); opacity: 0.9;">
+            សូមគោរពអញ្ជើញ · CORDIALLY INVITING
+          </span>
+          <h1 id="gate-guest" style="margin: 0; font-family: var(--f-moul, serif); font-size: 1.35rem; color: #ffffff; text-shadow: 0 2px 10px rgba(0,0,0,0.9); line-height: 1.35;">
+            ភ្ញៀវកិត្តិយស
+          </h1>
+          <div style="display: flex; gap: 0.5rem; align-items: center; margin-top: 0.15rem;">
+            <span id="gate-guest-category" style="font-size: 0.68rem; font-weight: bold; background: #d9b15a; color: #250e44; padding: 0.15rem 0.6rem; border-radius: 999px; text-transform: uppercase; letter-spacing: 0.5px;">
+              VIP GUEST
+            </span>
+            <span id="gate-guest-table" style="font-size: 0.75rem; color: #fbefc0; font-family: var(--f-kantumruy, sans-serif);">
+              VIP
+            </span>
+          </div>
+        </div>
+      </div>
+      <div id="env-mount"></div>
+      <div class="gate__hint" data-t="tapSeal"></div>
+    </div>
+    <div class="gate__dim" aria-hidden="true"></div>
+  </div>
+
+  <!-- HUD -->
+  <header class="hud">
+    <a class="hud__mono" href="#top" id="hud-mono" aria-label="Top"></a>
+    <div class="hud__right">
+      <button class="chip" id="lang-toggle" type="button" aria-label="Switch language"><span class="lang-km">ខ្មែរ</span> / EN</button>
+      <button class="chip" id="music-toggle" type="button" aria-pressed="false" aria-label="Music">
+        <span class="bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+      </button>
+    </div>
+  </header>
+  <div class="vine-progress" aria-hidden="true"><span></span><b></b></div>
+  <a class="btn rsvp-pill" href="#venue" data-t="location"></a>
+
+  <main id="main">
+    <!-- 1 · COVER / HERO (ធៀបការ over the photo) -->
+    <section class="hero cover" id="hero" aria-label="Wedding invitation cover">
+      <div class="hero__media" id="hero-media">
+        <picture>
+          <source media="(max-aspect-ratio: 1/1)" srcset="/img/hero-m-640.webp 640w, /img/hero-m-1280.webp 1280w, /img/hero-m-2000.webp 2000w" sizes="100vw" />
+          <img src="/img/hero-2000.webp" srcset="/img/hero-1280.webp 1280w, /img/hero-2000.webp 2000w" sizes="100vw" alt="រស្មី និង ភក្ដី បណ្តែតប្រទីបផ្កាឈូកនៅស្រះឈូក · The couple floating lotus lanterns on the pond" fetchpriority="high" />
+        </picture>
+        <div class="hero__shade"></div>
+        <canvas class="hero__embers" id="hero-embers"></canvas>
+      </div>
+      <div data-orn="corner4" class="cover__corners"></div>
+      <div class="cover__inner">
+        <div class="cover__crest" data-orn="crest"></div>
+        <div class="cover__kicker foil" data-t="kicker"></div>
+        <div class="cover__sub" data-t="weddingInvitation"></div>
+        <div class="cover__lockup" data-lockup="cover"></div>
+        <div class="hero__en" id="names-en"></div>
+
+        <!-- Personalized Hero Welcome Banner -->
+        <div id="hero-guest-welcome" style="margin: 1.1rem auto 0.6rem; padding: 0.55rem 1.4rem; background: rgba(37, 14, 68, 0.88); border: 1.5px solid #d9b15a; border-radius: 999px; backdrop-filter: blur(8px); display: inline-flex; align-items: center; gap: 0.6rem; max-width: 90vw; box-shadow: 0 8px 25px rgba(0,0,0,0.6), 0 0 15px rgba(179,135,237,0.25);">
+          <span style="color: #d9b15a; font-size: 0.85rem;">✦</span>
+          <span style="color: #fbefc0; font-size: 0.95rem; font-family: var(--f-moul, serif); letter-spacing: 0.3px;">
+            សូមគោរពអញ្ជើញ៖ <span id="hero-guest-name" style="color: #ffffff; text-decoration: underline; text-underline-offset: 4px; text-decoration-color: #d9b15a;">ភ្ញៀវកិត្តិយស</span>
+          </span>
+          <span style="color: #d9b15a; font-size: 0.85rem;">✦</span>
+        </div>
+
+        <div class="cover__invite" data-t="inviteTo"></div>
+        <div class="cover__chips">
+          <div class="chip-d"><small data-t="dayLabel"></small><b data-date="weekdayShort"></b></div>
+          <div class="chip-d"><small data-t="dateLabel"></small><b data-date="day"></b></div>
+          <div class="chip-d"><small data-t="monthLabel"></small><b data-date="month"></b></div>
+          <div class="chip-d"><small data-t="yearLabel"></small><b data-date="year"></b></div>
+        </div>
+        <div class="cover__lunar" data-date="lunar"></div>
+        <div class="cover__venue"><span data-venue="name"></span> · <span data-venue="address"></span></div>
+        <a class="cover__cue" href="#words"><span data-t="scrollOpen"></span><i></i></a>
+      </div>
+    </section>
+
+    <!-- 2 · INVITATION WORDS -->
+    <section class="chapter words" id="words">
+      <svg class="words__florals emboss" id="words-florals" viewBox="0 0 260 260" aria-hidden="true"></svg>
+      <div class="words__grid">
+        <div class="arch" data-parallax-wrap><img src="/img/words-1280.webp" srcset="/img/words-640.webp 640w, /img/words-1280.webp 1280w" sizes="(max-width: 860px) 78vw, 40vw" alt="The couple on the wooden pavilion" loading="lazy" data-parallax /></div>
+        <article class="paper words__card" id="words-card">
+          <!-- Personalized Dedication Plaque inside Letter -->
+          <div id="words-guest-dedication" style="margin-bottom: 1.3rem; padding: 0.85rem 1.2rem; background: rgba(217, 177, 90, 0.08); border: 1.5px solid #d9b15a66; border-radius: 14px; text-align: center;">
+            <span style="display: block; font-size: 0.72rem; color: #aa7c11; font-weight: bold; letter-spacing: 1.5px; text-transform: uppercase;">
+              លិខិតអញ្ជើញផ្ទាល់ខ្លួន · PERSONAL INVITATION
+            </span>
+            <h3 id="words-guest-name" style="margin: 0.35rem 0 0.2rem; font-family: var(--f-moul, serif); font-size: 1.25rem; color: #2c2a29; line-height: 1.4;">
+              ភ្ញៀវកិត្តិយស
+            </h3>
+            <p id="words-guest-meta" style="margin: 0; font-size: 0.82rem; color: #665c49;">
+              VIP GUEST · លិខិតអញ្ជើញកិត្តិយស
+            </p>
+          </div>
+
+          <div class="paper__parents">
+            <p data-parents-card="groom"></p>
+            <p data-parents-card="bride"></p>
+          </div>
+          <h2 class="paper__honor" data-t="cardHonor"></h2>
+          <p class="paper__body" data-t="cardBody"></p>
+          <div class="paper__couple">
+            <div class="paper__person"><small data-t="cardSon"></small><b class="foil" data-name="groom-local"></b></div>
+            <div class="paper__mono" id="paper-mono" aria-hidden="true"></div>
+            <div class="paper__person"><small data-t="cardDaughter"></small><b class="foil" data-name="bride-local"></b></div>
+          </div>
+          <p class="paper__when" data-t="cardWhen"></p>
+        </article>
+      </div>
+    </section>
+
+    <!-- 3 · THE COUPLE -->
+    <section class="chapter couple" id="couple">
+      <div class="chapter__head"><span class="kicker" data-t="coupleKicker"></span><div data-orn="divider"></div></div>
+      <div class="couple__stage">
+        <div class="person" data-from="left">
+          <div class="caps" data-t="groomLabel"></div>
+          <div class="person__name foil" data-name="groom-km"></div>
+          <div class="person__en" data-name="groom-en"></div>
+          <div class="person__parents"><span data-t="sonOf"></span><br /><span data-parents="groom"></span></div>
+        </div>
+        <div class="couple__photo">
+          <div class="scallop-frame" id="couple-frame">
+            <img src="/img/cozy-1280.webp" srcset="/img/cozy-640.webp 640w, /img/cozy-1280.webp 1280w, /img/cozy-2000.webp 2000w" sizes="(max-width:860px) 86vw, 40vw" alt="Raksmey and Pheakdey in the wooden house" loading="lazy" style="object-position:40% 50%" />
+          </div>
+          <div class="couple__amp" id="couple-amp"><span class="foil">&amp;</span></div>
+          <div class="couple__butterfly" id="couple-butterfly"></div>
+        </div>
+        <div class="person" data-from="right">
+          <div class="caps" data-t="brideLabel"></div>
+          <div class="person__name foil" data-name="bride-km"></div>
+          <div class="person__en" data-name="bride-en"></div>
+          <div class="person__parents"><span data-t="daughterOf"></span><br /><span data-parents="bride"></span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4 · COUNTDOWN -->
+    <section class="chapter countdown" id="countdown">
+      <div class="marquee" aria-hidden="true"><div class="marquee__track" id="marquee"></div></div>
+      <div class="chapter__head" style="margin-bottom:1.5rem"><span class="kicker" data-t="countdownKicker"></span></div>
+      <div class="count" id="count" aria-live="polite">
+        <div class="count__unit"><span class="count__num foil" data-u="d">០០</span><span class="count__label caps" data-t="days"></span></div>
+        <div class="count__unit"><span class="count__num foil" data-u="h">០០</span><span class="count__label caps" data-t="hours"></span></div>
+        <div class="count__unit"><span class="count__num foil" data-u="m">០០</span><span class="count__label caps" data-t="minutes"></span></div>
+        <div class="count__unit"><span class="count__num foil" data-u="s">០០</span><span class="count__label caps" data-t="seconds"></span></div>
+      </div>
+      <div class="count__date"><div data-orn="divider"></div><div data-date="weekday" class="caps"></div><div data-date="date"></div><div data-date="time"></div></div>
+    </section>
+
+    <!-- 5 · PROGRAMME -->
+    <section class="chapter programme" id="programme">
+      <article class="paper programme__card">
+        <h2 class="paper__title" data-t="programmeCardTitle"></h2>
+        <div id="programme-list"></div>
+      </article>
+    </section>
+
+    <!-- 6 · STORY -->
+    <section class="story" id="story">
+      <div class="story__pin">
+        <canvas class="story__embers" id="story-embers"></canvas>
+        <div class="story__track" id="story-track">
+          <div class="story__intro">
+            <span class="kicker" data-t="storyKicker"></span>
+            <h2 class="display" data-t="storyTitle"></h2>
+            <div class="caps" data-t="storyHint"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7 · POND -->
+    <section class="pond" id="pond">
+      <div class="pond__sticky" id="pond-sticky">
+        <picture>
+          <source media="(min-aspect-ratio: 1/1)" srcset="/img/pond-w-1280.webp 1280w, /img/pond-w-2000.webp 2000w" sizes="100vw" />
+          <img class="pond__fallback" src="/img/pond-1280.webp" srcset="/img/pond-640.webp 640w, /img/pond-1280.webp 1280w, /img/pond-2000.webp 2000w" sizes="100vw" alt="Candles and lotus offerings on the pond" loading="lazy" id="pond-img" />
+        </picture>
+        <canvas class="pond__canvas" id="pond-canvas"></canvas>
+        <div class="pond__shade"></div>
+        <div class="pond__text">
+          <div class="kicker" data-t="pondKicker"></div>
+          <div class="display foil" style="font-size:var(--t-l)"><span data-name="groom-short"></span> <span style="font-family:var(--f-script)">&amp;</span> <span data-name="bride-short"></span></div>
+        </div>
+        <div class="pond__hint" data-t="pondLine"></div>
+      </div>
+    </section>
+
+    <!-- 8 · GALLERY -->
+    <section class="chapter gallery" id="gallery">
+      <div class="chapter__head"><span class="kicker" data-t="galleryKicker"></span><h2 class="display" data-t="galleryTitle" data-lines></h2><div data-orn="divider"></div></div>
+      <div class="gallery__grid" id="gallery-grid"></div>
+    </section>
+
+    <!-- 9 · VENUE -->
+    <section class="chapter venue" id="venue">
+      <span class="kicker" data-t="venueKicker" style="color:var(--foil);display:block"></span>
+      <div id="angkor"></div>
+      <div class="venue__name foil" data-venue="name"></div>
+      <div class="venue__meta" data-venue="address"></div>
+      <div class="venue__when">
+        <div class="caps" data-date="weekday" style="color:var(--foil-hi)"></div>
+        <div data-date="date"></div>
+        <div data-date="time"></div>
+        <div class="tbc" data-tbc data-t="dateTbc"></div>
+      </div>
+      <figure class="paper venue__card" id="venue-card">
+        <figcaption class="caps" data-t="mapKicker"></figcaption>
+        <div id="line-map"></div>
+      </figure>
+      <div class="venue__contacts">
+        <div class="caps" data-t="contactTitle"></div>
+        <div class="venue__tels" id="venue-tels"></div>
+      </div>
+      <div class="venue__map"><iframe id="venue-map" title="Google Map" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe></div>
+      <div class="venue__actions">
+        <a class="btn" id="map-link" target="_blank" rel="noopener"><span data-t="openMap"></span></a>
+        <button class="btn" id="ics-btn" type="button"><span data-t="addCalendar"></span></button>
+      </div>
+      <p class="venue__meta" data-venue="note" style="margin-top:1.4rem;font-size:.9rem"></p>
+    </section>
+
+    <!-- 10 · GIFT -->
+    <section class="chapter gift" id="gift">
+      <span class="kicker" data-t="giftKicker" style="color:var(--foil);display:block"></span>
+      <div data-orn="divider"></div>
+      <p class="gift__note" data-t="giftNote"></p>
+      <div class="gift__cards" id="gift-cards"></div>
+    </section>
+
+    <!-- 10b · RSVP & WISHES -->
+    <section class="chapter rsvp" id="rsvp" style="padding-top:2.5rem;padding-bottom:3rem">
+      <div class="chapter__head">
+        <span class="kicker" style="color:var(--foil)">RSVP &amp; ពាក្យជូនពរ</span>
+        <h2 class="display foil" style="margin-bottom:0.5rem">ឆ្លើយតបការចូលរួម និងជូនពរ</h2>
+        <div data-orn="divider"></div>
+      </div>
+      <div class="rsvp__grid" style="max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:2rem">
+        <!-- RSVP Form -->
+        <div class="card" style="background:#1f0b38;border:1px solid rgba(179,135,237,0.35);border-radius:18px;padding:2rem;box-shadow:0 15px 35px rgba(0,0,0,0.6),0 0 20px rgba(124,58,237,0.15)">
+          <h3 class="display foil" style="font-size:1.35rem;margin-bottom:1rem">ការឆ្លើយតប (RSVP)</h3>
+          <form id="rsvp-form" style="display:grid;gap:1.1rem">
+            <div class="field" style="display:grid;gap:0.4rem">
+              <label for="rsvp-name" style="color:var(--foil-hi);font-size:0.85rem;font-weight:600">ឈ្មោះភ្ញៀវកិត្តិយស (Your Name)</label>
+              <input type="text" id="rsvp-name" required class="input" style="background:#130624;border:1px solid rgba(179,135,237,0.3);border-radius:10px;padding:0.75rem 1rem;color:#fff;font-size:0.9rem" placeholder="បញ្ចូលឈ្មោះរបស់អ្នក..." />
+            </div>
+            <div class="field" style="display:grid;gap:0.4rem">
+              <label style="color:var(--foil-hi);font-size:0.85rem;font-weight:600">ការចូលរួម (Attendance)</label>
+              <div class="pills" style="display:flex;gap:0.8rem">
+                <label class="pill" style="cursor:pointer">
+                  <input type="radio" name="rsvp_status" value="ATTENDING" checked />
+                  <span style="display:inline-block;padding:0.5rem 1rem;border-radius:999px;border:1px solid #d9b15a;background:#d9b15a;color:#1f0b38;font-weight:bold" id="pill-yes">ចូលរួមដោយរីករាយ</span>
+                </label>
+                <label class="pill" style="cursor:pointer">
+                  <input type="radio" name="rsvp_status" value="DECLINED" />
+                  <span style="display:inline-block;padding:0.5rem 1rem;border-radius:999px;border:1px solid #d9b15a66;color:#fbefc0" id="pill-no">សោកស្តាយ មិនបានចូលរួម</span>
+                </label>
+              </div>
+            </div>
+            <div class="field" id="rsvp-pax-field" style="display:grid;gap:0.4rem">
+              <label for="rsvp-count" style="color:var(--foil-hi);font-size:0.85rem;font-weight:600">ចំនួនអ្នកចូលរួម (Guests)</label>
+              <select id="rsvp-count" class="input" style="background:#130624;border:1px solid rgba(179,135,237,0.3);border-radius:10px;padding:0.75rem 1rem;color:#fff;font-size:0.9rem">
+                <option value="1">១ នាក់ (1 pax)</option>
+                <option value="2" selected>២ នាក់ (2 pax)</option>
+                <option value="3">៣ នាក់ (3 pax)</option>
+                <option value="4">៤ នាក់ (4 pax)</option>
+              </select>
+            </div>
+            <div class="field" style="display:grid;gap:0.4rem">
+              <label for="rsvp-notes" style="color:var(--foil-hi);font-size:0.85rem;font-weight:600">កំណត់ចំណាំ (Notes)</label>
+              <textarea id="rsvp-notes" class="input" rows="2" style="background:#130624;border:1px solid rgba(179,135,237,0.3);border-radius:10px;padding:0.75rem 1rem;color:#fff;font-size:0.9rem" placeholder="កំណត់ចំណាំ ឬចំណង់ចំណូលចិត្តម្ហូប..."></textarea>
+            </div>
+            <button type="submit" class="btn" style="width:100%;justify-content:center;margin-top:0.4rem" id="rsvp-submit-btn">
+              <span>បញ្ជាក់ការឆ្លើយតប (Confirm RSVP)</span>
+            </button>
+            <div id="rsvp-msg" style="text-align:center;font-size:0.85rem;color:#4ade80;display:none;margin-top:0.4rem;font-weight:bold"></div>
+          </form>
+        </div>
+
+        <!-- Live Wishes -->
+        <div class="card" style="background:#1f0b38;border:1px solid rgba(179,135,237,0.35);border-radius:18px;padding:2rem;display:flex;flex-direction:column;box-shadow:0 15px 35px rgba(0,0,0,0.6),0 0 20px rgba(124,58,237,0.15)">
+          <h3 class="display foil" style="font-size:1.35rem;margin-bottom:1rem">ពាក្យជូនពរ (Wishes)</h3>
+          <form id="wish-form" style="display:grid;gap:0.9rem;margin-bottom:1.5rem">
+            <input type="text" id="wish-name" required class="input" style="background:#130624;border:1px solid rgba(179,135,237,0.3);border-radius:10px;padding:0.75rem 1rem;color:#fff;font-size:0.9rem" placeholder="ឈ្មោះរបស់អ្នក..." />
+            <textarea id="wish-message" required class="input" rows="2" style="background:#130624;border:1px solid rgba(179,135,237,0.3);border-radius:10px;padding:0.75rem 1rem;color:#fff;font-size:0.9rem" placeholder="សរសេរពាក្យជូនពរដល់គូស្វាមីភរិយា..."></textarea>
+            <button type="submit" class="btn" style="justify-content:center" id="wish-submit-btn">
+              <span>ផ្ញើពាក្យជូនពរ (Send Wish)</span>
+            </button>
+            <div id="wish-msg" style="text-align:center;font-size:0.85rem;color:#4ade80;display:none;font-weight:bold"></div>
+          </form>
+          <div class="wishes__list" id="wishes-list" style="max-height:260px;overflow-y:auto;display:grid;gap:0.75rem;padding-right:0.4rem">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 11 · FINALE -->
+    <section class="chapter finale" id="finale">
+      <div>
+        <div class="finale__candles" id="candles" aria-hidden="true"><i class="candle"></i><i class="candle"></i><i class="candle"></i><i class="candle"></i><i class="candle"></i><i class="candle"></i><i class="candle"></i></div>
+        <h2 class="display foil" data-t="thanks"></h2>
+        <p class="finale__line" data-t="thanksLine"></p>
+        <div class="finale__actions">
+          <a class="share share--tg" id="share-tg" target="_blank" rel="noopener"><i data-icon="telegram"></i><span><small data-t="shareVia"></small>Telegram</span></a>
+          <a class="share share--ms" id="share-ms" target="_blank" rel="noopener"><i data-icon="messenger"></i><span><small data-t="shareVia"></small>Messenger</span></a>
+          <a class="share share--fb" id="share-fb" target="_blank" rel="noopener"><i data-icon="facebook"></i><span><small data-t="shareVia"></small>Facebook</span></a>
+          <button class="share share--copy" id="share-copy" type="button"><i data-icon="link"></i><span><small data-t="copyLinkSmall"></small><b data-t="copyLink"></b></span></button>
+        </div>
+        <div class="finale__mono" id="finale-mono"></div>
+      </div>
+    </section>
+    <footer class="footer royal-footer" id="invitation-footer">
+      <div class="rf__container">
+        <!-- Back To Top Action -->
+        <div class="rf__top-action">
+          <button type="button" class="rf__btn-top" id="rf-btn-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="ត្រឡប់ទៅខាងលើ">
+            <svg class="rf__icon-arrow" width="16" height="16" style="width:16px;height:16px;min-width:16px;min-height:16px;max-width:16px;max-height:16px;flex:none;stroke:#d9b15a;display:inline-block;vertical-align:middle;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="18 15 12 9 6 15"></polyline>
+            </svg>
+            <span>ត្រឡប់ទៅខាងលើ · Back to Top</span>
+          </button>
+        </div>
+
+        <!-- Royal Golden Divider Ornament -->
+        <div class="rf__divider" aria-hidden="true">
+          <svg class="rf__kbach-svg" width="360" height="28" style="width:100%;max-width:360px;height:auto;max-height:28px;" viewBox="0 0 360 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0 14h130m100 0h130" stroke="url(#g-foil)" stroke-width="1" stroke-dasharray="2 3"/>
+            <path d="M140 14c8-6 16-6 24 0-8 6-16 6-24 0zm56 0c8-6 16-6 24 0-8 6-16 6-24 0z" fill="url(#g-foil)" opacity="0.6"/>
+            <circle cx="180" cy="14" r="5" fill="url(#g-foil)"/>
+            <circle cx="180" cy="14" r="9" stroke="url(#g-foil)" stroke-width="1" stroke-dasharray="2 2"/>
+            <path d="M180 3v22M169 14h22" stroke="url(#g-foil)" stroke-width="1" opacity="0.7"/>
+          </svg>
+        </div>
+
+        <!-- Couple Crest & Monogram Badge -->
+        <div class="rf__crest-wrap">
+          <div class="rf__crest-ring">
+            <div class="rf__crown-icon" aria-hidden="true">
+              <svg class="rf__crown-svg" width="44" height="27" viewBox="0 0 72 44" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:44px;max-width:44px;height:auto;filter:drop-shadow(0 0 8px rgba(217,177,90,0.5));display:block;margin:0 auto;">
+                <path d="M6 34h60v3H6z" fill="url(#g-foil)"/>
+                <circle cx="10" cy="30" r="2.2" fill="url(#g-foil)"/>
+                <circle cx="23" cy="30" r="2.2" fill="url(#g-foil)"/>
+                <circle cx="36" cy="30" r="2.6" fill="url(#g-foil)"/>
+                <circle cx="49" cy="30" r="2.2" fill="url(#g-foil)"/>
+                <circle cx="62" cy="30" r="2.2" fill="url(#g-foil)"/>
+                <path d="M9 30L15 14l11 12 10-21 10 21 11-12 6 16H9z" fill="url(#g-foil)" opacity="0.9"/>
+                <circle cx="15" cy="12" r="3" fill="url(#g-foil)"/>
+                <circle cx="36" cy="3" r="3.8" fill="url(#g-foil)"/>
+                <circle cx="57" cy="12" r="3" fill="url(#g-foil)"/>
+                <path d="M36 9l-2.5 5.5h5L36 9z" fill="#fff" opacity="0.7"/>
+              </svg>
+            </div>
+            <div class="rf__crest-initials">
+              <span data-name="groom-short" class="rf__initial-g">រស្មី</span>
+              <span class="rf__initial-amp">&amp;</span>
+              <span data-name="bride-short" class="rf__initial-b">ភក្ដី</span>
+            </div>
+            <span class="rf__crest-sub">ROYAL WEDDING CELEBRATION</span>
+          </div>
+        </div>
+
+        <!-- Heartfelt Royal Blessing & Nuptial Wish -->
+        <div class="rf__blessing-box">
+          <h4 class="rf__blessing-title foil">សិរីសួស្តី ជ័យមង្គល វិបុលសុខ</h4>
+          <p class="rf__blessing-text">
+            សូមទេវតា និងវត្ថុស័ក្តិសិទ្ធិក្នុងលោក តាមជួយបីបាច់ថែរក្សា និងប្រសិទ្ធពរជ័យសិរីមង្គល វិបុលសុខ ដល់គូស្វាមីភរិយាថ្មី ព្រមទាំងភ្ញៀវកិត្តិយសទាំងអស់ ឱ្យជួបតែសេចក្តីសុខ ចម្រើន រុងរឿង និងសុភមង្គលជានិច្ចនិរន្តរ៍។
+          </p>
+          <p class="rf__blessing-en">
+            “May love, endless harmony, and boundless joy blossom throughout our shared journey of life.”
+          </p>
+        </div>
+
+        <!-- Date & Location Capsule -->
+        <div class="rf__meta-capsule">
+          <span class="rf__meta-item">
+            <svg class="rf__meta-icon" width="15" height="15" style="width:15px;height:15px;min-width:15px;min-height:15px;max-width:15px;max-height:15px;flex:none;display:inline-block;vertical-align:middle;stroke:#d9b15a;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+            <span id="rf-date">ថ្ងៃអាទិត្យ ទី១៥ ខែវិច្ឆិកា ឆ្នាំ២០២៦</span>
+          </span>
+          <span class="rf__meta-dot">·</span>
+          <span class="rf__meta-item">
+            <svg class="rf__meta-icon" width="15" height="15" style="width:15px;height:15px;min-width:15px;min-height:15px;max-width:15px;max-height:15px;flex:none;display:inline-block;vertical-align:middle;stroke:#d9b15a;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            <span id="rf-venue">ភ្នំពេញ, ព្រះរាជាណាចក្រកម្ពុជា</span>
+          </span>
+        </div>
+
+        <!-- Quick Section Navigation Pills -->
+        <nav class="rf__nav" aria-label="Footer quick navigation">
+          <a href="#words" class="rf__nav-link">💌 សេចក្តីអញ្ជើញ</a>
+          <a href="#couple" class="rf__nav-link">💍 គូស្វាមីភរិយា</a>
+          <a href="#programme" class="rf__nav-link">⏰ កម្មវិធីមង្គលការ</a>
+          <a href="#venue" class="rf__nav-link">📍 ទីតាំង &amp; ផែនទី</a>
+          <a href="#gift" class="rf__nav-link">🎁 ចំណងដៃឌីជីថល</a>
+          <a href="#rsvp" class="rf__nav-link">✍️ ពាក្យជូនពរ</a>
+        </nav>
+
+        <!-- Copyright & Dignity Stamp -->
+        <div class="rf__copyright-wrap">
+          <div class="rf__cr-line"></div>
+          <p class="rf__cr-title">ROYAL E-INVITATION · DIGITAL WEDDING EXPERIENCE</p>
+          <p class="rf__cr-names">
+            <span data-name="groom-km">ផៃ រស្មី</span> &amp; <span data-name="bride-km">មាស ភក្ដី</span> · <span id="year">២០២៦</span>
+          </p>
+          <p class="rf__cr-sub">រៀបចំឡើងដោយក្ដីស្រឡាញ់ &amp; ការគោរពដ៏ខ្ពង់ខ្ពស់ · All Rights Reserved</p>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <div class="cursor" aria-hidden="true"><div class="cursor__glow"></div><div class="cursor__dot"></div><div class="cursor__label"></div></div>
+  <div class="toast" id="toast" role="status"></div>
+  <dialog class="lightbox" id="lightbox" aria-label="Photo viewer">
+    <img id="lb-img" alt="" />
+    <button class="lb-btn lb-close" type="button" id="lb-close" aria-label="Close">✕</button>
+    <button class="lb-btn lb-prev" type="button" id="lb-prev" aria-label="Previous">‹</button>
+    <button class="lb-btn lb-next" type="button" id="lb-next" aria-label="Next">›</button>
+    <div class="lb-count caps" id="lb-count"></div>
+  </dialog>
+
+  <script>
+    (function() {
+      const params = new URLSearchParams(window.location.search);
+      const code = params.get('code');
+      const guestParam = params.get('to') || params.get('guest');
+
+      function decodeEntities(str) {
+        if (!str) return '';
+        let txt = String(str);
+        for (let i = 0; i < 5; i++) {
+          const next = txt
+            .replace(/&amp;/g, '&')
+            .replace(/&lt;/g, '<')
+            .replace(/&gt;/g, '>')
+            .replace(/&quot;/g, '"')
+            .replace(/&#x27;/g, "'")
+            .replace(/&#39;/g, "'")
+            .replace(/&apos;/g, "'");
+          if (next === txt) break;
+          txt = next;
+        }
+        return txt;
+      }
+
+      // 1. Resolve VIP Guest Personalization
+      let activeGuestInfo = {
+        name: decodeEntities(guestParam || window.__initialGuestName || ''),
+        category: 'VIP GUEST',
+        tableNumber: '',
+        maxGuests: 2,
+        attendeesCount: 2
+      };
+
+      const applyGuestDOM = () => {
+        if (!activeGuestInfo.name) return;
+        const name = activeGuestInfo.name;
+        const cat = activeGuestInfo.category;
+        const table = activeGuestInfo.tableNumber;
+        const maxPax = activeGuestInfo.maxGuests;
+
+        // Gate badge
+        const guestEl = document.getElementById('gate-guest');
+        if (guestEl && guestEl.textContent !== name) guestEl.textContent = name;
+        const guestNameEl = document.getElementById('gate-guest-name');
+        if (guestNameEl && guestNameEl.textContent !== name) guestNameEl.textContent = name;
+        const catEl = document.getElementById('gate-guest-category');
+        if (catEl && catEl.textContent !== cat) catEl.textContent = cat;
+        const tableEl = document.getElementById('gate-guest-table');
+        const formattedTable = table ? (table.startsWith('តុ') ? table : `តុលេខ ${table}`) : (cat === 'VIP' ? 'VIP SEAT' : 'GUEST');
+        if (tableEl && tableEl.textContent !== formattedTable) tableEl.textContent = formattedTable;
+
+        // Hero banner
+        const heroName = document.getElementById('hero-guest-name');
+        if (heroName && heroName.textContent !== name) heroName.textContent = name;
+
+        // Words invitation card
+        const wordsName = document.getElementById('words-guest-name');
+        if (wordsName && wordsName.textContent !== name) wordsName.textContent = name;
+        const wordsMeta = document.getElementById('words-guest-meta');
+        if (wordsMeta) {
+          const tableStr = table ? ` · ${table}` : '';
+          const metaText = `${cat} · ចំនួនកៅអីត្រៀមជូន៖ ${maxPax} នាក់${tableStr}`;
+          if (wordsMeta.textContent !== metaText) wordsMeta.textContent = metaText;
+        }
+
+        // RSVP and wish inputs
+        const rsvpNameInput = document.getElementById('rsvp-name');
+        if (rsvpNameInput && (!rsvpNameInput.value || rsvpNameInput.value === 'ភ្ញៀវកិត្តិយស')) {
+          rsvpNameInput.value = name;
+        }
+        const wishNameInput = document.getElementById('wish-name');
+        if (wishNameInput && (!wishNameInput.value || wishNameInput.value === 'ភ្ញៀវកិត្តិយស')) {
+          wishNameInput.value = name;
+        }
+        const countSelect = document.getElementById('rsvp-count');
+        if (countSelect && activeGuestInfo.attendeesCount) {
+          countSelect.value = String(activeGuestInfo.attendeesCount);
+        }
+      };
+
+      async function resolveGuest() {
+        if (activeGuestInfo.name) {
+          applyGuestDOM();
+        }
+
+        const handleGuestData = (data) => {
+          if (data && data.guest) {
+            activeGuestInfo.name = decodeEntities(data.guest.name) || activeGuestInfo.name;
+            activeGuestInfo.category = decodeEntities(data.guest.category) || 'VIP';
+            activeGuestInfo.tableNumber = decodeEntities(data.guest.tableNumber) || '';
+            activeGuestInfo.maxGuests = data.guest.maxGuests || 2;
+            activeGuestInfo.attendeesCount = data.guest.attendeesCount || 1;
+            applyGuestDOM();
+          }
+        };
+
+        if (window.__guestLookupPromise) {
+          try {
+            const data = await window.__guestLookupPromise;
+            handleGuestData(data);
+          } catch (e) {}
+        } else if (code) {
+          try {
+            const res = await fetch('/api/guests/lookup?code=' + encodeURIComponent(code) + '&_t=' + Date.now(), {
+              cache: 'no-store'
+            });
+            if (res.ok) {
+              const data = await res.json();
+              handleGuestData(data);
+            }
+          } catch (e) {
+            console.error('Error fetching guest', e);
+          }
+        }
+
+        // Keep enforcing to prevent any third-party script overrides
+        applyGuestDOM();
+        const timer = setInterval(applyGuestDOM, 200);
+        setTimeout(() => clearInterval(timer), 30000);
+      }
+
+      // 1b. Resolve Event Details (Couple Names, Dates, Venue, Music, Media, Registry)
+      let activeEventData = null;
+      let bgAudio = null;
+      let isAudioPlaying = false;
+      let countdownTimerInterval = null;
+
+      const toKmNum = (n) => String(n).replace(/[0-9]/g, c => ['០','១','២','៣','៤','៥','៦','៧','៨','៩'][c]);
+      const kmDays = ['អាទិត្យ', 'ច័ន្ទ', 'អង្គារ', 'ពុធ', 'ព្រហស្បតិ៍', 'សុក្រ', 'សៅរ៍'];
+      const kmMonths = ['មករា', 'កុម្ភៈ', 'មីនា', 'មេសា', 'ឧសភា', 'មិថុនា', 'កក្កដា', 'សីហា', 'កញ្ញា', 'តុលា', 'វិច្ឆិកា', 'ធ្នូ'];
+
+      const THEME_PALETTES = {
+        royal_khmer_purple: {
+          primary: '#250e44',
+          night: '#0e051c',
+          accent: '#d9b15a',
+          accentLight: '#fbefc0',
+          envelope: '#431475',
+          lining: '#2b0b4d',
+          card: '#280d4c',
+          cardInk: '#fbefc0',
+          cardInkDim: '#dfcba5',
+        },
+        luxury_gold: {
+          primary: '#1a160c',
+          night: '#0d0b06',
+          accent: '#e5b85c',
+          accentLight: '#fdf6e2',
+          envelope: '#2e2515',
+          lining: '#241d11',
+          card: '#19140b',
+          cardInk: '#fdf6e2',
+          cardInkDim: '#d5c4a1',
+        },
+        modern_obsidian: {
+          primary: '#141821',
+          night: '#0a0d13',
+          accent: '#e5c07b',
+          accentLight: '#fcf6e6',
+          envelope: '#202634',
+          lining: '#181e2a',
+          card: '#181e2b',
+          cardInk: '#fcf6e6',
+          cardInkDim: '#cfc6b2',
+        },
+        romantic_blossom: {
+          primary: '#331222',
+          night: '#16050e',
+          accent: '#f3a9b8',
+          accentLight: '#fff0f3',
+          envelope: '#4e1b34',
+          lining: '#3a1226',
+          card: '#381526',
+          cardInk: '#fff0f3',
+          cardInkDim: '#e8c4cc',
+        },
+        celestial_midnight: {
+          primary: '#081224',
+          night: '#030812',
+          accent: '#e9c46a',
+          accentLight: '#fdf8ea',
+          envelope: '#112344',
+          lining: '#0c1a33',
+          card: '#0c1932',
+          cardInk: '#fdf8ea',
+          cardInkDim: '#c7cbda',
+        },
+        emerald_green: {
+          primary: '#0b291d',
+          night: '#04140e',
+          accent: '#d4af37',
+          accentLight: '#eefdf6',
+          envelope: '#12432f',
+          lining: '#0d3424',
+          card: '#082016',
+          cardInk: '#eefdf6',
+          cardInkDim: '#b5d8c6',
+        },
+        ruby_red: {
+          primary: '#2b0b14',
+          night: '#140408',
+          accent: '#e5a93c',
+          accentLight: '#fdeef2',
+          envelope: '#4d1222',
+          lining: '#360b18',
+          card: '#22070f',
+          cardInk: '#fdeef2',
+          cardInkDim: '#e2bcc5',
+        },
+        midnight_sapphire: {
+          primary: '#0b1a30',
+          night: '#040a14',
+          accent: '#dfb76c',
+          accentLight: '#edf4fd',
+          envelope: '#132b4f',
+          lining: '#0f223e',
+          card: '#081324',
+          cardInk: '#edf4fd',
+          cardInkDim: '#b8c9df',
+        },
+        classic_ivory: {
+          primary: '#2c2720',
+          night: '#181511',
+          accent: '#d9b15a',
+          accentLight: '#fcf9f2',
+          envelope: '#473e33',
+          lining: '#342e26',
+          card: '#211d17',
+          cardInk: '#fcf9f2',
+          cardInkDim: '#dad1c4',
+        },
+      };
+
+      function resolvePalette(themeVal) {
+        if (typeof window.resolvePalette === 'function') {
+          return window.resolvePalette(themeVal);
+        }
+        if (!themeVal) return THEME_PALETTES.royal_khmer_purple;
+        try {
+          if (typeof themeVal === 'string' && themeVal.startsWith('{')) {
+            const parsed = JSON.parse(themeVal);
+
+            // If user has chosen custom colors, respect them immediately
+            if (parsed.preset === 'custom' || (parsed.primary && !parsed.preset)) {
+              const primary = parsed.primary || '#250e44';
+              const accent = parsed.accent || '#d9b15a';
+              const envelope = parsed.envelope || primary;
+              const lining = parsed.lining || parsed.envelope || primary;
+              const card = parsed.card || primary;
+              return {
+                primary: primary,
+                night: '#07040d',
+                accent: accent,
+                accentLight: '#fbefc0',
+                envelope: envelope,
+                lining: lining,
+                card: card,
+                cardInk: '#fbefc0',
+                cardInkDim: '#dfcba5',
+              };
+            }
+
+            // If explicit preset exists
+            if (parsed.preset && THEME_PALETTES[parsed.preset]) {
+              const base = THEME_PALETTES[parsed.preset];
+              return {
+                ...base,
+                primary: parsed.primary || base.primary,
+                accent: parsed.accent || base.accent,
+                envelope: parsed.envelope || base.envelope,
+                lining: parsed.lining || parsed.envelope || base.lining,
+                card: parsed.card || base.card,
+              };
+            }
+
+            // Fallback matching by templateStyle
+            if (parsed.templateStyle === 'modern-minimal') return THEME_PALETTES.modern_obsidian;
+            if (parsed.templateStyle === 'romantic-floral') return THEME_PALETTES.romantic_blossom;
+            if (parsed.templateStyle === 'celestial-midnight') return THEME_PALETTES.celestial_midnight;
+            if (parsed.templateStyle === 'royal-heritage') return THEME_PALETTES.royal_khmer_purple;
+
+            if (parsed.primary) {
+              const primary = parsed.primary;
+              const accent = parsed.accent || '#d9b15a';
+              const envelope = parsed.envelope || primary;
+              const lining = parsed.lining || parsed.envelope || primary;
+              const card = parsed.card || primary;
+              return {
+                primary: primary,
+                night: '#07040d',
+                accent: accent,
+                accentLight: '#fbefc0',
+                envelope: envelope,
+                lining: lining,
+                card: card,
+                cardInk: '#fbefc0',
+                cardInkDim: '#dfcba5',
+              };
+            }
+          }
+        } catch (e) {}
+
+        if (THEME_PALETTES[themeVal]) {
+          return THEME_PALETTES[themeVal];
+        }
+        return THEME_PALETTES.royal_khmer_purple;
+      }
+
+      function updateWaxSealEmblem(sealStyle, accentColor) {
+        const sealBtn = document.getElementById('seal');
+        if (!sealBtn) return;
+        const svg = sealBtn.querySelector('svg');
+        if (!svg) return;
+
+        // Hide default crown path & circles if not crown
+        const defaultPaths = Array.from(svg.querySelectorAll('path, circle')).filter(el => {
+          const fill = el.getAttribute('fill') || '';
+          const d = el.getAttribute('d') || '';
+          // Keep the outer wax seal puddle and radial gradient base
+          return !fill.includes('wax') && !d.startsWith('M0') && !d.includes('Q1');
+        });
+
+        let emblemG = svg.querySelector('#custom-seal-emblem');
+        if (!emblemG) {
+          emblemG = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+          emblemG.id = 'custom-seal-emblem';
+          svg.appendChild(emblemG);
+        }
+
+        const color = accentColor || '#d9b15a';
+        let svgContent = '';
+
+        if (sealStyle === 'lotus') {
+          defaultPaths.forEach(el => el.style.display = 'none');
+          svgContent = `
+            <g fill="none" stroke="${color}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(10, 8) scale(0.85)">
+              <path d="M70 42 C65 54 58 66 70 80 C82 66 75 54 70 42 Z" fill="${color}" fill-opacity="0.35"/>
+              <path d="M52 56 C47 67 54 76 66 80 C58 74 54 67 52 56 Z" fill="${color}" fill-opacity="0.2"/>
+              <path d="M88 56 C93 67 86 76 74 80 C82 74 86 67 88 56 Z" fill="${color}" fill-opacity="0.2"/>
+              <path d="M42 66 C46 76 54 81 66 82 C56 79 47 75 42 66 Z"/>
+              <path d="M98 66 C94 76 86 81 74 82 C84 79 93 75 98 66 Z"/>
+              <path d="M56 84 Q70 88 84 84" stroke-width="2.6"/>
+            </g>
+          `;
+        } else if (sealStyle === 'monogram') {
+          defaultPaths.forEach(el => el.style.display = 'none');
+          svgContent = `
+            <text x="70" y="78" text-anchor="middle" font-family="var(--f-moul, serif)" font-size="22" font-weight="bold" fill="${color}" filter="drop-shadow(0 2px 4px rgba(0,0,0,0.8))">
+              រ❦ភ
+            </text>
+          `;
+        } else if (sealStyle === 'knot') {
+          defaultPaths.forEach(el => el.style.display = 'none');
+          svgContent = `
+            <g fill="none" stroke="${color}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(10, 8) scale(0.85)">
+              <path d="M52 64 C42 52 32 68 52 80 C64 88 78 54 88 64 C98 72 94 82 84 82 C74 82 62 68 52 64 Z" />
+              <circle cx="70" cy="70" r="3" fill="${color}" />
+            </g>
+          `;
+        } else {
+          // Crown (default)
+          defaultPaths.forEach(el => el.style.display = '');
+          svgContent = '';
+        }
+        emblemG.innerHTML = svgContent;
+      }
+
+      function applyThemePalette(themeVal) {
+        if (typeof window.applyThemePalette === 'function') {
+          return window.applyThemePalette(themeVal);
+        }
+        // Remove static hardcoded theme so dynamic theme has 100% full precedence
+        const staticTheme = document.getElementById('royal-purple-theme');
+        if (staticTheme) {
+          staticTheme.remove();
+        }
+
+        const pal = resolvePalette(themeVal);
+        let dynamicStyle = document.getElementById('dynamic-theme-style');
+        if (!dynamicStyle) {
+          dynamicStyle = document.createElement('style');
+          dynamicStyle.id = 'dynamic-theme-style';
+          document.head.appendChild(dynamicStyle);
+        }
+
+        let templateStyle = 'royal-heritage';
+        let sealStyle = 'crown';
+        let frameStyle = 'ornate-kbach';
+        let animationStyle = 'falling-petals';
+        try {
+          if (typeof themeVal === 'string' && themeVal.startsWith('{')) {
+            const parsed = JSON.parse(themeVal);
+            if (parsed.templateStyle) templateStyle = parsed.templateStyle;
+            if (parsed.sealStyle) sealStyle = parsed.sealStyle;
+            if (parsed.frameStyle) frameStyle = parsed.frameStyle;
+            if (parsed.animationStyle) animationStyle = parsed.animationStyle;
+          }
+        } catch (e) {}
+
+        document.body.dataset.templateStyle = templateStyle;
+        document.body.dataset.sealStyle = sealStyle;
+        document.body.dataset.frameStyle = frameStyle;
+        document.body.dataset.animationStyle = animationStyle;
+
+        if (typeof window.__switchAnimationMode === 'function') {
+          window.__switchAnimationMode(animationStyle, pal.accent);
+        }
+
+        // Update Wax seal in DOM
+        updateWaxSealEmblem(sealStyle, pal.accent);
+
+        const css = `
+          :root {
+            --bg: ${pal.primary} !important;
+            --night: ${pal.night} !important;
+            --foil: ${pal.accent} !important;
+            --foil-hi: ${pal.accentLight} !important;
+            --paper: ${pal.card} !important;
+            --paper-ink: ${pal.cardInk} !important;
+            --paper-ink-dim: ${pal.cardInkDim} !important;
+            --paper-line: ${pal.accent} !important;
+          }
+          html, body, body.is-locked {
+            background-color: ${pal.primary} !important;
+            color: ${pal.cardInk} !important;
+          }
+          .gate, .gate__dim {
+            background: ${pal.night} !important;
+          }
+          #gate-guest-badge {
+            background: linear-gradient(180deg, ${pal.primary}f2, ${pal.night}fa) !important;
+            border: 1.5px solid ${pal.accent} !important;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7), 0 0 25px ${pal.accent}40 !important;
+          }
+          #gate-guest-category {
+            background: ${pal.accent} !important;
+            color: ${pal.night} !important;
+          }
+          /* ENVELOPE BOX EXTERIOR (ALL SIDES) */
+          .e2, .e2__back, .e2__pocket-l:before, .e2__pocket-r:before, .e2__pocket-b:before, .e2__flap-front {
+            background-color: ${pal.envelope} !important;
+            background-image: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(0,0,0,0.25)), url(/tex/paper-olive.webp) !important;
+            background-blend-mode: multiply !important;
+            filter: none !important;
+          }
+          /* ENVELOPE INNER FLAP (WHEN OPENING THE BOX) */
+          .e2__flap-back {
+            background-color: ${pal.lining} !important;
+            background-image: radial-gradient(circle at 50% 25%, ${pal.accent}33 0%, ${pal.lining} 75%, rgba(0,0,0,0.4) 100%), url(/tex/paper-lining.webp) !important;
+            background-blend-mode: multiply !important;
+            box-shadow: inset 0 -30px 40px rgba(0,0,0,0.5) !important;
+          }
+          /* ENVELOPE INNER CARD & LETTER PANELS (WHEN OPENING THE BOX) */
+          .e2__card, .tri__face, .tri__out, .tri__in, .paper, .card {
+            background-color: ${pal.card} !important;
+            background-image: linear-gradient(135deg, rgba(255,255,255,0.04), rgba(0,0,0,0.28)), url(/tex/paper-cream.webp) !important;
+            background-blend-mode: multiply !important;
+            color: ${pal.cardInk} !important;
+            border-color: ${pal.accent}40 !important;
+          }
+          .e2__card-invite, .paper p, .paper .pday__title, .prow__what, .tri-prog li {
+            color: ${pal.cardInk} !important;
+          }
+          .e2__card-frame {
+            border-color: ${pal.accent} !important;
+          }
+          /* EMBOSSED FOIL ORNAMENTS & BORDERS */
+          .e2__emboss .kb-fill, .e2__flap-border .kb-fill, .gate__florals path {
+            fill: ${pal.accent} !important;
+            stroke: ${pal.accent} !important;
+          }
+          .tri__line path, .e2__tri-crest svg path {
+            stroke: ${pal.accent} !important;
+          }
+          .e2__seal {
+            filter: drop-shadow(0 8px 18px rgba(0,0,0,0.65)) drop-shadow(0 0 15px ${pal.accent}40) !important;
+          }
+          /* SECTIONS */
+          .programme {
+            background: ${pal.night} !important;
+          }
+          .words, .couple, .countdown, .venue, .gift, .rsvp, .finale {
+            background-color: ${pal.primary} !important;
+          }
+          .hud, .chip, .rsvp-pill {
+            background: ${pal.primary}d9 !important;
+            border-color: ${pal.accent}80 !important;
+          }
+
+          /* HERO GUEST WELCOME & DEDICATION PLAQUE */
+          #hero-guest-welcome {
+            background: ${pal.primary}e6 !important;
+            border: 1.5px solid ${pal.accent} !important;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.6), 0 0 18px ${pal.accent}40 !important;
+          }
+          #words-guest-dedication {
+            background: ${pal.accent}14 !important;
+            border: 1.5px solid ${pal.accent}66 !important;
+          }
+
+          /* RSVP & WISHES SECTION CARDS AND INPUTS */
+          .rsvp__grid .card, .rsvp .card {
+            background: linear-gradient(145deg, ${pal.card}, ${pal.primary}) !important;
+            border: 1.5px solid ${pal.accent}55 !important;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6), 0 0 20px ${pal.accent}20 !important;
+          }
+          .rsvp__grid .input, .rsvp .input, #rsvp-notes, #wish-message, #rsvp-count {
+            background: ${pal.night} !important;
+            border: 1px solid ${pal.accent}44 !important;
+            color: ${pal.cardInk} !important;
+          }
+          .rsvp__grid .input:focus, #rsvp-notes:focus, #wish-message:focus {
+            border-color: ${pal.accent} !important;
+            box-shadow: 0 0 10px ${pal.accent}40 !important;
+          }
+          #pill-yes {
+            background: ${pal.accent} !important;
+            border-color: ${pal.accent} !important;
+            color: ${pal.night} !important;
+            font-weight: bold !important;
+          }
+          #pill-no {
+            border-color: ${pal.accent}66 !important;
+            color: ${pal.cardInkDim} !important;
+          }
+          .wishes__list > div {
+            background: ${pal.night} !important;
+            border: 1px solid ${pal.accent}35 !important;
+          }
+
+          /* STORY TRACK & GIFT CARDS */
+          #story-track > div {
+            background: ${pal.primary}f0 !important;
+            border: 1.5px solid ${pal.accent}80 !important;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6), 0 0 20px ${pal.accent}25 !important;
+          }
+          .shot__img {
+            border: 1.5px solid ${pal.accent}66 !important;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.6), 0 0 15px ${pal.accent}20 !important;
+          }
+          #gift-cards > div {
+            background: linear-gradient(145deg, ${pal.card}, ${pal.primary}) !important;
+            border: 1.5px solid ${pal.accent} !important;
+            box-shadow: 0 18px 40px rgba(0,0,0,0.65), 0 0 20px ${pal.accent}25 !important;
+          }
+          #gift-cards [style*="background:#130624"], #gift-cards [style*="background: #130624"] {
+            background: ${pal.night} !important;
+            border-color: ${pal.accent}66 !important;
+          }
+          #gallery-grid > div {
+            background: ${pal.card} !important;
+            border-color: ${pal.accent}44 !important;
+          }
+
+          .footer, .royal-footer {
+            background: radial-gradient(ellipse 90% 80% at 50% 0%, ${pal.primary} 0%, ${pal.night} 55%, #05010a 100%) !important;
+            border-top: 1px solid ${pal.accent}55 !important;
+          }
+          .rf__btn-top {
+            background: linear-gradient(135deg, ${pal.card}, ${pal.primary}) !important;
+            border-color: ${pal.accent}80 !important;
+            color: ${pal.accentLight} !important;
+          }
+          .rf__blessing-box {
+            background: ${pal.card}40 !important;
+            border-color: ${pal.accent}40 !important;
+          }
+          .rf__nav-link {
+            background: ${pal.primary}80 !important;
+            border-color: ${pal.accent}30 !important;
+            color: ${pal.accentLight} !important;
+          }
+          .rf__meta-capsule {
+            background: ${pal.primary}70 !important;
+            border-color: ${pal.accent}40 !important;
+            color: ${pal.accentLight} !important;
+          }
+          .rf__meta-icon, .rf__icon-arrow {
+            stroke: ${pal.accent} !important;
+          }
+          .toast {
+            background: ${pal.primary} !important;
+            border: 1px solid ${pal.accent} !important;
+            color: ${pal.accentLight} !important;
+          }
+          .lightbox {
+            background: ${pal.night}f2 !important;
+          }
+          .pond__shade {
+            background: linear-gradient(${pal.primary}eb 0%, ${pal.primary}b3 55%, ${pal.primary}00 100%) !important;
+          }
+
+          /* === TEMPLATE DESIGN 1: ROYAL KHMER HERITAGE === */
+          body[data-template-style="royal-heritage"] .card,
+          body[data-template-style="royal-heritage"] .paper,
+          body[data-template-style="royal-heritage"] .e2__card {
+            border-radius: 20px !important;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.5), 0 0 25px ${pal.accent}20 !important;
+            border: 1.5px solid ${pal.accent}50 !important;
+          }
+          body[data-template-style="royal-heritage"] h1,
+          body[data-template-style="royal-heritage"] h2 {
+            text-shadow: 0 0 15px ${pal.accent}30 !important;
+          }
+
+          /* === TEMPLATE DESIGN 2: MODERN LUXURY MINIMALIST === */
+          body[data-template-style="modern-minimal"] .card,
+          body[data-template-style="modern-minimal"] .paper,
+          body[data-template-style="modern-minimal"] .e2__card {
+            border-radius: 12px !important;
+            border: 1px solid ${pal.accent}60 !important;
+            backdrop-filter: blur(14px) !important;
+            box-shadow: 0 12px 35px rgba(0,0,0,0.5) !important;
+          }
+          body[data-template-style="modern-minimal"] .btn,
+          body[data-template-style="modern-minimal"] .chip,
+          body[data-template-style="modern-minimal"] .hud {
+            border-radius: 8px !important;
+          }
+          body[data-template-style="modern-minimal"] .e2__card-frame {
+            border-width: 1px !important;
+          }
+
+          /* === TEMPLATE DESIGN 3: ROMANTIC BLOSSOM & FLORAL === */
+          body[data-template-style="romantic-floral"] .card,
+          body[data-template-style="romantic-floral"] .paper,
+          body[data-template-style="romantic-floral"] .e2__card {
+            border-radius: 30px !important;
+            box-shadow: 0 16px 45px rgba(0,0,0,0.45), 0 0 35px ${pal.accent}35 !important;
+            border: 1.5px solid ${pal.accent}60 !important;
+          }
+          body[data-template-style="romantic-floral"] .btn,
+          body[data-template-style="romantic-floral"] .chip,
+          body[data-template-style="romantic-floral"] .hud {
+            border-radius: 9999px !important;
+          }
+
+          /* === TEMPLATE DESIGN 4: CELESTIAL MIDNIGHT === */
+          body[data-template-style="celestial-midnight"] .card,
+          body[data-template-style="celestial-midnight"] .paper,
+          body[data-template-style="celestial-midnight"] .e2__card {
+            border-radius: 18px !important;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.7), 0 0 35px ${pal.accent}40 !important;
+            border: 1.5px solid ${pal.accent}70 !important;
+          }
+          body[data-template-style="celestial-midnight"] h1,
+          body[data-template-style="celestial-midnight"] h2 {
+            text-shadow: 0 0 20px ${pal.accent}60 !important;
+          }
+
+          /* === TEMPLATE DESIGN 5: IMPERIAL EMERALD GARDEN === */
+          body[data-template-style="imperial-emerald"] .card,
+          body[data-template-style="imperial-emerald"] .paper,
+          body[data-template-style="imperial-emerald"] .e2__card {
+            border-radius: 24px !important;
+            box-shadow: 0 18px 45px rgba(0,0,0,0.65), 0 0 30px ${pal.accent}25 !important;
+            border: 1.5px solid ${pal.accent}70 !important;
+          }
+          body[data-template-style="imperial-emerald"] h1,
+          body[data-template-style="imperial-emerald"] h2 {
+            letter-spacing: 0.04em !important;
+            text-shadow: 0 0 18px ${pal.accent}45 !important;
+          }
+
+          /* === TEMPLATE DESIGN 6: PURE GOLD ELEGANCE === */
+          body[data-template-style="golden-elegance"] .card,
+          body[data-template-style="golden-elegance"] .paper,
+          body[data-template-style="golden-elegance"] .e2__card {
+            border-radius: 16px !important;
+            border: 2px solid ${pal.accent}80 !important;
+            outline: 1.5px dashed ${pal.accent}45 !important;
+            outline-offset: -6px !important;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.7), 0 0 35px ${pal.accent}30 !important;
+          }
+          body[data-template-style="golden-elegance"] .display.foil {
+            filter: drop-shadow(0 0 12px ${pal.accent}80) !important;
+          }
+
+          /* === TEMPLATE DESIGN 7: ROYAL RUBY MAJESTY === */
+          body[data-template-style="ruby-majesty"] .card,
+          body[data-template-style="ruby-majesty"] .paper,
+          body[data-template-style="ruby-majesty"] .e2__card {
+            border-radius: 22px !important;
+            border: 1.8px solid ${pal.accent}75 !important;
+            box-shadow: 0 20px 55px rgba(0,0,0,0.7), 0 0 32px ${pal.accent}35 !important;
+          }
+          body[data-template-style="ruby-majesty"] h1,
+          body[data-template-style="ruby-majesty"] h2 {
+            text-shadow: 0 0 20px ${pal.accent}55 !important;
+          }
+
+          /* === TEMPLATE DESIGN 8: CRYSTAL GLASSMORPHISM & NEON GLOW === */
+          body[data-template-style="glass-crystal"] .card,
+          body[data-template-style="glass-crystal"] .paper,
+          body[data-template-style="glass-crystal"] .e2__card {
+            border-radius: 20px !important;
+            backdrop-filter: blur(20px) saturate(180%) !important;
+            background: rgba(255, 255, 255, 0.05) !important;
+            border: 1px solid rgba(255, 255, 255, 0.28) !important;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.65), inset 0 1px 1px rgba(255,255,255,0.4), 0 0 25px ${pal.accent}35 !important;
+          }
+          body[data-template-style="glass-crystal"] .btn,
+          body[data-template-style="glass-crystal"] .chip,
+          body[data-template-style="glass-crystal"] .hud {
+            backdrop-filter: blur(16px) !important;
+            border: 1px solid rgba(255,255,255,0.25) !important;
+          }
+
+          /* === CARD FRAME STYLES === */
+          body[data-frame-style="dual-line"] .card,
+          body[data-frame-style="dual-line"] .paper {
+            outline: 2px solid ${pal.accent}55 !important;
+            outline-offset: -7px !important;
+          }
+          body[data-frame-style="scalloped"] .card,
+          body[data-frame-style="scalloped"] .paper {
+            border-radius: 36px 36px 18px 18px !important;
+          }
+        `;
+        dynamicStyle.textContent = css;
+
+        const metaTheme = document.querySelector('meta[name="theme-color"]');
+        if (metaTheme) metaTheme.content = pal.primary;
+      }
+
+      const applyEventDOM = () => {
+        if (!activeEventData) return;
+        const ev = activeEventData;
+
+        // Apply theme dynamically
+        if (ev.theme && ev.theme !== window.__lastAppliedTheme) {
+          window.__lastAppliedTheme = ev.theme;
+          applyThemePalette(ev.theme);
+        }
+
+        // Ensure wax seal emblem is applied when envelope mounts
+        if (!window.__sealObserverAttached) {
+          window.__sealObserverAttached = true;
+          const obs = new MutationObserver(() => {
+            const sealBtn = document.getElementById('seal');
+            if (sealBtn && !sealBtn.dataset.customSealApplied) {
+              sealBtn.dataset.customSealApplied = 'true';
+              const sealStyle = document.body.dataset.sealStyle || 'crown';
+              const pal = resolvePalette(ev.theme);
+              updateWaxSealEmblem(sealStyle, pal.accent);
+            }
+          });
+          obs.observe(document.body, { childList: true, subtree: true });
+        }
+        if (document.getElementById('seal')) {
+          const pal = resolvePalette(ev.theme);
+          updateWaxSealEmblem(document.body.dataset.sealStyle || 'crown', pal.accent);
+        }
+
+        const groom = decodeEntities(ev.groomName || '');
+        const bride = decodeEntities(ev.brideName || '');
+        const groomShort = groom ? groom.split(' ').pop() : '';
+        const brideShort = bride ? bride.split(' ').pop() : '';
+
+        // 1. Couple Names & Calligraphy Monograms
+        if (groom) {
+          document.querySelectorAll('[data-name="groom-local"], [data-name="groom-km"]').forEach(el => {
+            if (el.textContent !== groom) el.textContent = groom;
+          });
+          document.querySelectorAll('[data-name="groom-short"]').forEach(el => {
+            if (el.textContent !== groomShort) el.textContent = groomShort;
+          });
+          document.querySelectorAll('.lk-groom').forEach(el => {
+            if (el.textContent !== groomShort) el.textContent = groomShort;
+          });
+        }
+
+        if (bride) {
+          document.querySelectorAll('[data-name="bride-local"], [data-name="bride-km"]').forEach(el => {
+            if (el.textContent !== bride) el.textContent = bride;
+          });
+          document.querySelectorAll('[data-name="bride-short"]').forEach(el => {
+            if (el.textContent !== brideShort) el.textContent = brideShort;
+          });
+          document.querySelectorAll('.lk-bride').forEach(el => {
+            if (el.textContent !== brideShort) el.textContent = brideShort;
+          });
+        }
+
+        if (groom && bride) {
+          const fullTitle = decodeEntities(ev.title) || (`សិរីសួស្តីអាពាហ៍ពិពាហ៍ · ${groom} & ${bride}`);
+          if (document.title !== fullTitle) document.title = fullTitle;
+          const namesEn = document.getElementById('names-en');
+          if (namesEn && !namesEn.textContent.includes(groom)) {
+            namesEn.textContent = `${groom}  &  ${bride}`;
+          }
+          document.querySelectorAll('.lockup').forEach(el => {
+            el.setAttribute('aria-label', `${groom} & ${bride}`);
+          });
+        }
+
+        // 2. Parents' Names
+        if (ev.groomParents) {
+          const gp = decodeEntities(ev.groomParents);
+          document.querySelectorAll('[data-parents="groom"], [data-parents-card="groom"]').forEach(el => {
+            if (el.innerHTML !== gp) el.innerHTML = gp;
+          });
+        }
+        if (ev.brideParents) {
+          const bp = decodeEntities(ev.brideParents);
+          document.querySelectorAll('[data-parents="bride"], [data-parents-card="bride"]').forEach(el => {
+            if (el.innerHTML !== bp) el.innerHTML = bp;
+          });
+        }
+
+        // Helper to update both <source> and <img> in responsive <picture> or container
+        const applyImageToSelector = (containerSelector, imgUrl) => {
+          if (!imgUrl) return;
+          const container = document.querySelector(containerSelector);
+          if (!container) return;
+          const sources = container.querySelectorAll('source');
+          sources.forEach(s => {
+            s.srcset = imgUrl;
+            s.removeAttribute('sizes');
+            s.removeAttribute('media');
+          });
+          const img = container.tagName === 'IMG' ? container : container.querySelector('img');
+          if (img) {
+            if (img.src !== imgUrl) img.src = imgUrl;
+            img.srcset = imgUrl;
+            img.removeAttribute('sizes');
+          }
+        };
+
+        // 3. Hero Cover Photo, 3D Gate Envelope Background, Pond & Couple Photos
+        if (ev.coverImageUrl) {
+          applyImageToSelector('.gate__bg', ev.coverImageUrl);
+          applyImageToSelector('#hero-media', ev.coverImageUrl);
+          applyImageToSelector('#pond picture', ev.coverImageUrl);
+        }
+        if (ev.couplePhotoUrl) {
+          applyImageToSelector('#couple-frame', ev.couplePhotoUrl);
+        } else if (ev.groomPhotoUrl) {
+          applyImageToSelector('#couple-frame', ev.groomPhotoUrl);
+        }
+        if (ev.groomPhotoUrl) {
+          applyImageToSelector('#words .arch', ev.groomPhotoUrl);
+        } else if (ev.bridePhotoUrl) {
+          applyImageToSelector('#words .arch', ev.bridePhotoUrl);
+        }
+
+        // 3b. Khmer Lunar Calendar Date
+        if (ev.lunarDate) {
+          const ld = decodeEntities(ev.lunarDate);
+          document.querySelectorAll('[data-date="lunar"]').forEach(el => {
+            if (el.textContent !== ld) el.textContent = ld;
+          });
+        }
+
+        // 4. Event Date, Times & Live Countdown
+        if (ev.eventDate) {
+          const d = new Date(ev.eventDate);
+          if (!isNaN(d.getTime())) {
+            const dayStr = toKmNum(String(d.getDate()).padStart(2, '0'));
+            const monthStr = kmMonths[d.getMonth()] || '';
+            const yearStr = toKmNum(d.getFullYear());
+            const weekdayStr = 'ថ្ងៃ' + (kmDays[d.getDay()] || '');
+            const weekdayShortStr = kmDays[d.getDay()] || '';
+
+            document.querySelectorAll('[data-date="day"]').forEach(el => el.textContent = dayStr);
+            document.querySelectorAll('[data-date="month"]').forEach(el => el.textContent = monthStr);
+            document.querySelectorAll('[data-date="year"]').forEach(el => el.textContent = yearStr);
+            document.querySelectorAll('[data-date="weekdayShort"]').forEach(el => el.textContent = weekdayShortStr);
+            document.querySelectorAll('[data-date="weekday"]').forEach(el => el.textContent = weekdayStr);
+            document.querySelectorAll('[data-date="date"]').forEach(el => el.textContent = `ទី${dayStr} ខែ${monthStr} ឆ្នាំ${yearStr}`);
+            const rfDate = document.getElementById('rf-date');
+            if (rfDate) rfDate.textContent = `${weekdayStr} ទី${dayStr} ខែ${monthStr} ឆ្នាំ${yearStr}`;
+
+            const timeDisplay = ev.receptionTime || ev.ceremonyTime || 'ម៉ោង ៤:០០ រសៀល';
+            document.querySelectorAll('[data-date="time"]').forEach(el => el.textContent = timeDisplay);
+            document.querySelectorAll('[data-t="cardWhen"]').forEach(el => el.textContent = `នៅ${weekdayStr} ទី${dayStr} ខែ${monthStr} ឆ្នាំ${yearStr} ${timeDisplay}`);
+
+            // Live Countdown Timer
+            if (!countdownTimerInterval) {
+              const targetTime = d.getTime();
+              const updateCount = () => {
+                const diff = Math.max(0, targetTime - Date.now());
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+                const minutes = Math.floor((diff / (1000 * 60)) % 60);
+                const seconds = Math.floor((diff / 1000) % 60);
+
+                const dEl = document.querySelector('[data-u="d"]');
+                const hEl = document.querySelector('[data-u="h"]');
+                const mEl = document.querySelector('[data-u="m"]');
+                const sEl = document.querySelector('[data-u="s"]');
+
+                if (dEl) dEl.textContent = toKmNum(String(days).padStart(2, '0'));
+                if (hEl) hEl.textContent = toKmNum(String(hours).padStart(2, '0'));
+                if (mEl) mEl.textContent = toKmNum(String(minutes).padStart(2, '0'));
+                if (sEl) sEl.textContent = toKmNum(String(seconds).padStart(2, '0'));
+              };
+              updateCount();
+              countdownTimerInterval = setInterval(updateCount, 1000);
+            }
+          }
+        }
+
+        // 5. Venue & Maps
+        if (ev.venueName) {
+          const vn = decodeEntities(ev.venueName);
+          document.querySelectorAll('[data-venue="name"]').forEach(el => {
+            if (el.textContent !== vn) el.textContent = vn;
+          });
+          const rfVenue = document.getElementById('rf-venue');
+          if (rfVenue) rfVenue.textContent = vn;
+        }
+        if (ev.venueAddress) {
+          const va = decodeEntities(ev.venueAddress);
+          document.querySelectorAll('[data-venue="address"]').forEach(el => {
+            if (el.textContent !== va) el.textContent = va;
+          });
+        }
+        if (ev.googleMapsUrl) {
+          const mapLink = document.getElementById('map-link');
+          if (mapLink && mapLink.href !== ev.googleMapsUrl) mapLink.href = ev.googleMapsUrl;
+        }
+        if (ev.venueAddress || ev.venueName) {
+          const mapIframe = document.getElementById('venue-map');
+          if (mapIframe && !mapIframe.dataset.synced) {
+            mapIframe.dataset.synced = "true";
+            const query = encodeURIComponent(ev.venueAddress || ev.venueName);
+            mapIframe.src = `https://maps.google.com/maps?q=${query}&z=15&output=embed`;
+          }
+        }
+
+        // 5b. Venue & RSVP Contacts
+        if (ev.contacts) {
+          try {
+            const contactList = typeof ev.contacts === 'string' && ev.contacts.startsWith('[')
+              ? JSON.parse(ev.contacts)
+              : null;
+            if (contactList && Array.isArray(contactList) && contactList.length > 0) {
+              const telContainer = document.getElementById('venue-tels');
+              if (telContainer) {
+                telContainer.innerHTML = contactList.map(c => `
+                  <a class="btn tel" href="tel:${c.tel || c.label}" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.6rem 1.1rem;margin:0.25rem">
+                    <svg viewBox="0 0 24 24" aria-hidden="true" style="width:1.05rem;height:1.05rem;fill:currentColor">
+                      <path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1l-2.3 2.2z"/>
+                    </svg>
+                    <span>${decodeEntities(c.label)}</span>
+                  </a>
+                `).join('');
+              }
+            }
+          } catch (e) {}
+        }
+
+        // 6. Programme Schedule (Authentic Traditional Khmer Wedding Ceremonies or Custom Schedule)
+        const progList = document.getElementById('programme-list');
+        if (progList) {
+          let customProgramme = null;
+          if (ev.programme) {
+            try {
+              if (typeof ev.programme === 'string' && ev.programme.startsWith('[')) {
+                customProgramme = JSON.parse(ev.programme);
+              }
+            } catch (e) {}
+          }
+
+          if (customProgramme && Array.isArray(customProgramme) && customProgramme.length > 0) {
+            progList.innerHTML = customProgramme.map((day, dIdx) => `
+              <section class="pday" style="${dIdx > 0 ? 'margin-top: 1.8rem;' : ''}">
+                <h3 class="pday__title">${decodeEntities(day.dayTitle || '')}</h3>
+                <ol class="pday__rows">
+                  ${(day.rows || []).map((row, rIdx) => `
+                    <li class="prow ${rIdx === (day.rows.length - 1) && dIdx === (customProgramme.length - 1) ? 'prow--main' : ''}" style="${rIdx === (day.rows.length - 1) && dIdx === (customProgramme.length - 1) ? 'background: rgba(217, 177, 90, 0.08); border-radius: 10px; padding: 0.6rem 0.5rem; margin-top: 0.4rem; border-bottom: none;' : ''}">
+                      <span class="prow__time" style="${rIdx === (day.rows.length - 1) && dIdx === (customProgramme.length - 1) ? 'font-weight: 700; color: var(--foil-hi);' : ''}">${decodeEntities(row.time || '')}</span>
+                      <span class="prow__sep" aria-hidden="true" style="${rIdx === (day.rows.length - 1) && dIdx === (customProgramme.length - 1) ? 'color: var(--foil-hi);' : ''}">·</span>
+                      <span class="prow__name" style="${rIdx === (day.rows.length - 1) && dIdx === (customProgramme.length - 1) ? 'font-weight: 600; color: #ffffff;' : ''}">${decodeEntities(row.name || '')}</span>
+                    </li>
+                  `).join('')}
+                </ol>
+              </section>
+            `).join('');
+          } else {
+            const d2 = ev.eventDate ? new Date(ev.eventDate) : new Date(2026, 11, 12);
+            const d1 = new Date(d2.getTime() - 24 * 60 * 60 * 1000);
+
+            const enMonths = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            const enDays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+            const day1Km = `កម្មវិធីទី១ ថ្ងៃ${kmDays[d1.getDay()]} ទី${toKmNum(d1.getDate())} ខែ${kmMonths[d1.getMonth()]} ឆ្នាំ${toKmNum(d1.getFullYear())}`;
+            const day2Km = `កម្មវិធីទី២ ថ្ងៃ${kmDays[d2.getDay()]} ទី${toKmNum(d2.getDate())} ខែ${kmMonths[d2.getMonth()]} ឆ្នាំ${toKmNum(d2.getFullYear())}`;
+
+            const day1En = `Day 1 · ${enDays[d1.getDay()]} ${d1.getDate()} ${enMonths[d1.getMonth()]} ${d1.getFullYear()}`;
+            const day2En = `Day 2 · ${enDays[d2.getDay()]} ${d2.getDate()} ${enMonths[d2.getMonth()]} ${d2.getFullYear()}`;
+
+            const venueText = ev.venueName ? decodeEntities(ev.venueName) : 'គេហដ្ឋានខាងស្រី';
+            const receptionKmTime = ev.receptionTime ? toKmNum(ev.receptionTime) : '០៤:០០ រសៀល';
+            const receptionEnTime = ev.receptionTime ? ev.receptionTime : '04:00 PM';
+            const morningKmTime = ev.ceremonyTime ? toKmNum(ev.ceremonyTime.split('-')[0].trim()) : '០៦:៣០ ព្រឹក';
+
+            const isEn = document.body.getAttribute('data-lang') === 'en';
+
+            progList.innerHTML = `
+              <!-- DAY 1 -->
+              <section class="pday">
+                <h3 class="pday__title">${isEn ? day1En : day1Km}</h3>
+                <ol class="pday__rows">
+                  <li class="prow">
+                    <span class="prow__time">${isEn ? '03:00 PM' : 'ម៉ោង ០៣:០០ រសៀល'}</span>
+                    <span class="prow__sep" aria-hidden="true">·</span>
+                    <span class="prow__name">${isEn ? 'Sen Krong Peali — Offering to the guardian spirits' : 'ពិធីសែនក្រុងពាលី'}</span>
+                  </li>
+                  <li class="prow">
+                    <span class="prow__time">${isEn ? '04:00 PM' : 'ម៉ោង ០៤:០០ រសៀល'}</span>
+                    <span class="prow__sep" aria-hidden="true">·</span>
+                    <span class="prow__name">${isEn ? 'Monks chant the sacred blessing (Soth Mon)' : 'ពិធីសូត្រមន្តចម្រើនព្រះបរិត្ត'}</span>
+                  </li>
+                  <li class="prow">
+                    <span class="prow__time">${isEn ? '05:00 PM' : 'ម៉ោង ០៥:០០ ល្ងាច'}</span>
+                    <span class="prow__sep" aria-hidden="true">·</span>
+                    <span class="prow__name">${isEn ? 'Chum Pelea and Chav Khan Sla ceremonies' : 'ពិធីជុំពេលា និងជាវខាន់ស្លា'}</span>
+                  </li>
+                  <li class="prow">
+                    <span class="prow__time">${isEn ? '06:30 PM' : 'ម៉ោង ០៦:៣០ ល្ងាច'}</span>
+                    <span class="prow__sep" aria-hidden="true">·</span>
+                    <span class="prow__name">${isEn ? 'Dinner for honoured guests' : 'អញ្ជើញភ្ញៀវកិត្តិយសពិសាអាហារពេលល្ងាច'}</span>
+                  </li>
+                </ol>
+              </section>
+
+              <!-- DAY 2 -->
+              <section class="pday" style="margin-top: 1.8rem;">
+                <h3 class="pday__title">${isEn ? day2En : day2Km}</h3>
+                <ol class="pday__rows">
+                  <li class="prow">
+                    <span class="prow__time">${isEn ? '06:30 AM' : `ម៉ោង ${morningKmTime}`}</span>
+                    <span class="prow__sep" aria-hidden="true">·</span>
+                    <span class="prow__name">${isEn ? 'Guests gather for the Hae Chamnoun procession' : 'ជួបជុំភ្ញៀវកិត្តិយសដើម្បីរៀបចំហែជំនូន'}</span>
+                  </li>
+                  <li class="prow">
+                    <span class="prow__time">${isEn ? '07:00 AM' : 'ម៉ោង ០៧:០០ ព្រឹក'}</span>
+                    <span class="prow__sep" aria-hidden="true">·</span>
+                    <span class="prow__name">${isEn ? 'Hae Chamnoun — The gift procession enters the pavilion' : 'ពិធីហែជំនូនកំណត់ចូលរោងជ័យ'}</span>
+                  </li>
+                  <li class="prow">
+                    <span class="prow__time">${isEn ? '07:30 AM' : 'ម៉ោង ០៧:៣០ ព្រឹក'}</span>
+                    <span class="prow__sep" aria-hidden="true">·</span>
+                    <span class="prow__name">${isEn ? 'Proposal, Sen Pren offering, fruit presentation, and breakfast' : 'ពិធីចៅមហានិយាយជើងការ សែនព្រេន រៀបរាប់ផ្លែឈើ និងពិសាភោជនាហារពេលព្រឹក'}</span>
+                  </li>
+                  <li class="prow">
+                    <span class="prow__time">${isEn ? '08:00 AM' : 'ម៉ោង ០៨:០០ ព្រឹក'}</span>
+                    <span class="prow__sep" aria-hidden="true">·</span>
+                    <span class="prow__name">${isEn ? 'Exchange of wedding rings' : 'ពិធីបំពាក់ចិញ្ចៀនអាពាហ៍ពិពាហ៍'}</span>
+                  </li>
+                  <li class="prow">
+                    <span class="prow__time">${isEn ? '09:00 AM' : 'ម៉ោង ០៩:០០ ព្រឹក'}</span>
+                    <span class="prow__sep" aria-hidden="true">·</span>
+                    <span class="prow__name">${isEn ? 'Kat Sak — Hair-cutting blessing for the bride & groom' : 'ពិធីកាត់សក់បង្កក់សិរី កូនប្រុស-កូនស្រី'}</span>
+                  </li>
+                  <li class="prow">
+                    <span class="prow__time">${isEn ? '11:00 AM' : 'ម៉ោង ១១:០០ ព្រឹក'}</span>
+                    <span class="prow__sep" aria-hidden="true">·</span>
+                    <span class="prow__name">${isEn ? 'Sampeah Ptem, wrist-tying, Bongvil Popil and Preah Thong holding the scarf' : 'ពិធីសំពះផ្ទឹមចងដៃ បង្វិលពពិល និងព្រះថោងតោងស្បៃ'}</span>
+                  </li>
+                  <li class="prow">
+                    <span class="prow__time">${isEn ? '12:00 PM' : 'ម៉ោង ១២:០០ ថ្ងៃត្រង់'}</span>
+                    <span class="prow__sep" aria-hidden="true">·</span>
+                    <span class="prow__name">${isEn ? 'Lunch for honoured guests; morning wedding rites conclude' : 'អញ្ជើញភ្ញៀវកិត្តិយសពិសាអាហារថ្ងៃត្រង់ បញ្ចប់កិច្ចអាពាហ៍ពិពាហ៍ពេលព្រឹក'}</span>
+                  </li>
+                  <li class="prow prow--main" style="background: rgba(217, 177, 90, 0.08); border-radius: 10px; padding: 0.6rem 0.5rem; margin-top: 0.4rem; border-bottom: none;">
+                    <span class="prow__time" style="font-weight: 700; color: var(--foil-hi);">${isEn ? receptionEnTime : `ម៉ោង ${receptionKmTime}`}</span>
+                    <span class="prow__sep" aria-hidden="true" style="color: var(--foil-hi);">·</span>
+                    <span class="prow__name" style="font-weight: 600; color: #ffffff;">${isEn ? `Grand dinner reception at ${venueText}. Thank you!` : `អញ្ជើញភ្ញៀវកិត្តិយសពិសាភោជនាហារ នៅ${venueText} ដោយមេត្រីភាព ។ សូមអរគុណ !`}</span>
+                  </li>
+                </ol>
+              </section>
+            `;
+          }
+        }
+
+        // 7. Love Quote & Story & Letter
+        if (ev.quote) {
+          let letterData = null;
+          try {
+            if (typeof ev.quote === 'string' && ev.quote.startsWith('{')) {
+              letterData = JSON.parse(ev.quote);
+            }
+          } catch (e) {}
+
+          if (letterData) {
+            if (letterData.honor) {
+              const cardHonor = document.querySelector('.paper__honor');
+              if (cardHonor) cardHonor.textContent = decodeEntities(letterData.honor);
+            }
+            if (letterData.body) {
+              const cardBody = document.querySelector('.paper__body');
+              if (cardBody) cardBody.textContent = decodeEntities(letterData.body);
+            }
+          } else {
+            const cardHonor = document.querySelector('.paper__honor');
+            if (cardHonor) cardHonor.textContent = decodeEntities(ev.quote);
+          }
+        }
+        const storyTrack = document.getElementById('story-track');
+        if (storyTrack && !storyTrack.dataset.synced) {
+          storyTrack.dataset.synced = "true";
+          storyTrack.querySelectorAll('.shot, .story__end').forEach(el => el.remove());
+
+          if (ev.story) {
+            const storyCard = document.createElement('div');
+            storyCard.style.cssText = "min-width:320px;max-width:560px;margin:2rem 1.5rem;padding:1.6rem 2rem;background:rgba(37,14,68,0.94);border:1.5px solid #d9b15a88;border-radius:20px;color:#fbefc0;font-size:0.95rem;line-height:1.75;text-align:center;box-shadow:0 15px 35px rgba(0,0,0,0.6),0 0 20px rgba(124,58,237,0.25);flex-shrink:0;";
+            storyCard.innerHTML = `<h3 style="font-family:var(--f-moul, serif);color:#d9b15a;font-size:1.15rem;margin:0 0 0.8rem">រឿងរ៉ាវស្នេហារបស់យើង</h3><p style="margin:0;white-space:pre-wrap">${decodeEntities(ev.story)}</p>`;
+            storyTrack.appendChild(storyCard);
+          }
+
+          const storyPhotos = (ev.media && ev.media.length > 0) ? ev.media.filter(m => m.mediaType === 'PHOTO') : [
+            ...(ev.couplePhotoUrl ? [{ url: ev.couplePhotoUrl, title: groom + ' & ' + bride }] : []),
+            ...(ev.groomPhotoUrl ? [{ url: ev.groomPhotoUrl, title: groom }] : []),
+            ...(ev.bridePhotoUrl ? [{ url: ev.bridePhotoUrl, title: bride }] : []),
+            ...(ev.coverImageUrl ? [{ url: ev.coverImageUrl, title: 'រូបភាពកម្មវិធីមង្គល' }] : [])
+          ];
+
+          storyPhotos.forEach((item, idx) => {
+            const fig = document.createElement('figure');
+            fig.className = `shot ${idx % 2 === 0 ? 'shot--up' : 'shot--down'}`;
+            fig.style.cssText = '--ar:3/2;--h:54svh;min-width:320px;flex-shrink:0;margin:0 1.2rem;';
+            fig.innerHTML = `
+              <div class="shot__img" style="border-radius:18px;overflow:hidden;border:1.5px solid rgba(179,135,237,0.45);box-shadow:0 12px 30px rgba(0,0,0,0.6),0 0 15px rgba(124,58,237,0.2);height:100%">
+                <img src="${item.url}" alt="${item.title || ''}" loading="lazy" style="width:100%;height:100%;object-fit:cover" />
+              </div>
+              <figcaption class="caps" style="text-align:center;margin-top:0.6rem;color:#fbefc0;font-size:0.82rem">
+                <span>${item.title || item.caption || (groomShort + ' & ' + brideShort)}</span>
+              </figcaption>
+            `;
+            storyTrack.appendChild(fig);
+          });
+        }
+
+        // 8. Digital Gift & Bank Account Info / KHQR
+        if (ev.bankAccountInfo) {
+          let bankData = null;
+          try {
+            if (typeof ev.bankAccountInfo === 'string' && ev.bankAccountInfo.startsWith('{')) {
+              bankData = JSON.parse(ev.bankAccountInfo);
+            }
+          } catch (e) {}
+
+          const giftCards = document.getElementById('gift-cards');
+          if (giftCards) {
+            const bankName = bankData ? decodeEntities(bankData.bankName || '') : '';
+            const accNum = bankData ? decodeEntities(bankData.accountNumber || '') : decodeEntities(ev.bankAccountInfo);
+            const accName = bankData ? decodeEntities(bankData.accountName || '') : '';
+            const qrImg = bankData ? bankData.qrImageUrl : null;
+            const copyText = [bankName, accNum, accName].filter(Boolean).join(' - ') || accNum;
+
+            giftCards.innerHTML = `
+              <div style="background:#1f0b38;border:1.5px solid #d9b15a;border-radius:24px;padding:2rem 1.5rem;max-width:480px;margin:1.5rem auto;text-align:center;box-shadow:0 18px 40px rgba(0,0,0,0.65),0 0 20px rgba(124,58,237,0.25)">
+                <div style="width:54px;height:54px;margin:0 auto 1rem;background:rgba(217,177,90,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#d9b15a;font-size:1.6rem">🎁</div>
+                <h4 style="font-family:var(--f-moul);color:#fbefc0;font-size:1.15rem;margin:0 0 0.5rem">ចំណងដៃអាពាហ៍ពិពាហ៍ (Wedding Gift)</h4>
+                <p style="color:#ffffff99;font-size:0.8rem;margin:0 0 1.2rem">សូមថ្លែងអំណរគុណយ៉ាងជ្រាលជ្រៅចំពោះទឹកចិត្តដ៏ថ្លៃថ្លា</p>
+                
+                ${qrImg ? `
+                  <div style="margin: 0 auto 1.2rem; max-width: 240px; background: #ffffff; padding: 0.85rem; border-radius: 18px; border: 2px solid #d9b15a; box-shadow: 0 10px 25px rgba(0,0,0,0.5)">
+                    <img src="${qrImg}" alt="KHQR Code" style="width: 100%; height: auto; display: block; border-radius: 10px;" />
+                    <span style="display:block;margin-top:0.4rem;font-size:0.75rem;font-weight:bold;color:#250e44;letter-spacing:0.5px">SCAN TO SEND GIFT / KHQR</span>
+                  </div>
+                ` : ''}
+
+                <div style="padding:1rem;background:#130624;border:1px dashed #d9b15a88;border-radius:14px;margin:0.8rem 0">
+                  ${bankName ? `<div style="color:var(--foil-hi);font-family:var(--f-moul);font-size:0.95rem;margin-bottom:0.3rem">${bankName}</div>` : ''}
+                  <div style="color:#d9b15a;font-weight:bold;font-size:1.15rem;letter-spacing:1px;font-family:monospace;margin:0.2rem 0">${accNum}</div>
+                  ${accName ? `<div style="color:#ffffffcc;font-size:0.85rem;font-weight:600;margin-top:0.3rem">${accName}</div>` : ''}
+                </div>
+                <button type="button" class="btn" style="margin:0 auto;display:inline-flex;padding:0.6rem 1.6rem;font-size:0.85rem" id="copy-bank-btn">
+                  <span>ចម្លងលេខកុង (Copy Info)</span>
+                </button>
+              </div>
+            `;
+            const copyBtn = document.getElementById('copy-bank-btn');
+            if (copyBtn) {
+              copyBtn.onclick = () => {
+                navigator.clipboard.writeText(copyText);
+                copyBtn.innerHTML = '<span>✓ បានចម្លងជោគជ័យ!</span>';
+                setTimeout(() => { copyBtn.innerHTML = '<span>ចម្លងលេខកុង (Copy Info)</span>'; }, 2500);
+              };
+            }
+          }
+        }
+
+        // 9. Dress Code
+        if (ev.dressCode) {
+          const dressEl = document.querySelector('[data-venue="note"]');
+          if (dressEl) dressEl.textContent = `សម្លៀកបំពាក់៖ ${decodeEntities(ev.dressCode)}`;
+        }
+
+        // 10. Background Music Audio Sync (Unified Single Audio Manager)
+        window.__customWeddingMusicUrl = ev.musicUrl !== undefined ? ev.musicUrl : '';
+        if (window.__weddingAudioInstance) {
+          if (ev.musicUrl) {
+            if (window.__weddingAudioInstance.src !== ev.musicUrl && !window.__weddingAudioInstance.src.endsWith(ev.musicUrl)) {
+              var wasPlaying = !window.__weddingAudioInstance.paused;
+              window.__weddingAudioInstance.src = ev.musicUrl;
+              if (wasPlaying) {
+                window.__weddingAudioInstance.play().catch(function() {});
+              }
+            }
+          } else {
+            window.__weddingAudioInstance.pause();
+            window.__weddingAudioInstance.currentTime = 0;
+            var musicBtn = document.getElementById('music-toggle');
+            if (musicBtn) {
+              musicBtn.classList.remove('is-playing');
+              musicBtn.setAttribute('aria-pressed', 'false');
+            }
+          }
+        }
+
+        // 11. Wedding Video Embed
+        if (ev.videoUrl) {
+          let videoSec = document.getElementById('wedding-video-section');
+          if (!videoSec) {
+            videoSec = document.createElement('section');
+            videoSec.id = 'wedding-video-section';
+            videoSec.className = 'chapter';
+            videoSec.style.cssText = 'padding:3rem 1.5rem;text-align:center;max-width:960px;margin:0 auto;';
+
+            let embedUrl = ev.videoUrl;
+            if (embedUrl.includes('watch?v=')) {
+              embedUrl = embedUrl.replace('watch?v=', 'embed/');
+            } else if (embedUrl.includes('youtu.be/')) {
+              embedUrl = embedUrl.replace('youtu.be/', 'www.youtube.com/embed/');
+            }
+
+            videoSec.innerHTML = `
+              <div class="chapter__head">
+                <span class="kicker" style="color:var(--foil)">Wedding Film · ខ្សែវីដេអូអនុស្សាវរីយ៍</span>
+                <h2 class="display foil" style="margin-bottom:0.5rem">កម្រងវីដេអូអនុស្សាវរីយ៍</h2>
+                <div data-orn="divider"></div>
+              </div>
+              <div style="position:relative;padding-top:56.25%;border-radius:20px;overflow:hidden;border:1.5px solid #d9b15a;box-shadow:0 20px 45px rgba(0,0,0,0.7);background:#000">
+                <iframe src="${embedUrl}" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+              </div>
+            `;
+            const gallerySec = document.getElementById('gallery');
+            if (gallerySec) gallerySec.after(videoSec);
+          }
+        }
+
+        // 12. Uploaded Media Gallery
+        const gallerySec = document.getElementById('gallery');
+        if (gallerySec) gallerySec.style.setProperty('display', 'block', 'important');
+        const grid = document.getElementById('gallery-grid');
+        if (grid && !grid.dataset.synced) {
+          grid.dataset.synced = "true";
+          grid.innerHTML = '';
+          grid.style.setProperty('display', 'grid', 'important');
+          grid.style.gridTemplateColumns = 'repeat(auto-fill, minmax(280px, 1fr))';
+          grid.style.gap = '1.4rem';
+          grid.style.padding = '1.8rem 1rem';
+          grid.style.maxWidth = '1200px';
+          grid.style.margin = '0 auto';
+
+          const galleryPhotos = (ev.media && ev.media.length > 0) ? ev.media : [
+            ...(ev.coverImageUrl ? [{ url: ev.coverImageUrl, title: 'រូបភាពកម្មវិធីមង្គល', mediaType: 'PHOTO' }] : []),
+            ...(ev.groomPhotoUrl ? [{ url: ev.groomPhotoUrl, title: 'កូនកម្លោះ · ' + groom, mediaType: 'PHOTO' }] : []),
+            ...(ev.bridePhotoUrl ? [{ url: ev.bridePhotoUrl, title: 'កូនក្រមុំ · ' + bride, mediaType: 'PHOTO' }] : [])
+          ];
+
+          // Lightbox setup
+          const photoList = galleryPhotos.filter(p => p.mediaType !== 'VIDEO');
+          let currentLbIdx = 0;
+
+          const lb = document.getElementById('lightbox');
+          const lbImg = document.getElementById('lb-img');
+          const lbCount = document.getElementById('lb-count');
+          const lbClose = document.getElementById('lb-close');
+          const lbPrev = document.getElementById('lb-prev');
+          const lbNext = document.getElementById('lb-next');
+
+          function openLb(index) {
+            if (!photoList.length) return;
+            currentLbIdx = (index + photoList.length) % photoList.length;
+            if (lbImg) lbImg.src = photoList[currentLbIdx].url;
+            if (lbCount) {
+              lbCount.textContent = `${currentLbIdx + 1} / ${photoList.length}`;
+            }
+            if (lb && !lb.open) lb.showModal();
+          }
+
+          if (lb && !lb.dataset.wired) {
+            lb.dataset.wired = "true";
+            if (lbClose) lbClose.onclick = () => lb.close();
+            if (lbPrev) lbPrev.onclick = () => openLb(currentLbIdx - 1);
+            if (lbNext) lbNext.onclick = () => openLb(currentLbIdx + 1);
+            lb.onclick = (e) => { if (e.target === lb) lb.close(); };
+            window.addEventListener('keydown', (e) => {
+              if (!lb.open) return;
+              if (e.key === 'ArrowLeft') openLb(currentLbIdx - 1);
+              if (e.key === 'ArrowRight') openLb(currentLbIdx + 1);
+              if (e.key === 'Escape') lb.close();
+            });
+          }
+
+          galleryPhotos.forEach((item, idx) => {
+            const card = document.createElement('div');
+            card.style.cssText = 'position:relative;border-radius:18px;overflow:hidden;border:1.5px solid rgba(179,135,237,0.35);background:#1f0b38;aspect-ratio:3/4;cursor:pointer;box-shadow:0 12px 30px rgba(0,0,0,0.5),0 0 15px rgba(124,58,237,0.15);transition:all 0.3s ease;';
+            card.onmouseenter = () => {
+              card.style.transform = 'translateY(-6px) scale(1.02)';
+              card.style.borderColor = '#d9b15a';
+              card.style.boxShadow = '0 18px 40px rgba(179,135,237,0.35)';
+            };
+            card.onmouseleave = () => {
+              card.style.transform = 'none';
+              card.style.borderColor = 'rgba(179,135,237,0.35)';
+              card.style.boxShadow = '0 12px 30px rgba(0,0,0,0.5)';
+            };
+
+            if (item.mediaType === 'VIDEO') {
+              card.innerHTML = `
+                <video src="${item.url}" muted loop playsinline style="width:100%;height:100%;object-fit:cover"></video>
+                <div style="position:absolute;inset:0;background:linear-gradient(to top, rgba(0,0,0,0.7), transparent 60%);display:flex;align-items:flex-end;padding:1.2rem">
+                  <span style="color:#fbefc0;font-size:0.85rem;font-weight:600">${item.title || item.caption || 'វីដេអូអនុស្សាវរីយ៍'}</span>
+                </div>
+              `;
+              card.onclick = () => {
+                const v = card.querySelector('video');
+                if (v) { if (v.paused) v.play(); else v.pause(); }
+              };
+            } else {
+              const photoIndex = photoList.indexOf(item);
+              card.innerHTML = `
+                <img src="${item.url}" alt="${item.title || ''}" loading="lazy" style="width:100%;height:100%;object-fit:cover" />
+                <div style="position:absolute;inset:0;background:linear-gradient(to top, rgba(19,6,36,0.9), transparent 50%);display:flex;align-items:flex-end;padding:1.2rem">
+                  <span style="color:#fbefc0;font-size:0.88rem;font-family:var(--f-moul, serif);letter-spacing:0.3px">${item.title || item.caption || 'រូបភាពអនុស្សាវរីយ៍'}</span>
+                </div>
+              `;
+              card.onclick = () => {
+                openLb(photoIndex !== -1 ? photoIndex : 0);
+              };
+            }
+            grid.appendChild(card);
+          });
+        }
+      };
+
+      async function resolveEvent() {
+        const handleEventData = (data) => {
+          if (!data) return;
+          const ev = (data.event) ? data.event : data;
+          if (ev && (ev.id || ev.slug || ev.groomName || ev.brideName || ev.title)) {
+            activeEventData = ev;
+            if (activeEventData.slug) { window.__eventSlug = activeEventData.slug; }
+            applyEventDOM();
+            loadWishes();
+          }
+        };
+
+        if (window.__activeEventData) {
+          handleEventData(window.__activeEventData);
+        }
+
+        if (window.__eventPromise) {
+          try {
+            const data = await window.__eventPromise;
+            handleEventData(data);
+          } catch (e) {}
+        } else {
+          try {
+            var s = window.__eventSlug || '';
+            var url = s ? ('/api/events?slug=' + encodeURIComponent(s) + '&_t=' + Date.now()) : ('/api/events?_t=' + Date.now());
+            const res = await fetch(url, { cache: 'no-store' });
+            if (res.ok) {
+              const data = await res.json();
+              handleEventData(data);
+            }
+          } catch (e) {
+            console.error('Error loading event info', e);
+          }
+        }
+
+        applyEventDOM();
+        const evTimer = setInterval(applyEventDOM, 300);
+        setTimeout(() => clearInterval(evTimer), 30000);
+      }
+
+      // 2. Load and submit Wishes
+      async function loadWishes() {
+        try {
+          var s = window.__eventSlug || 'davita-and-meassa';
+          const res = await fetch('/api/wishes?slug=' + encodeURIComponent(s));
+          const data = await res.json();
+          const list = document.getElementById('wishes-list');
+          if (list && data.wishes) {
+            list.innerHTML = data.wishes.map(w => `
+              <div style="background:#130624;border:1px solid rgba(179,135,237,0.25);border-radius:12px;padding:0.75rem 1rem">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.25rem">
+                  <span style="color:var(--foil-hi);font-family:var(--f-moul);font-size:0.85rem">${w.senderName}</span>
+                  <span style="color:#ffffff66;font-size:0.75rem">${new Date(w.createdAt).toLocaleDateString()}</span>
+                </div>
+                <p style="margin:0;color:#f5efdd;font-size:0.85rem;line-height:1.5">${w.message}</p>
+              </div>
+            `).join('');
+          }
+        } catch (e) {
+          console.error('Error loading wishes', e);
+        }
+      }
+
+      const wishForm = document.getElementById('wish-form');
+      if (wishForm) {
+        wishForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const nameInput = document.getElementById('wish-name');
+          const msgInput = document.getElementById('wish-message');
+          const wishMsg = document.getElementById('wish-msg');
+          const submitBtn = document.getElementById('wish-submit-btn');
+
+          if (!nameInput.value.trim() || !msgInput.value.trim()) return;
+          submitBtn.disabled = true;
+
+          try {
+            var s = window.__eventSlug || 'davita-and-meassa';
+            const res = await fetch('/api/wishes', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                eventSlug: s,
+                senderName: nameInput.value.trim(),
+                message: msgInput.value.trim()
+              })
+            });
+            const data = await res.json();
+            if (data.success) {
+              msgInput.value = '';
+              wishMsg.textContent = '✓ ពាក្យជូនពរត្រូវបានផ្ញើដោយជោគជ័យ! សូមអរគុណ';
+              wishMsg.style.display = 'block';
+              loadWishes();
+              setTimeout(() => { wishMsg.style.display = 'none'; }, 4000);
+            }
+          } catch (err) {
+            alert('Failed to send wish');
+          } finally {
+            submitBtn.disabled = false;
+          }
+        });
+      }
+
+      // 3. Handle RSVP submission
+      const rsvpForm = document.getElementById('rsvp-form');
+      const pillYes = document.getElementById('pill-yes');
+      const pillNo = document.getElementById('pill-no');
+      const paxField = document.getElementById('rsvp-pax-field');
+
+      document.querySelectorAll('input[name="rsvp_status"]').forEach(radio => {
+        radio.addEventListener('change', (e) => {
+          if (e.target.value === 'ATTENDING') {
+            pillYes.style.background = '#d9b15a';
+            pillYes.style.color = '#1d2010';
+            pillNo.style.background = 'transparent';
+            pillNo.style.color = '#fbefc0';
+            if (paxField) paxField.style.display = 'grid';
+          } else {
+            pillNo.style.background = '#ef4444';
+            pillNo.style.color = '#ffffff';
+            pillYes.style.background = 'transparent';
+            pillYes.style.color = '#fbefc0';
+            if (paxField) paxField.style.display = 'none';
+          }
+        });
+      });
+
+      if (rsvpForm) {
+        rsvpForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const nameInput = document.getElementById('rsvp-name');
+          const countSelect = document.getElementById('rsvp-count');
+          const notesInput = document.getElementById('rsvp-notes');
+          const rsvpMsg = document.getElementById('rsvp-msg');
+          const submitBtn = document.getElementById('rsvp-submit-btn');
+          const statusRadio = document.querySelector('input[name="rsvp_status"]:checked');
+
+          submitBtn.disabled = true;
+          try {
+            var s = window.__eventSlug || 'davita-and-meassa';
+            const res = await fetch('/api/rsvp', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                invitationCode: code,
+                guestName: nameInput.value.trim(),
+                eventSlug: s,
+                rsvpStatus: statusRadio ? statusRadio.value : 'ATTENDING',
+                attendeesCount: countSelect ? parseInt(countSelect.value, 10) : 1,
+                notes: notesInput.value.trim()
+              })
+            });
+            const data = await res.json();
+            if (data.success) {
+              rsvpMsg.textContent = '✓ ការឆ្លើយតប RSVP ត្រូវបានកត់ត្រាដោយជោគជ័យ!';
+              rsvpMsg.style.display = 'block';
+            } else {
+              alert(data.error || 'RSVP failed');
+            }
+          } catch (err) {
+            alert('Error submitting RSVP');
+          } finally {
+            submitBtn.disabled = false;
+          }
+        });
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => { resolveGuest(); resolveEvent(); loadWishes(); });
+      } else {
+        resolveGuest();
+        resolveEvent();
+        loadWishes();
+      }
+    })();
+  </script>
+
+  <!-- Ambient Particle Animation Engine -->
+  <script>
+    (function() {
+      const canvas = document.getElementById('ambient-particles');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      let width = (canvas.width = window.innerWidth);
+      let height = (canvas.height = window.innerHeight);
+
+      function handleResize() {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+      }
+      window.addEventListener('resize', handleResize);
+
+      let currentMode = 'falling-petals';
+      let accent = '#d9b15a';
+      let animId = null;
+      let particles = [];
+      let lastFireworkTime = 0;
+
+      function initParticles(mode) {
+        particles = [];
+        if (mode === 'none') return;
+
+        if (mode === 'falling-petals') {
+          const count = Math.min(30, Math.max(16, Math.floor(width / 32)));
+          for (let i = 0; i < count; i++) {
+            particles.push({
+              x: Math.random() * width,
+              y: Math.random() * height,
+              size: 8 + Math.random() * 8,
+              speedY: 0.7 + Math.random() * 1.1,
+              speedX: (Math.random() - 0.5) * 0.7,
+              angle: Math.random() * Math.PI * 2,
+              rotSpeed: (Math.random() - 0.5) * 0.03,
+              swing: Math.random() * Math.PI * 2,
+              swingSpeed: 0.02 + Math.random() * 0.02,
+              color: Math.random() > 0.4 ? '#fbcfe8' : '#f472b6',
+              alpha: 0.45 + Math.random() * 0.35
+            });
+          }
+        } else if (mode === 'golden-stardust') {
+          const count = Math.min(45, Math.max(22, Math.floor(width / 24)));
+          for (let i = 0; i < count; i++) {
+            particles.push({
+              x: Math.random() * width,
+              y: Math.random() * height,
+              radius: 1.2 + Math.random() * 2.2,
+              speedY: -(0.3 + Math.random() * 0.6),
+              speedX: (Math.random() - 0.5) * 0.4,
+              twinkle: Math.random() * Math.PI * 2,
+              twinkleSpeed: 0.03 + Math.random() * 0.05,
+              alpha: Math.random()
+            });
+          }
+        } else if (mode === 'flutter-butterflies') {
+          const count = 7;
+          for (let i = 0; i < count; i++) {
+            particles.push({
+              x: Math.random() * width,
+              y: Math.random() * height,
+              size: 11 + Math.random() * 6,
+              speedX: 0.65 + Math.random() * 0.75,
+              speedY: (Math.random() - 0.5) * 0.55,
+              flap: Math.random() * Math.PI * 2,
+              flapSpeed: 0.16 + Math.random() * 0.08,
+              angle: 0
+            });
+          }
+        } else if (mode === 'floating-hearts') {
+          const count = Math.min(22, Math.max(14, Math.floor(width / 36)));
+          for (let i = 0; i < count; i++) {
+            particles.push({
+              x: Math.random() * width,
+              y: Math.random() * height,
+              size: 9 + Math.random() * 9,
+              speedY: -(0.55 + Math.random() * 0.75),
+              speedX: (Math.random() - 0.5) * 0.45,
+              swing: Math.random() * Math.PI * 2,
+              alpha: 0.35 + Math.random() * 0.45
+            });
+          }
+        }
+      }
+
+      function drawHeart(ctx, x, y, size) {
+        ctx.beginPath();
+        const topCurveHeight = size * 0.3;
+        ctx.moveTo(x, y + topCurveHeight);
+        ctx.bezierCurveTo(x, y, x - size / 2, y, x - size / 2, y + topCurveHeight);
+        ctx.bezierCurveTo(x - size / 2, y + (size + topCurveHeight) / 2, x, y + size, x, y + size);
+        ctx.bezierCurveTo(x, y + size, x + size / 2, y + (size + topCurveHeight) / 2, x + size / 2, y + topCurveHeight);
+        ctx.bezierCurveTo(x + size / 2, y, x, y, x, y + topCurveHeight);
+        ctx.closePath();
+        ctx.fill();
+      }
+
+      function drawPetal(ctx, x, y, size, angle, color, alpha) {
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(angle);
+        ctx.globalAlpha = alpha;
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.quadraticCurveTo(size / 2, -size / 2, size, 0);
+        ctx.quadraticCurveTo(size / 2, size / 2, 0, 0);
+        ctx.fill();
+        ctx.restore();
+      }
+
+      function drawButterfly(ctx, x, y, size, flap, angle) {
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(angle);
+        ctx.fillStyle = accent;
+        ctx.shadowColor = accent;
+        ctx.shadowBlur = 6;
+        const flapScale = Math.sin(flap);
+        ctx.save();
+        ctx.scale(flapScale, 1);
+        ctx.beginPath();
+        ctx.ellipse(-size * 0.6, -size * 0.4, size * 0.7, size * 0.5, -0.3, 0, Math.PI * 2);
+        ctx.ellipse(-size * 0.5, size * 0.3, size * 0.5, size * 0.4, 0.3, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+
+        ctx.save();
+        ctx.scale(-flapScale, 1);
+        ctx.beginPath();
+        ctx.ellipse(-size * 0.6, -size * 0.4, size * 0.7, size * 0.5, -0.3, 0, Math.PI * 2);
+        ctx.ellipse(-size * 0.5, size * 0.3, size * 0.5, size * 0.4, 0.3, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+
+        ctx.beginPath();
+        ctx.ellipse(0, 0, size * 0.12, size * 0.6, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+
+      function updateAndRender(now) {
+        if (document.hidden) {
+          animId = requestAnimationFrame(updateAndRender);
+          return;
+        }
+
+        ctx.clearRect(0, 0, width, height);
+
+        if (currentMode === 'falling-petals') {
+          particles.forEach(p => {
+            p.swing += p.swingSpeed;
+            p.x += p.speedX + Math.sin(p.swing) * 0.8;
+            p.y += p.speedY;
+            p.angle += p.rotSpeed;
+            if (p.y > height + 20) {
+              p.y = -20;
+              p.x = Math.random() * width;
+            }
+            if (p.x < -20) p.x = width + 20;
+            if (p.x > width + 20) p.x = -20;
+            drawPetal(ctx, p.x, p.y, p.size, p.angle, p.color, p.alpha);
+          });
+        } else if (currentMode === 'golden-stardust') {
+          particles.forEach(p => {
+            p.twinkle += p.twinkleSpeed;
+            p.y += p.speedY;
+            p.x += p.speedX + Math.sin(p.twinkle) * 0.3;
+            if (p.y < -10) {
+              p.y = height + 10;
+              p.x = Math.random() * width;
+            }
+            const a = 0.3 + 0.6 * (0.5 + 0.5 * Math.sin(p.twinkle));
+            ctx.save();
+            ctx.globalAlpha = a;
+            ctx.fillStyle = accent;
+            ctx.shadowColor = accent;
+            ctx.shadowBlur = 8;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+          });
+        } else if (currentMode === 'flutter-butterflies') {
+          particles.forEach(p => {
+            p.flap += p.flapSpeed;
+            p.x += p.speedX;
+            p.y += p.speedY + Math.sin(p.flap * 0.5) * 0.5;
+            p.angle = Math.sin(p.flap * 0.3) * 0.2;
+            if (p.x > width + 40) {
+              p.x = -40;
+              p.y = Math.random() * height;
+            }
+            drawButterfly(ctx, p.x, p.y, p.size, p.flap, p.angle);
+          });
+        } else if (currentMode === 'floating-hearts') {
+          particles.forEach(p => {
+            p.swing += 0.02;
+            p.y += p.speedY;
+            p.x += p.speedX + Math.sin(p.swing) * 0.5;
+            if (p.y < -30) {
+              p.y = height + 30;
+              p.x = Math.random() * width;
+            }
+            ctx.save();
+            ctx.globalAlpha = p.alpha;
+            ctx.fillStyle = '#f43f5e';
+            ctx.shadowColor = '#fb7185';
+            ctx.shadowBlur = 6;
+            drawHeart(ctx, p.x, p.y, p.size);
+            ctx.restore();
+          });
+        } else if (currentMode === 'royal-fireworks') {
+          if (now - lastFireworkTime > 2600) {
+            lastFireworkTime = now;
+            const cx = 0.2 * width + Math.random() * 0.6 * width;
+            const cy = 0.15 * height + Math.random() * 0.35 * height;
+            for (let i = 0; i < 35; i++) {
+              const spd = 1.5 + Math.random() * 3.5;
+              const th = Math.random() * Math.PI * 2;
+              particles.push({
+                x: cx,
+                y: cy,
+                vx: Math.cos(th) * spd,
+                vy: Math.sin(th) * spd,
+                alpha: 1,
+                decay: 0.015 + Math.random() * 0.02,
+                color: Math.random() > 0.3 ? accent : '#fbefc0'
+              });
+            }
+          }
+          for (let i = particles.length - 1; i >= 0; i--) {
+            const p = particles[i];
+            p.x += p.vx;
+            p.y += p.vy;
+            p.vy += 0.04;
+            p.alpha -= p.decay;
+            if (p.alpha <= 0) {
+              particles.splice(i, 1);
+              continue;
+            }
+            ctx.save();
+            ctx.globalAlpha = p.alpha;
+            ctx.fillStyle = p.color;
+            ctx.shadowColor = p.color;
+            ctx.shadowBlur = 4;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, 1.8, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+          }
+        }
+
+        if (currentMode !== 'none') {
+          animId = requestAnimationFrame(updateAndRender);
+        }
+      }
+
+      window.__switchAnimationMode = function(mode, customAccent) {
+        currentMode = mode || 'falling-petals';
+        if (customAccent) accent = customAccent;
+        if (animId) cancelAnimationFrame(animId);
+        initParticles(currentMode);
+        if (currentMode !== 'none') {
+          animId = requestAnimationFrame(updateAndRender);
+        } else {
+          ctx.clearRect(0, 0, width, height);
+        }
+      };
+
+      // Start initial ambient particles
+      window.__switchAnimationMode('falling-petals', '#d9b15a');
+    })();
+  </script>
+</body>
+</html>
