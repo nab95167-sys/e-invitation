@@ -8,6 +8,7 @@ interface RaksmeyVenueProps {
   venueName?: string;
   venueAddress?: string;
   googleMapsUrl?: string;
+  venuePhotoUrl?: string;
   lang: Language;
 }
 
@@ -15,6 +16,7 @@ export default function RaksmeyVenue({
   venueName = "គេហដ្ឋានខាងស្រី (The Bride’s Residence)",
   venueAddress = "ភូមិព្រែកហូរលិច១ សង្កាត់ព្រែកហូរ ក្រុងតាខ្មៅ ខេត្តកណ្តាល",
   googleMapsUrl = "https://www.google.com/maps/search/?api=1&query=11.45128,104.93335",
+  venuePhotoUrl,
   lang,
 }: RaksmeyVenueProps) {
   const isKm = lang === "km";
@@ -82,6 +84,28 @@ export default function RaksmeyVenue({
               </a>
             </div>
           </div>
+
+          {/* Custom Uploaded Venue Location Photo / Map */}
+          {venuePhotoUrl && (
+            <div className="relative mb-6 rounded-2xl overflow-hidden border border-[#d9b15a]/50 shadow-2xl bg-[#0d0614] max-w-2xl mx-auto group">
+              <a
+                href={googleMapsUrl || venuePhotoUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block cursor-pointer relative"
+              >
+                <img
+                  src={venuePhotoUrl}
+                  alt="Venue Location Map"
+                  className="w-full h-auto max-h-[480px] object-contain mx-auto group-hover:scale-[1.01] transition-transform duration-300"
+                />
+                <div className="absolute bottom-3 right-3 px-3.5 py-1.5 rounded-lg bg-[#130624]/90 border border-[#d9b15a]/50 text-[#fbefc0] text-xs font-semibold flex items-center gap-1.5 backdrop-blur-md shadow-lg pointer-events-none">
+                  <MapPin className="w-3.5 h-3.5 text-[#d9b15a]" />
+                  <span>{isKm ? "ចុចដើម្បីបើកផែនទី" : "Click to view map"}</span>
+                </div>
+              </a>
+            </div>
+          )}
 
           {/* Interactive Google Maps Iframe */}
           <div className="relative w-full h-[320px] sm:h-[400px] rounded-2xl overflow-hidden border border-[#d9b15a]/40 shadow-inner">

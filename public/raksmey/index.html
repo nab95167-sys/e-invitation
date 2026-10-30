@@ -2178,6 +2178,45 @@
           }
         }
 
+        // 5a. Custom Uploaded Venue Map / Location Photo (Replaces default line map)
+        if (ev.venuePhotoUrl) {
+          const lineMap = document.getElementById('line-map');
+          if (lineMap) {
+            const currentImg = lineMap.querySelector('img[data-custom-venue]');
+            if (!currentImg || currentImg.getAttribute('src') !== ev.venuePhotoUrl) {
+              lineMap.innerHTML = `
+                <div class="custom-venue-photo-wrapper" style="position:relative;overflow:hidden;border-radius:14px;margin:0.5rem auto 0;box-shadow:0 8px 24px rgba(0,0,0,0.55);border:1.5px solid rgba(217,177,90,0.45);background:#0d0614;max-width:100%;">
+                  <a href="${ev.googleMapsUrl || ev.venuePhotoUrl}" target="_blank" rel="noopener" style="display:block;text-decoration:none;cursor:pointer;">
+                    <img data-custom-venue="true" src="${ev.venuePhotoUrl}" alt="Venue Location Map" style="width:100%;height:auto;max-height:520px;object-fit:contain;display:block;margin:0 auto;transition:transform 0.3s ease;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'" />
+                    <div style="position:absolute;bottom:10px;right:10px;background:rgba(19,6,36,0.85);border:1px solid rgba(217,177,90,0.5);border-radius:8px;padding:6px 12px;font-size:0.75rem;color:#fbefc0;display:flex;align-items:center;gap:6px;pointer-events:none;backdrop-filter:blur(6px);box-shadow:0 3px 10px rgba(0,0,0,0.45);">
+                      <svg viewBox="0 0 24 24" style="width:15px;height:15px;fill:currentColor;"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z"/></svg>
+                      <span style="font-family:var(--f-kh, sans-serif);font-weight:600;">ចុចដើម្បីបើកផែនទី</span>
+                    </div>
+                  </a>
+                </div>
+              `;
+            }
+          }
+        }
+
+        // Ensure language toggle doesn't overwrite custom venue photo
+        const langToggle = document.getElementById('lang-toggle');
+        if (langToggle && !langToggle.dataset.venueHooked) {
+          langToggle.dataset.venueHooked = "true";
+          langToggle.addEventListener('click', () => {
+            setTimeout(() => {
+              if (activeEventData && activeEventData.venuePhotoUrl) {
+                applyEventDOM();
+              }
+            }, 60);
+            setTimeout(() => {
+              if (activeEventData && activeEventData.venuePhotoUrl) {
+                applyEventDOM();
+              }
+            }, 350);
+          });
+        }
+
         // 5b. Venue & RSVP Contacts
         if (ev.contacts) {
           try {

@@ -137,6 +137,7 @@ export default function RaksmeyThemeView({
         venueName={event.venueName}
         venueAddress={event.venueAddress}
         googleMapsUrl={event.googleMapsUrl}
+        venuePhotoUrl={event.venuePhotoUrl}
         lang={lang}
       />
 
