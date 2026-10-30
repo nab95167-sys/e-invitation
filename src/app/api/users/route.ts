@@ -28,6 +28,7 @@ export async function GET() {
         email: true,
         name: true,
         role: true,
+        permissions: true,
         createdAt: true,
         _count: {
           select: { events: true },
@@ -52,7 +53,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { email, name, password, role } = await req.json();
+    const { email, name, password, role, permissions } = await req.json();
 
     if (!email || !name || !password) {
       return NextResponse.json(
@@ -87,18 +88,24 @@ export async function POST(req: NextRequest) {
     const validRole = ["SUPERADMIN", "COUPLE", "ORGANIZER", "GUEST"].includes(role) ? role : "GUEST";
 
     const passwordHash = await hashPassword(password);
+    const permissionsJson = permissions
+      ? (typeof permissions === "string" ? permissions : JSON.stringify(permissions))
+      : null;
+
     const user = await prisma.user.create({
       data: {
         email: email.toLowerCase().trim(),
         name: sanitizeString(name),
         passwordHash,
         role: validRole,
+        permissions: permissionsJson,
       },
       select: {
         id: true,
         email: true,
         name: true,
         role: true,
+        permissions: true,
         createdAt: true,
       },
     });
@@ -116,7 +123,7 @@ export async function PUT(req: NextRequest) {
       return NextResponse.json({ error: "Access denied." }, { status: 403 });
     }
 
-    const { id, role, name } = await req.json();
+    const { id, role, name, permissions } = await req.json();
 
     if (!id) {
       return NextResponse.json({ error: "User ID required" }, { status: 400 });
@@ -145,17 +152,23 @@ export async function PUT(req: NextRequest) {
       }
     }
 
+    const permissionsJson = permissions !== undefined
+      ? (typeof permissions === "string" ? permissions : JSON.stringify(permissions))
+      : undefined;
+
     const user = await prisma.user.update({
       where: { id },
       data: {
         ...(role && { role }),
         ...(name && { name: sanitizeString(name) }),
+        ...(permissionsJson !== undefined && { permissions: permissionsJson }),
       },
       select: {
         id: true,
         email: true,
         name: true,
         role: true,
+        permissions: true,
       },
     });
 

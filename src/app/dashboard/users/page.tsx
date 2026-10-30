@@ -32,6 +32,7 @@ export default async function UsersPage() {
       name: true,
       email: true,
       role: true,
+      permissions: true,
       createdAt: true,
     },
     orderBy: { createdAt: "desc" },

@@ -31,6 +31,9 @@ import {
   Info,
   ChevronRight,
   ShieldX,
+  RotateCcw,
+  CheckSquare,
+  Square,
 } from "lucide-react";
 
 export interface SystemUser {
@@ -38,6 +41,7 @@ export interface SystemUser {
   name: string;
   email: string;
   role: string;
+  permissions?: string | string[] | null;
   createdAt: string | Date;
 }
 
@@ -222,6 +226,18 @@ export const ROLE_DEFINITIONS: Record<string, RoleDef> = {
   },
 };
 
+export function parseUserPermissions(user: { role: string; permissions?: string | string[] | null }): string[] {
+  if (user.permissions) {
+    try {
+      const parsed = typeof user.permissions === "string" ? JSON.parse(user.permissions) : user.permissions;
+      if (Array.isArray(parsed)) return parsed;
+    } catch (e) {
+      // fallback
+    }
+  }
+  return ROLE_DEFINITIONS[user.role]?.allowedPermissions || ROLE_DEFINITIONS.GUEST.allowedPermissions;
+}
+
 export default function UsersClient({
   initialUsers,
   currentUserId,
@@ -236,16 +252,21 @@ export default function UsersClient({
   // Inspector / Quick Edit Modal
   const [inspectUser, setInspectUser] = useState<SystemUser | null>(null);
   const [inspectSelectedRole, setInspectSelectedRole] = useState<string>("GUEST");
+  const [inspectPermissions, setInspectPermissions] = useState<string[]>([]);
   const [inspectActivePerm, setInspectActivePerm] = useState<string | null>(null);
 
+  // Create User Form State
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
-    role: "GUEST", // Default to safest zero-permission role
+    role: "GUEST",
   });
-
+  const [formPermissions, setFormPermissions] = useState<string[]>([
+    ...ROLE_DEFINITIONS.GUEST.allowedPermissions,
+  ]);
   const [selectedPermDetails, setSelectedPermDetails] = useState<string | null>(null);
+
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -253,6 +274,31 @@ export default function UsersClient({
 
   const isSuperadmin = currentUserRole === "SUPERADMIN";
 
+  // When Role changes in Create User Form
+  const handleSelectRoleInCreate = (newRole: string) => {
+    setFormData((prev) => ({ ...prev, role: newRole }));
+    setFormPermissions([...(ROLE_DEFINITIONS[newRole]?.allowedPermissions || [])]);
+  };
+
+  // Toggle check/uncheck on permission in Create User Form
+  const toggleFormPermission = (permId: string) => {
+    setFormPermissions((prev) =>
+      prev.includes(permId) ? prev.filter((p) => p !== permId) : [...prev, permId]
+    );
+  };
+
+  // Quick buttons for Create Form
+  const checkAllFormPermissions = () => {
+    setFormPermissions(PERMISSION_ITEMS.map((p) => p.id));
+  };
+  const uncheckAllFormPermissions = () => {
+    setFormPermissions([]);
+  };
+  const resetFormPermissionsToRole = () => {
+    setFormPermissions([...(ROLE_DEFINITIONS[formData.role]?.allowedPermissions || [])]);
+  };
+
+  // Handle Create User Submit
   const handleCreateUser = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
@@ -269,7 +315,10 @@ export default function UsersClient({
       const res = await fetch("/api/users", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          permissions: formPermissions,
+        }),
       });
 
       const data = await res.json();
@@ -278,6 +327,7 @@ export default function UsersClient({
       setUsers([data.user, ...users]);
       setIsAddOpen(false);
       setFormData({ name: "", email: "", password: "", role: "GUEST" });
+      setFormPermissions([...ROLE_DEFINITIONS.GUEST.allowedPermissions]);
       setSuccess(`✓ បានបង្កើតគណនី ${data.user.name} (${data.user.role}) ដោយជោគជ័យ!`);
       setTimeout(() => setSuccess(null), 4000);
     } catch (err: any) {
@@ -287,23 +337,89 @@ export default function UsersClient({
     }
   };
 
-  const handleRoleChange = async (userId: string, newRole: string) => {
+  // Inspector Functions
+  const openInspector = (user: SystemUser) => {
+    setInspectUser(user);
+    setInspectSelectedRole(user.role);
+    setInspectPermissions(parseUserPermissions(user));
+    setInspectActivePerm(null);
+    setError(null);
+  };
+
+  const handleSelectRoleInInspector = (newRole: string) => {
+    setInspectSelectedRole(newRole);
+    setInspectPermissions([...(ROLE_DEFINITIONS[newRole]?.allowedPermissions || [])]);
+  };
+
+  const toggleInspectPermission = (permId: string) => {
+    setInspectPermissions((prev) =>
+      prev.includes(permId) ? prev.filter((p) => p !== permId) : [...prev, permId]
+    );
+  };
+
+  const checkAllInspectPermissions = () => {
+    setInspectPermissions(PERMISSION_ITEMS.map((p) => p.id));
+  };
+  const uncheckAllInspectPermissions = () => {
+    setInspectPermissions([]);
+  };
+  const resetInspectPermissionsToRole = () => {
+    setInspectPermissions([...(ROLE_DEFINITIONS[inspectSelectedRole]?.allowedPermissions || [])]);
+  };
+
+  const handleSaveInspectUser = async () => {
+    if (!inspectUser) return;
+    setLoading(true);
     setError(null);
     try {
       const res = await fetch("/api/users", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: userId, role: newRole }),
+        body: JSON.stringify({
+          id: inspectUser.id,
+          role: inspectSelectedRole,
+          permissions: inspectPermissions,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to update permissions");
+
+      setUsers(
+        users.map((u) =>
+          u.id === inspectUser.id
+            ? { ...u, role: inspectSelectedRole, permissions: inspectPermissions }
+            : u
+        )
+      );
+      setInspectUser(null);
+      setSuccess(`✓ បានរក្សាទុកការកែប្រែសិទ្ធិរបស់ ${inspectUser.name} (${inspectSelectedRole}) ដោយជោគជ័យ!`);
+      setTimeout(() => setSuccess(null), 3500);
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleQuickRoleChange = async (userId: string, newRole: string) => {
+    setError(null);
+    try {
+      const defaultPerms = ROLE_DEFINITIONS[newRole]?.allowedPermissions || [];
+      const res = await fetch("/api/users", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: userId, role: newRole, permissions: defaultPerms }),
       });
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to update role");
 
       setUsers(
-        users.map((u) => (u.id === userId ? { ...u, role: newRole } : u))
+        users.map((u) => (u.id === userId ? { ...u, role: newRole, permissions: defaultPerms } : u))
       );
       if (inspectUser && inspectUser.id === userId) {
-        setInspectUser({ ...inspectUser, role: newRole });
+        setInspectUser({ ...inspectUser, role: newRole, permissions: defaultPerms });
       }
       setSuccess(`✓ បានផ្លាស់ប្តូរសិទ្ធិទៅជា ${newRole} ដោយជោគជ័យ`);
       setTimeout(() => setSuccess(null), 3000);
@@ -333,13 +449,6 @@ export default function UsersClient({
     }
   };
 
-  const openInspector = (user: SystemUser) => {
-    setInspectUser(user);
-    setInspectSelectedRole(user.role);
-    setInspectActivePerm(null);
-    setError(null);
-  };
-
   const filteredUsers = users.filter((u) => {
     const matchesSearch =
       u.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -362,15 +471,15 @@ export default function UsersClient({
           <div className="flex items-center gap-2 mb-1">
             <span className="text-xs uppercase tracking-wider font-bold text-[#AA7C11] bg-[#FAF8F5] px-3 py-1 rounded-full border border-[#D4AF37]/30 flex items-center gap-1.5">
               <ShieldCheck className="w-3.5 h-3.5 text-[#AA7C11]" />
-              Role-Based Access Control (RBAC)
+              Role-Based Access Control (RBAC) &amp; Checkboxes
             </span>
             <span className="text-xs text-stone-400">({users.length} គណនី)</span>
           </div>
           <h1 className="font-serif text-2xl sm:text-3xl font-bold text-[#2C2A29]">
-            គ្រប់គ្រងអ្នកប្រើប្រាស់ &amp; សិទ្ធិ (User Roles &amp; Security)
+            គ្រប់គ្រងអ្នកប្រើប្រាស់ &amp; សិទ្ធិ (User Roles &amp; Permissions)
           </h1>
           <p className="text-xs sm:text-sm text-[#3E444A]/75 mt-1 font-khmer">
-            ជ្រើសរើស និងចុចលើ <strong className="text-[#AA7C11]">និមិត្តសញ្ញា និងអត្ថបទ (Symbols &amp; Text)</strong> ដើម្បីកំណត់តួនាទី និងត្រួតពិនិត្យសិទ្ធិប្រើប្រាស់នីមួយៗលើប្រព័ន្ធដោយសុវត្ថិភាព។
+            អ្នកអាចចុច <strong className="text-[#AA7C11]">ធីក (Check) ឬដកធីក (Uncheck)</strong> លើប្រអប់សិទ្ធិ និងនិមិត្តសញ្ញានីមួយៗដោយសេរី ទាំងពេលបង្កើតគណនីថ្មី និងពេលកែប្រែសិទ្ធិ។
           </p>
         </div>
 
@@ -400,7 +509,7 @@ export default function UsersClient({
         </div>
       )}
 
-      {/* Permission Security Guide Banner with Clickable Interactive Pills */}
+      {/* Permission Security Guide Banner */}
       <div className="p-5 rounded-2xl bg-gradient-to-r from-[#FAF8F5] via-white to-[#FAF8F5] border border-[#D4AF37]/30 shadow-xs space-y-3">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div className="flex items-center gap-3">
@@ -409,10 +518,10 @@ export default function UsersClient({
             </div>
             <div>
               <h4 className="text-xs sm:text-sm font-bold text-[#2C2A29]">
-                តារាងនិមិត្តសញ្ញាតួនាទី &amp; សិទ្ធិសុវត្ថិភាព (Role Symbols &amp; Permissions Legend)
+                តារាងនិមិត្តសញ្ញាតួនាទី &amp; សិទ្ធិសុវត្ថិភាព (Role Symbols &amp; Checkboxes)
               </h4>
               <p className="text-[11px] text-[#3E444A]/80 font-khmer">
-                ចុចលើតួនាទី ឬសិទ្ធិខាងក្រោមដើម្បីត្រួតពិនិត្យភាពខុសគ្នានៃការអនុញ្ញាត៖
+                ចុចលើតួនាទីដើម្បីច្រោះបញ្ជី ឬចុចលើប៊ូតុង <strong className="text-stone-800">"ពិនិត្យសិទ្ធិ"</strong> ក្នុងតារាងដើម្បីធីក (Check) ឬដកធីក (Uncheck) សិទ្ធិ៖
               </p>
             </div>
           </div>
@@ -436,7 +545,7 @@ export default function UsersClient({
                   {r.role}
                 </span>
                 <span className="text-[10px] text-stone-500 truncate block">
-                  {r.allowedPermissions.length} សិទ្ធិអនុញ្ញាត
+                  {r.allowedPermissions.length} សិទ្ធិលំនាំដើម
                 </span>
               </div>
             </div>
@@ -533,7 +642,7 @@ export default function UsersClient({
               <tr>
                 <th className="py-3.5 px-4 font-semibold">ឈ្មោះ &amp; អ៊ីមែល (User)</th>
                 <th className="py-3.5 px-4 font-semibold">តួនាទី (Security Role)</th>
-                <th className="py-3.5 px-4 font-semibold">សិទ្ធិប្រើប្រាស់លើប្រព័ន្ធ (System Permissions Symbols &amp; Text)</th>
+                <th className="py-3.5 px-4 font-semibold">សិទ្ធិ Checkboxes &amp; Symbols</th>
                 <th className="py-3.5 px-4 font-semibold">កាលបរិច្ឆេទ</th>
                 <th className="py-3.5 px-4 font-semibold text-right">សកម្មភាព</th>
               </tr>
@@ -543,6 +652,10 @@ export default function UsersClient({
                 const isMe = u.id === currentUserId;
                 const isTargetSuper = u.role === "SUPERADMIN";
                 const roleDef = ROLE_DEFINITIONS[u.role] || ROLE_DEFINITIONS.GUEST;
+                const effectivePerms = parseUserPermissions(u);
+                const hasCustomPerms =
+                  JSON.stringify([...effectivePerms].sort()) !==
+                  JSON.stringify([...(roleDef.allowedPermissions || [])].sort());
 
                 return (
                   <tr key={u.id} className="hover:bg-[#FAF8F5]/80 transition-colors">
@@ -583,7 +696,7 @@ export default function UsersClient({
                         {isSuperadmin ? (
                           <select
                             value={u.role}
-                            onChange={(e) => handleRoleChange(u.id, e.target.value)}
+                            onChange={(e) => handleQuickRoleChange(u.id, e.target.value)}
                             disabled={isMe}
                             className="px-2.5 py-1.5 bg-white border border-[#D4AF37]/40 rounded-xl text-xs font-bold text-[#2C2A29] focus:outline-none focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] disabled:opacity-60 cursor-pointer shadow-xs"
                           >
@@ -602,7 +715,7 @@ export default function UsersClient({
                             ) : (
                               <select
                                 value={u.role}
-                                onChange={(e) => handleRoleChange(u.id, e.target.value)}
+                                onChange={(e) => handleQuickRoleChange(u.id, e.target.value)}
                                 disabled={isMe || isTargetSuper}
                                 className="px-2.5 py-1.5 bg-white border border-[#D4AF37]/40 rounded-xl text-xs font-bold text-[#2C2A29] focus:outline-none focus:border-[#D4AF37] disabled:opacity-60 cursor-pointer shadow-xs"
                               >
@@ -619,20 +732,21 @@ export default function UsersClient({
                       </div>
                     </td>
 
-                    {/* Interactive Clickable Permissions Symbols & Text Badges */}
+                    {/* Permissions Symbols & Checkbox Badges */}
                     <td className="py-3.5 px-4">
                       <div className="space-y-1.5">
                         {/* Summary Pill */}
-                        <div className="flex items-center gap-1.5">
-                          {u.role === "GUEST" ? (
-                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-bold bg-amber-50 text-amber-800 border border-amber-300">
-                              <span>🔒</span>
-                              <span>គ្មានសិទ្ធិកែប្រែ (Zero-Permission Read-Only)</span>
+                        <div className="flex items-center gap-2">
+                          <span className="text-[11px] font-bold text-stone-700 flex items-center gap-1">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                            <span>
+                              {effectivePerms.length} / {PERMISSION_ITEMS.length} សិទ្ធិបានធីក (Checked)
                             </span>
-                          ) : (
-                            <span className="text-[11px] font-bold text-stone-700 flex items-center gap-1">
-                              <CheckCircle2 className="w-3 h-3 text-emerald-600" />
-                              <span>{roleDef.allowedPermissions.length} សិទ្ធិត្រូវបានអនុញ្ញាត</span>
+                          </span>
+
+                          {hasCustomPerms && (
+                            <span className="inline-flex items-center gap-1 px-2 py-0.2 rounded-full text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-300">
+                              ⚡ សិទ្ធិកំណត់ផ្ទាល់ខ្លួន (Custom)
                             </span>
                           )}
                         </div>
@@ -640,27 +754,27 @@ export default function UsersClient({
                         {/* Clickable Symbols & Text Grid */}
                         <div className="flex flex-wrap items-center gap-1">
                           {PERMISSION_ITEMS.map((perm) => {
-                            const isAllowed = roleDef.allowedPermissions.includes(perm.id);
+                            const isChecked = effectivePerms.includes(perm.id);
                             return (
                               <button
                                 key={perm.id}
                                 type="button"
                                 onClick={() => openInspector(u)}
                                 title={`${perm.nameKh} (${perm.nameEn}): ${
-                                  isAllowed ? "បានអនុញ្ញាត (Allowed)" : "ហាមឃាត់ (Restricted)"
+                                  isChecked ? "បានធីកអនុញ្ញាត (Checked / Allowed)" : "មិនបានធីក (Unchecked)"
                                 }`}
                                 className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-medium transition-all cursor-pointer ${
-                                  isAllowed
-                                    ? "bg-stone-50 border border-stone-200 text-stone-800 hover:bg-[#FAF8F5] hover:border-[#D4AF37]"
+                                  isChecked
+                                    ? "bg-emerald-50/80 border border-emerald-300 text-emerald-900 hover:bg-emerald-100 shadow-2xs"
                                     : "bg-stone-100/40 text-stone-400 line-through opacity-50 border border-dashed border-stone-200"
                                 }`}
                               >
                                 <span>{perm.symbol}</span>
                                 <span className="font-khmer">{perm.nameKh.split(" ")[0]}</span>
-                                {isAllowed ? (
-                                  <span className="text-emerald-600 font-bold">✓</span>
+                                {isChecked ? (
+                                  <span className="text-emerald-700 font-bold">☑</span>
                                 ) : (
-                                  <span className="text-stone-400 font-bold">✕</span>
+                                  <span className="text-stone-400 font-bold">☐</span>
                                 )}
                               </button>
                             );
@@ -680,11 +794,11 @@ export default function UsersClient({
                         <button
                           type="button"
                           onClick={() => openInspector(u)}
-                          className="px-2.5 py-1.5 rounded-xl border border-[#D4AF37]/40 bg-[#FAF8F5] hover:bg-[#D4AF37]/15 text-[#AA7C11] font-bold text-xs flex items-center gap-1 transition-all shadow-2xs active:scale-95 cursor-pointer"
-                          title="ពិនិត្យ និងកែប្រែសិទ្ធិ (Inspect & Edit Permissions)"
+                          className="px-2.5 py-1.5 rounded-xl border border-[#D4AF37]/50 bg-[#FAF8F5] hover:bg-[#D4AF37]/20 text-[#AA7C11] font-bold text-xs flex items-center gap-1.5 transition-all shadow-2xs active:scale-95 cursor-pointer"
+                          title="ពិនិត្យ និងធីក/ដកធីកសិទ្ធិ (Inspect & Check/Uncheck Permissions)"
                         >
-                          <ShieldCheck className="w-3.5 h-3.5" />
-                          <span className="hidden sm:inline">ពិនិត្យសិទ្ធិ</span>
+                          <CheckSquare className="w-3.5 h-3.5" />
+                          <span className="hidden sm:inline">ធីក / កែសិទ្ធិ</span>
                         </button>
 
                         {!isMe && (!isTargetSuper || isSuperadmin) && (
@@ -715,7 +829,7 @@ export default function UsersClient({
       </div>
 
       {/* ============================================================ */}
-      {/* MODAL 1: CREATE USER WITH CLICKABLE SYMBOLS & TEXT CARDS     */}
+      {/* MODAL 1: CREATE USER WITH CLICKABLE CHECKBOXES & SYMBOLS     */}
       {/* ============================================================ */}
       {isAddOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
@@ -728,10 +842,10 @@ export default function UsersClient({
                 </div>
                 <div>
                   <h3 className="font-serif text-xl font-bold text-[#2C2A29]">
-                    បង្កើតអ្នកប្រើប្រាស់ថ្មី (Create User with Role &amp; Permissions)
+                    បង្កើតអ្នកប្រើប្រាស់ថ្មី (Create User &amp; Assign Permissions)
                   </h3>
                   <p className="text-[11px] text-[#3E444A]/70 font-khmer">
-                    ចុចជ្រើសរើសតួនាទីតាមនិមិត្តសញ្ញា (Symbol &amp; Text) និងពិនិត្យសិទ្ធិនីមួយៗ
+                    ចុចជ្រើសរើសតួនាទី និងអាច <strong className="text-amber-800">ធីក (Check) ឬដកធីក (Uncheck)</strong> សិទ្ធិនីមួយៗដោយសេរី
                   </p>
                 </div>
               </div>
@@ -809,12 +923,12 @@ export default function UsersClient({
                 </div>
               </div>
 
-              {/* CLICKABLE ROLE SELECTION CARDS WITH SYMBOLS & TEXT */}
+              {/* ROLE SELECTION CARDS */}
               <div>
                 <label className="block text-xs font-bold text-[#2C2A29] mb-2 font-khmer flex items-center justify-between">
                   <span className="flex items-center gap-1.5">
                     <Shield className="w-4 h-4 text-[#AA7C11]" />
-                    <span>ចុចជ្រើសរើសតួនាទី (Click to Select Role with Symbols &amp; Text)</span>
+                    <span>ជ្រើសរើសតួនាទីគោល (Select Base Role)</span>
                   </span>
                   <span className="text-[11px] font-normal text-stone-400">
                     តួនាទីបច្ចុប្បន្ន: <strong className="text-stone-700">{formData.role}</strong>
@@ -829,7 +943,7 @@ export default function UsersClient({
                     return (
                       <div
                         key={roleKey}
-                        onClick={() => setFormData({ ...formData, role: roleKey })}
+                        onClick={() => handleSelectRoleInCreate(roleKey)}
                         className={`p-3.5 rounded-2xl border-2 cursor-pointer transition-all flex flex-col justify-between gap-2 text-left ${
                           isSelected
                             ? `${r.activeBorder} ${r.activeBg} shadow-sm`
@@ -846,7 +960,7 @@ export default function UsersClient({
                                 <span>{r.role}</span>
                                 {roleKey === "GUEST" && (
                                   <span className="text-[10px] bg-amber-100 text-amber-800 px-1.5 py-0.2 rounded font-bold">
-                                    Zero-Permission
+                                    Default Viewer
                                   </span>
                                 )}
                               </div>
@@ -876,47 +990,105 @@ export default function UsersClient({
                 </div>
               </div>
 
-              {/* GRANULAR PERMISSIONS MATRIX WITH CLICKABLE SYMBOLS & TEXT */}
-              <div className="bg-[#FAF8F5] p-4 rounded-2xl border border-[#D4AF37]/30 space-y-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-1.5">
-                    <Sparkles className="w-4 h-4 text-[#AA7C11]" />
-                    <h4 className="text-xs font-bold text-[#2C2A29] uppercase tracking-wide">
-                      តារាងសិទ្ធិលម្អិតតាមនិមិត្តសញ្ញា (Permissions Matrix for {formData.role})
-                    </h4>
+              {/* GRANULAR PERMISSIONS WITH CHECKBOXES (CHECK / UNCHECK) */}
+              <div className="bg-[#FAF8F5] p-4 sm:p-5 rounded-3xl border border-[#D4AF37]/35 space-y-3.5">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-[#D4AF37]/20">
+                  <div className="flex items-center gap-2">
+                    <CheckSquare className="w-4 h-4 text-[#AA7C11]" />
+                    <div>
+                      <h4 className="text-xs sm:text-sm font-bold text-[#2C2A29]">
+                        កំណត់សិទ្ធិលម្អិតតាម Checkbox (Granular Permissions)
+                      </h4>
+                      <p className="text-[10px] text-stone-500 font-khmer">
+                        ចុចលើប្រអប់ Checkbox ឬកាតសិទ្ធិដើម្បី <strong className="text-emerald-700">ធីក (Check)</strong> ឬ <strong className="text-stone-700">ដកធីក (Uncheck)</strong>
+                      </p>
+                    </div>
                   </div>
-                  <span className="text-[11px] text-[#AA7C11] font-semibold">
-                    {ROLE_DEFINITIONS[formData.role]?.allowedPermissions.length} / {PERMISSION_ITEMS.length} សិទ្ធិ
-                  </span>
+
+                  {/* Quick Check/Uncheck Tools */}
+                  <div className="flex items-center gap-1.5 self-start sm:self-auto">
+                    <button
+                      type="button"
+                      onClick={checkAllFormPermissions}
+                      className="px-2 py-1 bg-white hover:bg-stone-50 border border-stone-200 rounded-lg text-[10px] font-semibold text-stone-700 flex items-center gap-1 cursor-pointer transition-all shadow-2xs"
+                      title="ជ្រើសរើសធីកទាំងអស់"
+                    >
+                      <CheckSquare className="w-3 h-3 text-emerald-600" />
+                      <span>ធីកទាំងអស់ (Check All)</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={uncheckAllFormPermissions}
+                      className="px-2 py-1 bg-white hover:bg-stone-50 border border-stone-200 rounded-lg text-[10px] font-semibold text-stone-700 flex items-center gap-1 cursor-pointer transition-all shadow-2xs"
+                      title="ដកធីកទាំងអស់"
+                    >
+                      <Square className="w-3 h-3 text-stone-400" />
+                      <span>ដកធីក (Uncheck All)</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={resetFormPermissionsToRole}
+                      className="px-2 py-1 bg-[#D4AF37]/15 hover:bg-[#D4AF37]/25 border border-[#D4AF37]/40 rounded-lg text-[10px] font-bold text-[#AA7C11] flex items-center gap-1 cursor-pointer transition-all shadow-2xs"
+                      title="កំណត់ឡើងវិញតាម Role"
+                    >
+                      <RotateCcw className="w-3 h-3" />
+                      <span>Reset Role</span>
+                    </button>
+                  </div>
                 </div>
 
-                <p className="text-[11px] text-stone-600 font-khmer">
-                  ចុចលើសិទ្ធិនីមួយៗដើម្បីមើលព័ត៌មានលម្អិត (Click any permission card to inspect):
-                </p>
+                <div className="flex items-center justify-between text-xs font-bold text-stone-700">
+                  <span>
+                    សិទ្ធិដែលបានធីកអនុញ្ញាត: <strong className="text-emerald-700">{formPermissions.length}</strong> / {PERMISSION_ITEMS.length}
+                  </span>
+                  {formPermissions.length === 0 && (
+                    <span className="text-amber-800 text-[11px] font-semibold bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
+                      🔒 គ្មានសិទ្ធិអ្វីទាំងអស់ (Zero Permissions)
+                    </span>
+                  )}
+                </div>
 
-                {/* 2-Column Permissions Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {/* 2-Column Checkbox Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                   {PERMISSION_ITEMS.map((perm) => {
-                    const isAllowed = ROLE_DEFINITIONS[formData.role]?.allowedPermissions.includes(perm.id);
+                    const isChecked = formPermissions.includes(perm.id);
                     const isExpanded = selectedPermDetails === perm.id;
 
                     return (
                       <div
                         key={perm.id}
-                        onClick={() => setSelectedPermDetails(isExpanded ? null : perm.id)}
-                        className={`p-2.5 rounded-xl border text-xs cursor-pointer transition-all ${
-                          isAllowed
-                            ? "bg-white border-emerald-200/90 shadow-2xs hover:border-emerald-400"
-                            : "bg-stone-100/60 border-stone-200/80 opacity-70 hover:opacity-90"
+                        className={`p-3 rounded-2xl border transition-all text-xs flex flex-col justify-between gap-1.5 ${
+                          isChecked
+                            ? "bg-white border-emerald-400/80 shadow-xs ring-1 ring-emerald-400/20"
+                            : "bg-white/60 border-stone-200 hover:border-stone-300 opacity-80"
                         }`}
                       >
                         <div className="flex items-center justify-between gap-2">
-                          <div className="flex items-center gap-2 min-w-0">
-                            <span className="text-base p-1 rounded-lg bg-stone-50 border border-stone-200 shrink-0">
+                          {/* Left: Checkbox + Symbol + Text */}
+                          <div
+                            onClick={() => toggleFormPermission(perm.id)}
+                            className="flex items-center gap-2.5 cursor-pointer flex-1 min-w-0"
+                          >
+                            <div
+                              className={`w-5 h-5 rounded-lg flex items-center justify-center border transition-all shrink-0 ${
+                                isChecked
+                                  ? "bg-emerald-600 border-emerald-700 text-white shadow-2xs"
+                                  : "border-stone-300 bg-white hover:border-stone-400"
+                              }`}
+                            >
+                              {isChecked && <Check className="w-3.5 h-3.5 stroke-[3]" />}
+                            </div>
+
+                            <span className="text-lg p-1 rounded-lg bg-[#FAF8F5] border border-stone-200/80 shrink-0">
                               {perm.symbol}
                             </span>
+
                             <div className="min-w-0">
-                              <span className="font-bold text-[11px] text-[#2C2A29] block truncate font-khmer">
+                              <span
+                                className={`font-bold text-[11px] block truncate font-khmer ${
+                                  isChecked ? "text-[#2C2A29]" : "text-stone-500"
+                                }`}
+                              >
                                 {perm.nameKh}
                               </span>
                               <span className="text-[10px] text-stone-400 truncate block">
@@ -925,29 +1097,41 @@ export default function UsersClient({
                             </div>
                           </div>
 
-                          <div className="shrink-0">
-                            {isAllowed ? (
-                              <span className="inline-flex items-center gap-0.5 text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
-                                <span>✔️</span>
-                                <span>អនុញ្ញាត</span>
-                              </span>
-                            ) : (
-                              <span className="inline-flex items-center gap-0.5 text-[10px] font-bold text-red-600 bg-red-50 px-2 py-0.5 rounded-md border border-red-200">
-                                <span>❌</span>
-                                <span>ហាមឃាត់</span>
-                              </span>
-                            )}
+                          {/* Right: Status Pill & Info Toggle */}
+                          <div className="flex items-center gap-1.5 shrink-0">
+                            <span
+                              onClick={() => toggleFormPermission(perm.id)}
+                              className={`px-2 py-0.5 rounded-md text-[10px] font-bold cursor-pointer select-none border ${
+                                isChecked
+                                  ? "bg-emerald-50 text-emerald-800 border-emerald-300"
+                                  : "bg-stone-100 text-stone-500 border-stone-200"
+                              }`}
+                            >
+                              {isChecked ? "✓ បានធីក" : "☐ មិនបានធីក"}
+                            </span>
+
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedPermDetails(isExpanded ? null : perm.id);
+                              }}
+                              className="text-stone-400 hover:text-stone-600 p-1 rounded-md hover:bg-stone-100 cursor-pointer"
+                              title="មើលការពន្យល់"
+                            >
+                              <Info className="w-3.5 h-3.5" />
+                            </button>
                           </div>
                         </div>
 
                         {/* Expandable Explanation Details */}
                         {isExpanded && (
-                          <div className="mt-2 pt-2 border-t border-stone-100 text-[10px] text-stone-600 font-khmer animate-in fade-in">
+                          <div className="mt-1 pt-2 border-t border-stone-100 text-[10px] text-stone-600 font-khmer animate-in fade-in">
                             <p className="mb-1">{perm.descKh}</p>
                             <span className="text-stone-400 block">
-                              {isAllowed
-                                ? `✓ តួនាទី ${formData.role} ត្រូវបានអនុញ្ញាតឱ្យប្រើប្រាស់មុខងារនេះ។`
-                                : `✕ តួនាទី ${formData.role} ត្រូវបានបិទសិទ្ធិដោយស្វ័យប្រវត្តិដើម្បីសុវត្ថិភាពទិន្នន័យ។`}
+                              {isChecked
+                                ? "✓ គណនីនេះត្រូវបានអនុញ្ញាតឱ្យប្រើប្រាស់មុខងារនេះ។"
+                                : "✕ គណនីនេះត្រូវបានបិទសិទ្ធិមិនឱ្យប្រើប្រាស់មុខងារនេះឡើយ។"}
                             </span>
                           </div>
                         )}
@@ -987,7 +1171,7 @@ export default function UsersClient({
       )}
 
       {/* ============================================================ */}
-      {/* MODAL 2: USER PERMISSIONS & ROLE INSPECTOR (CLICKABLE CARDS) */}
+      {/* MODAL 2: INSPECT & CHECK/UNCHECK PERMISSIONS FOR A USER      */}
       {/* ============================================================ */}
       {inspectUser && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
@@ -1021,7 +1205,7 @@ export default function UsersClient({
             {/* Clickable Role Switcher Cards with Symbols & Text */}
             <div>
               <label className="block text-xs font-bold text-[#2C2A29] mb-2 font-khmer flex items-center justify-between">
-                <span>ចុចផ្លាស់ប្តូរតួនាទី (Click to Switch Role with Symbols &amp; Text):</span>
+                <span>ចុចផ្លាស់ប្តូរតួនាទី (Switch Role):</span>
                 {inspectSelectedRole !== inspectUser.role && (
                   <span className="text-[11px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200">
                     * មានការផ្លាស់ប្តូរដែលមិនទាន់រក្សាទុក
@@ -1041,7 +1225,7 @@ export default function UsersClient({
                   return (
                     <div
                       key={roleKey}
-                      onClick={() => setInspectSelectedRole(roleKey)}
+                      onClick={() => handleSelectRoleInInspector(roleKey)}
                       className={`p-3.5 rounded-2xl border-2 cursor-pointer transition-all flex flex-col justify-between gap-1.5 text-left ${
                         isSelected
                           ? `${r.activeBorder} ${r.activeBg} shadow-sm`
@@ -1086,42 +1270,105 @@ export default function UsersClient({
               </div>
             </div>
 
-            {/* Complete Permission Symbols & Text Inspection Matrix */}
-            <div className="bg-[#FAF8F5] p-4 rounded-2xl border border-[#D4AF37]/30 space-y-3">
-              <div className="flex items-center justify-between">
+            {/* Checkboxes Section (Check / Uncheck individual permissions) */}
+            <div className="bg-[#FAF8F5] p-4 sm:p-5 rounded-3xl border border-[#D4AF37]/35 space-y-3.5">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-[#D4AF37]/20">
                 <div className="flex items-center gap-2">
-                  <ShieldCheck className="w-4 h-4 text-[#AA7C11]" />
-                  <h4 className="text-xs font-bold text-[#2C2A29] uppercase tracking-wide">
-                    សិទ្ធិប្រើប្រាស់លើប្រព័ន្ធ (System Permissions Matrix)
-                  </h4>
+                  <CheckSquare className="w-4 h-4 text-[#AA7C11]" />
+                  <div>
+                    <h4 className="text-xs sm:text-sm font-bold text-[#2C2A29]">
+                      កែសម្រួលសិទ្ធិដោយ Check / Uncheck
+                    </h4>
+                    <p className="text-[10px] text-stone-500 font-khmer">
+                      អ្នកអាចចុចធីក (Check) ឬដកធីក (Uncheck) សិទ្ធិនីមួយៗដោយសេរីសម្រាប់អ្នកប្រើនេះ៖
+                    </p>
+                  </div>
                 </div>
-                <span className="text-[11px] text-[#AA7C11] font-bold">
-                  {ROLE_DEFINITIONS[inspectSelectedRole]?.allowedPermissions.length} / {PERMISSION_ITEMS.length} សិទ្ធិ
-                </span>
+
+                {/* Quick Check/Uncheck Tools */}
+                <div className="flex items-center gap-1.5 self-start sm:self-auto">
+                  <button
+                    type="button"
+                    onClick={checkAllInspectPermissions}
+                    className="px-2 py-1 bg-white hover:bg-stone-50 border border-stone-200 rounded-lg text-[10px] font-semibold text-stone-700 flex items-center gap-1 cursor-pointer transition-all shadow-2xs"
+                    title="ជ្រើសរើសធីកទាំងអស់"
+                  >
+                    <CheckSquare className="w-3 h-3 text-emerald-600" />
+                    <span>ធីកទាំងអស់</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={uncheckAllInspectPermissions}
+                    className="px-2 py-1 bg-white hover:bg-stone-50 border border-stone-200 rounded-lg text-[10px] font-semibold text-stone-700 flex items-center gap-1 cursor-pointer transition-all shadow-2xs"
+                    title="ដកធីកទាំងអស់"
+                  >
+                    <Square className="w-3 h-3 text-stone-400" />
+                    <span>ដកធីក</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={resetInspectPermissionsToRole}
+                    className="px-2 py-1 bg-[#D4AF37]/15 hover:bg-[#D4AF37]/25 border border-[#D4AF37]/40 rounded-lg text-[10px] font-bold text-[#AA7C11] flex items-center gap-1 cursor-pointer transition-all shadow-2xs"
+                    title="កំណត់ឡើងវិញតាម Role"
+                  >
+                    <RotateCcw className="w-3 h-3" />
+                    <span>Reset Role</span>
+                  </button>
+                </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <div className="flex items-center justify-between text-xs font-bold text-stone-700">
+                <span>
+                  សិទ្ធិដែលបានធីកអនុញ្ញាត: <strong className="text-emerald-700">{inspectPermissions.length}</strong> / {PERMISSION_ITEMS.length}
+                </span>
+                {inspectPermissions.length === 0 && (
+                  <span className="text-amber-800 text-[11px] font-semibold bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
+                    🔒 គ្មានសិទ្ធិអ្វីទាំងអស់ (Zero Permissions)
+                  </span>
+                )}
+              </div>
+
+              {/* 2-Column Checkboxes Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 {PERMISSION_ITEMS.map((perm) => {
-                  const isAllowed = ROLE_DEFINITIONS[inspectSelectedRole]?.allowedPermissions.includes(perm.id);
+                  const isChecked = inspectPermissions.includes(perm.id);
                   const isExpanded = inspectActivePerm === perm.id;
 
                   return (
                     <div
                       key={perm.id}
-                      onClick={() => setInspectActivePerm(isExpanded ? null : perm.id)}
-                      className={`p-2.5 rounded-xl border text-xs cursor-pointer transition-all ${
-                        isAllowed
-                          ? "bg-white border-emerald-200/90 shadow-2xs hover:border-emerald-400"
-                          : "bg-stone-100/60 border-stone-200/80 opacity-70 hover:opacity-90"
+                      className={`p-3 rounded-2xl border transition-all text-xs flex flex-col justify-between gap-1.5 ${
+                        isChecked
+                          ? "bg-white border-emerald-400/80 shadow-xs ring-1 ring-emerald-400/20"
+                          : "bg-white/60 border-stone-200 hover:border-stone-300 opacity-80"
                       }`}
                     >
                       <div className="flex items-center justify-between gap-2">
-                        <div className="flex items-center gap-2 min-w-0">
-                          <span className="text-base p-1 rounded-lg bg-stone-50 border border-stone-200 shrink-0">
+                        {/* Left: Checkbox + Symbol + Text */}
+                        <div
+                          onClick={() => toggleInspectPermission(perm.id)}
+                          className="flex items-center gap-2.5 cursor-pointer flex-1 min-w-0"
+                        >
+                          <div
+                            className={`w-5 h-5 rounded-lg flex items-center justify-center border transition-all shrink-0 ${
+                              isChecked
+                                ? "bg-emerald-600 border-emerald-700 text-white shadow-2xs"
+                                : "border-stone-300 bg-white hover:border-stone-400"
+                            }`}
+                          >
+                            {isChecked && <Check className="w-3.5 h-3.5 stroke-[3]" />}
+                          </div>
+
+                          <span className="text-lg p-1 rounded-lg bg-[#FAF8F5] border border-stone-200/80 shrink-0">
                             {perm.symbol}
                           </span>
+
                           <div className="min-w-0">
-                            <span className="font-bold text-[11px] text-[#2C2A29] block truncate font-khmer">
+                            <span
+                              className={`font-bold text-[11px] block truncate font-khmer ${
+                                isChecked ? "text-[#2C2A29]" : "text-stone-500"
+                              }`}
+                            >
                               {perm.nameKh}
                             </span>
                             <span className="text-[10px] text-stone-400 truncate block">
@@ -1130,26 +1377,39 @@ export default function UsersClient({
                           </div>
                         </div>
 
-                        <div className="shrink-0">
-                          {isAllowed ? (
-                            <span className="inline-flex items-center gap-0.5 text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
-                              <span>✔️</span>
-                              <span>អនុញ្ញាត</span>
-                            </span>
-                          ) : (
-                            <span className="inline-flex items-center gap-0.5 text-[10px] font-bold text-red-600 bg-red-50 px-2 py-0.5 rounded-md border border-red-200">
-                              <span>❌</span>
-                              <span>ហាមឃាត់</span>
-                            </span>
-                          )}
+                        {/* Right: Status Pill & Info Toggle */}
+                        <div className="flex items-center gap-1.5 shrink-0">
+                          <span
+                            onClick={() => toggleInspectPermission(perm.id)}
+                            className={`px-2 py-0.5 rounded-md text-[10px] font-bold cursor-pointer select-none border ${
+                              isChecked
+                                ? "bg-emerald-50 text-emerald-800 border-emerald-300"
+                                : "bg-stone-100 text-stone-500 border-stone-200"
+                            }`}
+                          >
+                            {isChecked ? "✓ បានធីក" : "☐ មិនបានធីក"}
+                          </span>
+
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setInspectActivePerm(isExpanded ? null : perm.id);
+                            }}
+                            className="text-stone-400 hover:text-stone-600 p-1 rounded-md hover:bg-stone-100 cursor-pointer"
+                            title="មើលការពន្យល់"
+                          >
+                            <Info className="w-3.5 h-3.5" />
+                          </button>
                         </div>
                       </div>
 
+                      {/* Expandable Explanation Details */}
                       {isExpanded && (
-                        <div className="mt-2 pt-2 border-t border-stone-100 text-[10px] text-stone-600 font-khmer animate-in fade-in">
+                        <div className="mt-1 pt-2 border-t border-stone-100 text-[10px] text-stone-600 font-khmer animate-in fade-in">
                           <p className="mb-1">{perm.descKh}</p>
                           <span className="text-stone-400 block">
-                            {isAllowed
+                            {isChecked
                               ? `✓ អនុញ្ញាតឱ្យ ${inspectUser.name} ប្រើមុខងារនេះ។`
                               : `✕ ហាមឃាត់មិនឱ្យប្រើមុខងារនេះឡើយ។`}
                           </span>
@@ -1168,26 +1428,23 @@ export default function UsersClient({
                 onClick={() => setInspectUser(null)}
                 className="px-4 py-2.5 text-xs font-semibold rounded-xl text-stone-600 hover:bg-stone-100 transition-all cursor-pointer"
               >
-                បិទ (Close)
+                បោះបង់ (Cancel)
               </button>
 
               <button
                 type="button"
-                disabled={inspectSelectedRole === inspectUser.role || loading}
-                onClick={async () => {
-                  if (inspectSelectedRole !== inspectUser.role) {
-                    await handleRoleChange(inspectUser.id, inspectSelectedRole);
-                    setInspectUser(null);
-                  }
-                }}
+                disabled={loading}
+                onClick={handleSaveInspectUser}
                 className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#AA7C11] text-white text-xs font-bold shadow hover:brightness-110 active:scale-95 disabled:opacity-50 transition-all flex items-center gap-1.5 cursor-pointer"
               >
-                <Check className="w-4 h-4" />
-                <span>
-                  {inspectSelectedRole === inspectUser.role
-                    ? "តួនាទីមិនផ្លាស់ប្តូរ (No Change)"
-                    : `រក្សាទុកតួនាទីថ្មីជា ${inspectSelectedRole}`}
-                </span>
+                {loading ? (
+                  <span>កំពុងរក្សាទុក...</span>
+                ) : (
+                  <>
+                    <Check className="w-4 h-4" />
+                    <span>រក្សាទុកសិទ្ធិ (Save Role &amp; Permissions)</span>
+                  </>
+                )}
               </button>
             </div>
           </div>
