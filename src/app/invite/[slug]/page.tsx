@@ -3,6 +3,8 @@ import { prisma } from "@/lib/prisma";
 import InvitationClient from "./InvitationClient";
 import type { Metadata } from "next";
 
+export const dynamic = "force-dynamic";
+
 interface PageProps {
   params: Promise<{ slug: string }>;
   searchParams: Promise<{ code?: string }>;

@@ -14,9 +14,18 @@ import {
   Lock,
 } from "lucide-react";
 
+export const dynamic = "force-dynamic";
+
 export default async function HomePage() {
-  const event = await prisma.event.findFirst({ select: { slug: true } });
-  const eventSlug = event?.slug || "davita-and-meassa";
+  let eventSlug = "so-vith-and-ma-na";
+  try {
+    const event = await prisma.event.findFirst({ select: { slug: true } });
+    if (event?.slug) {
+      eventSlug = event.slug;
+    }
+  } catch (err) {
+    console.warn("Could not query event for portal during build/runtime:", err);
+  }
   return (
     <div className="min-h-screen bg-[#FAF8F5] text-[#2C2A29]">
       {/* Top Navbar */}

@@ -1,6 +1,8 @@
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+
 export default async function HomePage({
   searchParams,
 }: {
@@ -16,10 +18,15 @@ export default async function HomePage({
   }
 
   const queryString = search.toString();
-  const event = await prisma.event.findFirst({
-    select: { slug: true },
-  });
-  const slug = event?.slug || "davita-and-meassa";
+  let slug = "so-vith-and-ma-na";
+  try {
+    const event = await prisma.event.findFirst({
+      select: { slug: true },
+    });
+    if (event?.slug) slug = event.slug;
+  } catch (err) {
+    console.warn("HomePage event findFirst fallback:", err);
+  }
 
   redirect(`/invite/${slug}${queryString ? `?${queryString}` : ""}`);
 }
