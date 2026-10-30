@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useTransition, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   LayoutDashboard,
   Users,
@@ -10,7 +10,6 @@ import {
   Image as ImageIcon,
   MessageSquare,
   ShieldAlert,
-  Loader2,
   ChevronRight,
 } from "lucide-react";
 
@@ -20,6 +19,7 @@ interface SidebarNavProps {
 
 interface NavItem {
   name: string;
+  nameKm?: string;
   href: string;
   icon: any;
   superadminOnly?: boolean;
@@ -28,31 +28,37 @@ interface NavItem {
 const NAV_ITEMS: NavItem[] = [
   {
     name: "Overview",
+    nameKm: "ទិដ្ឋភាពទូទៅ",
     href: "/dashboard",
     icon: LayoutDashboard,
   },
   {
     name: "Guests & RSVPs",
+    nameKm: "ភ្ញៀវ & RSVP",
     href: "/dashboard/guests",
     icon: Users,
   },
   {
     name: "Event Details & Theme",
+    nameKm: "ព័ត៌មាន & ម៉ូដកម្មវិធី",
     href: "/dashboard/event",
     icon: Calendar,
   },
   {
     name: "Photos & Videos",
+    nameKm: "រូបភាព & វីដេអូ",
     href: "/dashboard/media",
     icon: ImageIcon,
   },
   {
     name: "Guestbook Wishes",
+    nameKm: "សៀវភៅជូនពរ",
     href: "/dashboard/wishes",
     icon: MessageSquare,
   },
   {
     name: "Manage User Roles",
+    nameKm: "គ្រប់គ្រងអ្នកប្រើប្រាស់",
     href: "/dashboard/users",
     icon: ShieldAlert,
     superadminOnly: true,
@@ -62,23 +68,34 @@ const NAV_ITEMS: NavItem[] = [
 export default function SidebarNav({ userRole }: SidebarNavProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const [isPending, startTransition] = useTransition();
-  const [navigatingHref, setNavigatingHref] = useState<string | null>(null);
+  
+  // Instant optimistic active state for 0ms lag feedback
+  const [optimisticPath, setOptimisticPath] = useState<string | null>(null);
 
-  // Clear navigating state when pathname changes
+  // Sync optimistic path when real pathname changes
   useEffect(() => {
-    setNavigatingHref(null);
+    setOptimisticPath(null);
   }, [pathname]);
 
-  const handleNavClick = (href: string, e: React.MouseEvent) => {
+  // Aggressive background prefetching on mount: caches all pages in memory
+  useEffect(() => {
+    NAV_ITEMS.forEach((item) => {
+      if (!item.superadminOnly || userRole === "SUPERADMIN") {
+        router.prefetch(item.href);
+      }
+    });
+  }, [router, userRole]);
+
+  const activeRoute = optimisticPath || pathname;
+
+  const handleLinkClick = (href: string, e: React.MouseEvent) => {
+    // If already on the exact same page, prevent redundant navigation
     if (pathname === href) {
       e.preventDefault();
       return;
     }
-    setNavigatingHref(href);
-    startTransition(() => {
-      router.push(href);
-    });
+    // Instantly reflect active state in UI with 0ms delay
+    setOptimisticPath(href);
   };
 
   return (
@@ -87,26 +104,25 @@ export default function SidebarNav({ userRole }: SidebarNavProps) {
         const Icon = item.icon;
         const isActive =
           item.href === "/dashboard"
-            ? pathname === "/dashboard"
-            : pathname.startsWith(item.href);
-        const isLoading = navigatingHref === item.href && isPending;
+            ? activeRoute === "/dashboard"
+            : activeRoute.startsWith(item.href);
 
         return (
           <Link
             key={item.href}
             href={item.href}
             prefetch={true}
-            onClick={(e) => handleNavClick(item.href, e)}
+            onClick={(e) => handleLinkClick(item.href, e)}
             onMouseEnter={() => {
               try {
                 router.prefetch(item.href);
               } catch (_) {}
             }}
-            className={`group relative flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs font-medium transition-all duration-150 ${
+            className={`group relative flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs font-medium transition-all duration-100 ${
               isActive
-                ? "bg-gradient-to-r from-[#D4AF37]/25 to-[#AA7C11]/15 text-[#845e0d] font-bold border border-[#D4AF37]/45 shadow-sm"
-                : "text-[#3E444A] hover:bg-[#FAF8F5] hover:text-[#AA7C11]"
-            } ${isLoading ? "opacity-80" : ""}`}
+                ? "bg-gradient-to-r from-[#D4AF37]/25 to-[#AA7C11]/15 text-[#845e0d] font-bold border border-[#D4AF37]/45 shadow-sm translate-x-0.5"
+                : "text-[#3E444A] hover:bg-[#FAF8F5] hover:text-[#AA7C11] hover:translate-x-0.5"
+            }`}
           >
             <div className="flex items-center gap-3">
               <div
@@ -116,20 +132,21 @@ export default function SidebarNav({ userRole }: SidebarNavProps) {
                     : "bg-stone-100/70 text-[#AA7C11] group-hover:bg-[#D4AF37]/20"
                 }`}
               >
-                {isLoading ? (
-                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                ) : (
-                  <Icon className="w-3.5 h-3.5" />
+                <Icon className="w-3.5 h-3.5" />
+              </div>
+              <div className="flex flex-col text-left">
+                <span className="tracking-wide leading-tight">{item.name}</span>
+                {item.nameKm && (
+                  <span className="text-[10px] text-stone-400 font-normal leading-tight">
+                    {item.nameKm}
+                  </span>
                 )}
               </div>
-              <span className="tracking-wide">{item.name}</span>
             </div>
 
-            {isActive && (
+            {isActive ? (
               <span className="w-1.5 h-1.5 rounded-full bg-[#AA7C11] animate-pulse" />
-            )}
-
-            {!isActive && !isLoading && (
+            ) : (
               <ChevronRight className="w-3.5 h-3.5 text-stone-300 opacity-0 group-hover:opacity-100 transition-opacity" />
             )}
           </Link>

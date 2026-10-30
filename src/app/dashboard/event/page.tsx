@@ -12,7 +12,13 @@ export default async function EventPage() {
         orderBy: { createdAt: "desc" },
       },
       guests: {
+        select: {
+          id: true,
+          name: true,
+          invitationCode: true,
+        },
         orderBy: { createdAt: "desc" },
+        take: 30,
       },
     },
   });
