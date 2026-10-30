@@ -1561,6 +1561,15 @@
         const svg = sealBtn.querySelector('svg');
         if (!svg) return;
 
+        // Hide default medallion crest if not default
+        svg.querySelectorAll('.wax-crest').forEach(el => {
+          if (sealStyle && sealStyle !== 'crown') {
+            el.style.display = 'none';
+          } else {
+            el.style.display = '';
+          }
+        });
+
         // Hide default crown path & circles if not crown
         const defaultPaths = Array.from(svg.querySelectorAll('path, circle')).filter(el => {
           const fill = el.getAttribute('fill') || '';
@@ -1593,9 +1602,11 @@
           `;
         } else if (sealStyle === 'monogram') {
           defaultPaths.forEach(el => el.style.display = 'none');
+          const gInit = (window.__customGroomInit || 'ដ').charAt(0);
+          const bInit = (window.__customBrideInit || 'ម').charAt(0);
           svgContent = `
-            <text x="70" y="78" text-anchor="middle" font-family="var(--f-moul, serif)" font-size="22" font-weight="bold" fill="${color}" filter="drop-shadow(0 2px 4px rgba(0,0,0,0.8))">
-              រ❦ភ
+            <text x="70" y="78" text-anchor="middle" font-family="var(--f-moul, serif)" font-size="20" font-weight="bold" fill="${color}" filter="drop-shadow(0 2px 4px rgba(0,0,0,0.8))">
+              ${gInit}❦${bInit}
             </text>
           `;
         } else if (sealStyle === 'knot') {
@@ -1613,6 +1624,7 @@
         }
         emblemG.innerHTML = svgContent;
       }
+      window.updateWaxSealEmblem = updateWaxSealEmblem;
 
       function applyThemePalette(themeVal) {
         if (typeof window.applyThemePalette === 'function') {
@@ -2006,6 +2018,35 @@
         const groomShort = groom ? groom.split(' ').pop() : '';
         const brideShort = bride ? bride.split(' ').pop() : '';
 
+        // Extract custom envelope configurations from theme JSON if present
+        let themeObj = {};
+        try {
+          if (typeof ev.theme === 'string' && ev.theme.startsWith('{')) {
+            themeObj = JSON.parse(ev.theme);
+          }
+        } catch (e) {}
+
+        // Custom Envelope Flap Calligraphy Names (falls back to custom envelopeGroom/Bride, or full groom/bride, or short)
+        const customEnvGroom = decodeEntities(themeObj.envelopeGroom || ev.envelopeGroom || '');
+        const customEnvBride = decodeEntities(themeObj.envelopeBride || ev.envelopeBride || '');
+        const envGroom = customEnvGroom || (groom.length <= 14 ? groom : groomShort);
+        const envBride = customEnvBride || (bride.length <= 14 ? bride : brideShort);
+
+        window.__customGroomInit = envGroom.charAt(0) || groom.charAt(0) || 'ដ';
+        window.__customBrideInit = envBride.charAt(0) || bride.charAt(0) || 'ម';
+
+        // Custom Envelope Gate Headings & Greetings
+        const envTitle = decodeEntities(themeObj.envelopeTitle || ev.envelopeTitle || ev.title || 'សិរីសួស្តីអាពាហ៍ពិពាហ៍');
+        const envSub = decodeEntities(themeObj.envelopeSub || ev.envelopeSub || 'The Wedding Invitation');
+        const envGreeting = decodeEntities(themeObj.envelopeGreeting || ev.envelopeGreeting || (ev.quote && ev.quote.includes('honor') ? JSON.parse(ev.quote).honor : '') || 'សូមគោរពអញ្ជើញ · CORDIALLY INVITING');
+
+        const kickerEl = document.querySelector('.gate__kicker');
+        if (kickerEl && kickerEl.textContent !== envTitle) kickerEl.textContent = envTitle;
+        const subEl = document.querySelector('.gate__sub');
+        if (subEl && subEl.textContent !== envSub) subEl.textContent = envSub;
+        const badgeSpan = document.querySelector('#gate-guest-badge > span');
+        if (badgeSpan && badgeSpan.textContent.trim() !== envGreeting) badgeSpan.textContent = envGreeting;
+
         // 1. Couple Names & Calligraphy Monograms
         if (groom) {
           document.querySelectorAll('[data-name="groom-local"], [data-name="groom-km"]').forEach(el => {
@@ -2015,7 +2056,7 @@
             if (el.textContent !== groomShort) el.textContent = groomShort;
           });
           document.querySelectorAll('.lk-groom').forEach(el => {
-            if (el.textContent !== groomShort) el.textContent = groomShort;
+            if (el.textContent !== envGroom) el.textContent = envGroom;
           });
         }
 
@@ -2027,7 +2068,7 @@
             if (el.textContent !== brideShort) el.textContent = brideShort;
           });
           document.querySelectorAll('.lk-bride').forEach(el => {
-            if (el.textContent !== brideShort) el.textContent = brideShort;
+            if (el.textContent !== envBride) el.textContent = envBride;
           });
         }
 
@@ -2081,6 +2122,19 @@
           applyImageToSelector('.gate__bg', ev.coverImageUrl);
           applyImageToSelector('#hero-media', ev.coverImageUrl);
           applyImageToSelector('#pond picture', ev.coverImageUrl);
+
+          const gateBgEl = document.querySelector('.gate__bg');
+          if (gateBgEl) {
+            const gateImg = gateBgEl.querySelector('img');
+            if (gateImg && gateImg.src !== ev.coverImageUrl) {
+              gateImg.src = ev.coverImageUrl;
+              gateImg.srcset = ev.coverImageUrl;
+            }
+            gateBgEl.querySelectorAll('source').forEach(s => {
+              s.srcset = ev.coverImageUrl;
+              s.removeAttribute('media');
+            });
+          }
         }
         if (ev.couplePhotoUrl) {
           applyImageToSelector('#couple-frame', ev.couplePhotoUrl);
@@ -2091,6 +2145,27 @@
           applyImageToSelector('#words .arch', ev.groomPhotoUrl);
         } else if (ev.bridePhotoUrl) {
           applyImageToSelector('#words .arch', ev.bridePhotoUrl);
+        }
+
+        // 3a. Inside Formal Invitation Letter Honor Title & Body
+        if (ev.quote) {
+          try {
+            const qObj = typeof ev.quote === 'string' && ev.quote.startsWith('{') ? JSON.parse(ev.quote) : null;
+            if (qObj) {
+              if (qObj.honor) {
+                const decHonor = decodeEntities(qObj.honor);
+                document.querySelectorAll('[data-t="cardHonor"], .paper__honor').forEach(el => {
+                  if (el.textContent !== decHonor) el.textContent = decHonor;
+                });
+              }
+              if (qObj.body) {
+                const decBody = decodeEntities(qObj.body);
+                document.querySelectorAll('[data-t="cardBody"], .paper__body').forEach(el => {
+                  if (el.textContent !== decBody) el.textContent = decBody;
+                });
+              }
+            }
+          } catch (e) {}
         }
 
         // 3b. Khmer Lunar Calendar Date

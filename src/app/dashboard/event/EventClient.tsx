@@ -321,6 +321,11 @@ export const parseThemeConfig = (raw: string) => {
     sealStyle: "crown",
     frameStyle: "ornate-kbach",
     animationStyle: "falling-petals",
+    envelopeGroom: "",
+    envelopeBride: "",
+    envelopeTitle: "សិរីសួស្ដីអាពាហ៍ពិពាហ៍",
+    envelopeSub: "The Wedding Invitation",
+    envelopeGreeting: "សូមគោរពអញ្ជើញ · CORDIALLY INVITING",
     ...THEME_PRESETS[0],
   };
   if (!raw) return defaultTheme;
@@ -347,6 +352,11 @@ export const parseThemeConfig = (raw: string) => {
         nameKm: parsed.nameKm || base.nameKm,
         nameEn: parsed.nameEn || base.nameEn,
         id: parsed.preset || base.id,
+        envelopeGroom: parsed.envelopeGroom || "",
+        envelopeBride: parsed.envelopeBride || "",
+        envelopeTitle: parsed.envelopeTitle || "សិរីសួស្ដីអាពាហ៍ពិពាហ៍",
+        envelopeSub: parsed.envelopeSub || "The Wedding Invitation",
+        envelopeGreeting: parsed.envelopeGreeting || "សូមគោរពអញ្ជើញ · CORDIALLY INVITING",
       };
     }
   } catch (e) {}
@@ -359,6 +369,11 @@ export const parseThemeConfig = (raw: string) => {
       sealStyle: "crown",
       frameStyle: "ornate-kbach",
       animationStyle: "falling-petals",
+      envelopeGroom: "",
+      envelopeBride: "",
+      envelopeTitle: "សិរីសួស្ដីអាពាហ៍ពិពាហ៍",
+      envelopeSub: "The Wedding Invitation",
+      envelopeGreeting: "សូមគោរពអញ្ជើញ · CORDIALLY INVITING",
       ...match,
     };
   }
@@ -548,9 +563,42 @@ export default function EventClient({ initialEvent, initialMedia, initialGuests 
   const [customMode, setCustomMode] = useState(
     () => themeConfig.preset === "custom"
   );
-  const [themeSubTab, setThemeSubTab] = useState<"template" | "color" | "ornaments" | "animations" | "share">("template");
+  const [themeSubTab, setThemeSubTab] = useState<"envelope" | "template" | "color" | "ornaments" | "animations" | "share">("envelope");
   const [savingTheme, setSavingTheme] = useState(false);
   const [themeSaveSuccess, setThemeSaveSuccess] = useState<string | null>(null);
+
+  const updateEnvelopeField = (key: string, val: string) => {
+    const updated = {
+      ...themeConfig,
+      [key]: val,
+    };
+    setThemeConfig(updated);
+    setFormData((f: any) => ({
+      ...f,
+      theme: JSON.stringify(updated),
+    }));
+
+    if (colorDebounceTimerRef.current) {
+      clearTimeout(colorDebounceTimerRef.current);
+    }
+    colorDebounceTimerRef.current = setTimeout(async () => {
+      await saveThemeToDb(updated, "✓ បានរក្សាទុកការកែប្រែស្រោមសំបុត្រ (Envelope Settings Saved)!");
+    }, 500);
+  };
+
+  const syncFullNamesToEnvelope = async () => {
+    const updated = {
+      ...themeConfig,
+      envelopeGroom: formData.groomName || "",
+      envelopeBride: formData.brideName || "",
+    };
+    setThemeConfig(updated);
+    setFormData((f: any) => ({
+      ...f,
+      theme: JSON.stringify(updated),
+    }));
+    await saveThemeToDb(updated, "✓ បានចម្លងឈ្មោះពេញទៅគម្របស្រោមសំបុត្រដោយជោគជ័យ (Synced full couple names to envelope)!");
+  };
 
   // Link Send to User / Personalized Sharing state
   const [guestList] = useState<any[]>(initialGuests || []);
@@ -1624,8 +1672,19 @@ ${url}`;
             </div>
 
             <div className="flex flex-wrap items-center gap-2">
-              {/* 5 Main Customizer Tabs */}
+              {/* 6 Main Customizer Tabs */}
               <div className="flex flex-wrap items-center gap-1.5 p-1 rounded-2xl bg-[#FAF8F5] border border-[#D4AF37]/30">
+                <button
+                  type="button"
+                  onClick={() => setThemeSubTab("envelope")}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
+                    themeSubTab === "envelope"
+                      ? "bg-[#AA7C11] text-white shadow-xs"
+                      : "text-[#3E444A] hover:bg-white"
+                  }`}
+                >
+                  ✉️ ស្រោមសំបុត្រ (Envelope)
+                </button>
                 <button
                   type="button"
                   onClick={() => setThemeSubTab("template")}
@@ -1695,6 +1754,412 @@ ${url}`;
               </a>
             </div>
           </div>
+
+          {/* TAB 0: ENVELOPE GATE CUSTOMIZATION */}
+          {themeSubTab === "envelope" && (
+            <div className="space-y-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-2xl bg-gradient-to-r from-[#FAF8F5] via-[#FFFDF9] to-[#FAF8F5] border border-[#D4AF37]/40 shadow-xs">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[#AA7C11]/15 text-[#AA7C11] border border-[#AA7C11]/30">
+                      Front Gate &amp; 3D Envelope
+                    </span>
+                    <h4 className="text-sm font-bold text-[#2C2A29]">
+                      កែសម្រួលស្រោមសំបុត្រ &amp; ក្របមុខធៀបការ (Envelope Gate Customizer)
+                    </h4>
+                  </div>
+                  <p className="text-xs text-[#3E444A]/80 mt-1 max-w-2xl leading-relaxed">
+                    កំណត់ឈ្មោះក្បូរក្បាច់មាសលើគម្របស្រោមសំបុត្រ ចំណងជើងធៀបការខាងលើ ស្លាកកិត្តិយស និងត្រាជ័រ Wax Seal ដែលភ្ញៀវនឹងឃើញភ្លាមៗពេលបើកមើល Link ធៀបការ។ រាល់ការកែសម្រួលត្រូវបាន Sync ផ្ទាល់ទៅកាន់ Link ភ្ញៀវ។
+                  </p>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <button
+                    type="button"
+                    onClick={syncFullNamesToEnvelope}
+                    className="px-3.5 py-2 rounded-xl bg-white border border-[#AA7C11]/40 text-[#AA7C11] hover:bg-[#FAF8F5] text-xs font-bold transition flex items-center gap-1.5 shadow-2xs"
+                  >
+                    <RotateCcw className="w-3.5 h-3.5 text-[#AA7C11]" />
+                    <span>ចម្លងឈ្មោះពេញពីព័ត៌មានគូស្នេហ៍</span>
+                  </button>
+                  <a
+                    href={getPersonalizedUrl()}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#AA7C11] text-white text-xs font-bold shadow-luxury hover:brightness-110 transition flex items-center gap-1.5"
+                  >
+                    <span>👁️ មើល Link ភ្ញៀវ</span>
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </a>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                {/* Left Controls: 7 cols */}
+                <div className="lg:col-span-7 space-y-5">
+                  {/* Flap Calligraphy Names Card */}
+                  <div className="p-4 rounded-2xl bg-white border border-[#D4AF37]/30 shadow-xs space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="w-6 h-6 rounded-lg bg-[#AA7C11]/10 text-[#AA7C11] flex items-center justify-center text-xs font-bold">1</span>
+                        <h5 className="text-xs font-bold text-[#2C2A29] uppercase tracking-wide">
+                          ឈ្មោះអក្សរក្បាច់លើគម្របស្រោម (Flap Calligraphy Names)
+                        </h5>
+                      </div>
+                      <span className="text-[11px] text-[#AA7C11] font-medium">ឆ្លាក់ពណ៌ទឹកមាស</span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                      <div>
+                        <label className="block text-xs font-semibold text-[#3E444A] mb-1.5">
+                          ឈ្មោះកូនកំលោះលើស្រោម (Groom Name on Flap)
+                        </label>
+                        <input
+                          type="text"
+                          value={themeConfig.envelopeGroom || ""}
+                          placeholder={formData.groomName || "ឧ. ដាវី តាមា"}
+                          onChange={(e) => updateEnvelopeField("envelopeGroom", e.target.value)}
+                          className="w-full px-3 py-2 text-sm rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#AA7C11]/30 focus:border-[#AA7C11] font-medium text-[#2C2A29]"
+                        />
+                        <p className="text-[10px] text-gray-500 mt-1">
+                          បើទទេ នឹងបង្ហាញ: <span className="font-semibold text-[#AA7C11]">{formData.groomName || "តាមា"}</span>
+                        </p>
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-semibold text-[#3E444A] mb-1.5">
+                          ឈ្មោះកូនក្រមុំលើស្រោម (Bride Name on Flap)
+                        </label>
+                        <input
+                          type="text"
+                          value={themeConfig.envelopeBride || ""}
+                          placeholder={formData.brideName || "ឧ. មេស សាសា"}
+                          onChange={(e) => updateEnvelopeField("envelopeBride", e.target.value)}
+                          className="w-full px-3 py-2 text-sm rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#AA7C11]/30 focus:border-[#AA7C11] font-medium text-[#2C2A29]"
+                        />
+                        <p className="text-[10px] text-gray-500 mt-1">
+                          បើទទេ នឹងបង្ហាញ: <span className="font-semibold text-[#AA7C11]">{formData.brideName || "សាសា"}</span>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Gate Headings & Guest Plaque */}
+                  <div className="p-4 rounded-2xl bg-white border border-[#D4AF37]/30 shadow-xs space-y-4">
+                    <div className="flex items-center gap-2">
+                      <span className="w-6 h-6 rounded-lg bg-[#AA7C11]/10 text-[#AA7C11] flex items-center justify-center text-xs font-bold">2</span>
+                      <h5 className="text-xs font-bold text-[#2C2A29] uppercase tracking-wide">
+                        ចំណងជើង &amp; ស្លាកកិត្តិយសខាងលើ (Top Gate Titles &amp; Plaque)
+                      </h5>
+                    </div>
+
+                    <div className="space-y-3">
+                      <div>
+                        <label className="block text-xs font-semibold text-[#3E444A] mb-1.5">
+                          ចំណងជើងធៀបការខាងលើ (Top Main Title)
+                        </label>
+                        <input
+                          type="text"
+                          value={themeConfig.envelopeTitle || ""}
+                          placeholder="សិរីសួស្ដីអាពាហ៍ពិពាហ៍"
+                          onChange={(e) => updateEnvelopeField("envelopeTitle", e.target.value)}
+                          className="w-full px-3 py-2 text-sm rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#AA7C11]/30 focus:border-[#AA7C11] text-[#2C2A29]"
+                        />
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-xs font-semibold text-[#3E444A] mb-1.5">
+                            ចំណងជើងរង (English Subtitle)
+                          </label>
+                          <input
+                            type="text"
+                            value={themeConfig.envelopeSub || ""}
+                            placeholder="The Wedding Invitation"
+                            onChange={(e) => updateEnvelopeField("envelopeSub", e.target.value)}
+                            className="w-full px-3 py-2 text-sm rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#AA7C11]/30 focus:border-[#AA7C11] text-[#2C2A29]"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-semibold text-[#3E444A] mb-1.5">
+                            ពាក្យគោរពអញ្ជើញលើផ្លាក (Plaque Header)
+                          </label>
+                          <input
+                            type="text"
+                            value={themeConfig.envelopeGreeting || ""}
+                            placeholder="សូមគោរពអញ្ជើញ · CORDIALLY INVITING"
+                            onChange={(e) => updateEnvelopeField("envelopeGreeting", e.target.value)}
+                            className="w-full px-3 py-2 text-sm rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#AA7C11]/30 focus:border-[#AA7C11] text-[#2C2A29]"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Wax Seal Style Selector */}
+                  <div className="p-4 rounded-2xl bg-white border border-[#D4AF37]/30 shadow-xs space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="w-6 h-6 rounded-lg bg-[#AA7C11]/10 text-[#AA7C11] flex items-center justify-center text-xs font-bold">3</span>
+                        <h5 className="text-xs font-bold text-[#2C2A29] uppercase tracking-wide">
+                          ម៉ូដត្រាបិទស្រោមសំបុត្រ (Wax Seal Emblem Style)
+                        </h5>
+                      </div>
+                      <span className="text-xs font-bold text-[#AA7C11]">
+                        {SEAL_STYLES.find((s) => s.id === (themeConfig.sealStyle || "crown"))?.nameKm}
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                      {SEAL_STYLES.map((seal) => {
+                        const isSelected = (themeConfig.sealStyle || "crown") === seal.id;
+                        return (
+                          <button
+                            key={seal.id}
+                            type="button"
+                            onClick={() => updateSealStyle(seal.id)}
+                            className={`p-3 rounded-xl border text-center transition flex flex-col items-center gap-1.5 relative ${
+                              isSelected
+                                ? "border-[#AA7C11] bg-[#FAF8F5] shadow-xs ring-1 ring-[#AA7C11]/30"
+                                : "border-gray-200 hover:border-[#AA7C11]/40 bg-white"
+                            }`}
+                          >
+                            <span className="text-2xl drop-shadow-xs">{seal.icon}</span>
+                            <span className="text-xs font-bold text-[#2C2A29]">{seal.nameKm}</span>
+                            <span className="text-[10px] text-gray-500 line-clamp-1">{seal.desc}</span>
+                            {isSelected && (
+                              <div className="absolute top-1.5 right-1.5 w-4 h-4 rounded-full bg-[#AA7C11] text-white flex items-center justify-center text-[10px]">
+                                ✓
+                              </div>
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Envelope Colors Bar */}
+                  <div className="p-4 rounded-2xl bg-white border border-[#D4AF37]/30 shadow-xs space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="w-6 h-6 rounded-lg bg-[#AA7C11]/10 text-[#AA7C11] flex items-center justify-center text-xs font-bold">4</span>
+                        <h5 className="text-xs font-bold text-[#2C2A29] uppercase tracking-wide">
+                          ពណ៌ស្រោមសំបុត្រ &amp; ទឹកមាស (Envelope Colors)
+                        </h5>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setThemeSubTab("color")}
+                        className="text-xs font-semibold text-[#AA7C11] hover:underline"
+                      >
+                        បើក Palette ពេញលេញ →
+                      </button>
+                    </div>
+
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                      <div>
+                        <label className="block text-[11px] font-semibold text-gray-600 mb-1">
+                          សំបកក្រៅស្រោម
+                        </label>
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="color"
+                            value={themeConfig.envelope || "#112344"}
+                            onChange={(e) => updateCustomColor("envelope", e.target.value)}
+                            className="w-8 h-8 rounded-lg cursor-pointer border border-gray-300"
+                          />
+                          <span className="text-xs font-mono text-gray-700">{themeConfig.envelope || "#112344"}</span>
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-semibold text-gray-600 mb-1">
+                          ផ្ទៃខាងក្នុងគម្រប
+                        </label>
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="color"
+                            value={themeConfig.lining || "#0c1a33"}
+                            onChange={(e) => updateCustomColor("lining", e.target.value)}
+                            className="w-8 h-8 rounded-lg cursor-pointer border border-gray-300"
+                          />
+                          <span className="text-xs font-mono text-gray-700">{themeConfig.lining || "#0c1a33"}</span>
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-semibold text-gray-600 mb-1">
+                          ពណ៌ទឹកមាស &amp; ត្រា
+                        </label>
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="color"
+                            value={themeConfig.accent || "#e9c46a"}
+                            onChange={(e) => updateCustomColor("accent", e.target.value)}
+                            className="w-8 h-8 rounded-lg cursor-pointer border border-gray-300"
+                          />
+                          <span className="text-xs font-mono text-gray-700">{themeConfig.accent || "#e9c46a"}</span>
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-semibold text-gray-600 mb-1">
+                          ផ្ទៃខាងក្រោយ
+                        </label>
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="color"
+                            value={themeConfig.primary || "#081224"}
+                            onChange={(e) => updateCustomColor("primary", e.target.value)}
+                            className="w-8 h-8 rounded-lg cursor-pointer border border-gray-300"
+                          />
+                          <span className="text-xs font-mono text-gray-700">{themeConfig.primary || "#081224"}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right Preview: 5 cols */}
+                <div className="lg:col-span-5">
+                  <div className="sticky top-20 rounded-2xl overflow-hidden border-2 border-[#D4AF37]/50 shadow-2xl bg-[#081224] text-white">
+                    {/* Preview Top Header */}
+                    <div className="px-4 py-2.5 bg-[#0d1b33] border-b border-[#D4AF37]/30 flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                        <span className="text-xs font-bold text-[#E5C158] uppercase tracking-wider font-serif">
+                          1:1 Live Envelope Preview
+                        </span>
+                      </div>
+                      <span className="text-[10px] text-gray-400">
+                        រូបរាងពិតលើទូរស័ព្ទភ្ញៀវ
+                      </span>
+                    </div>
+
+                    {/* Preview Gate Canvas */}
+                    <div
+                      className="relative p-6 flex flex-col items-center justify-center min-h-[440px] text-center select-none"
+                      style={{
+                        backgroundColor: themeConfig.primary || "#081224",
+                        backgroundImage: `radial-gradient(ellipse at center, rgba(233,196,106,0.12) 0%, transparent 70%), ${
+                          formData.coverImageUrl ? `url('${formData.coverImageUrl}')` : "none"
+                        }`,
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                      }}
+                    >
+                      {/* Dark overlay for readability */}
+                      <div className="absolute inset-0 bg-black/60 backdrop-blur-[1px] pointer-events-none" />
+
+                      <div className="relative z-10 w-full flex flex-col items-center space-y-4">
+                        {/* Top Titles */}
+                        <div>
+                          <div className="text-sm font-bold tracking-wider text-[#fbefc0] drop-shadow-md font-serif">
+                            {themeConfig.envelopeTitle || formData.title || "សិរីសួស្ដីអាពាហ៍ពិពាហ៍"}
+                          </div>
+                          <div className="text-xs italic tracking-widest text-[#e9c46a] drop-shadow-sm font-serif mt-0.5">
+                            {themeConfig.envelopeSub || "The Wedding Invitation"}
+                          </div>
+                        </div>
+
+                        {/* Guest Plaque */}
+                        <div className="w-full max-w-[280px] px-3.5 py-2 rounded-full bg-black/70 border border-[#e9c46a]/60 shadow-lg backdrop-blur-md">
+                          <div className="text-[9px] uppercase tracking-wider text-[#e9c46a]/90 font-semibold">
+                            {themeConfig.envelopeGreeting || "សូមគោរពអញ្ជើញ · CORDIALLY INVITING"}
+                          </div>
+                          <div className="text-xs font-bold text-white truncate mt-0.5">
+                            ឯកឧត្តមបណ្ឌិត ហេង សុខា &amp; លោកជំទាវ
+                          </div>
+                          <div className="inline-flex items-center gap-1 mt-0.5 px-2 py-0.2 rounded-full bg-[#e9c46a]/20 border border-[#e9c46a]/40 text-[9px] text-[#fbefc0] font-bold">
+                            <span>VIP</span>
+                            <span>·</span>
+                            <span>តុ VIP 01</span>
+                          </div>
+                        </div>
+
+                        {/* 3D Envelope Mockup */}
+                        <div
+                          className="relative w-56 h-56 rounded-2xl border-2 border-[#e9c46a]/40 shadow-2xl flex flex-col items-center justify-between p-4 overflow-hidden transition-all duration-300"
+                          style={{
+                            backgroundColor: themeConfig.envelope || "#112344",
+                            boxShadow: `0 20px 40px rgba(0,0,0,0.8), 0 0 25px ${themeConfig.accent || "#e9c46a"}22`,
+                          }}
+                        >
+                          {/* Flap triangular lining highlight */}
+                          <div
+                            className="absolute inset-x-0 top-0 h-28 border-b-2 border-[#e9c46a]/50"
+                            style={{
+                              backgroundColor: themeConfig.lining || "#0c1a33",
+                              clipPath: "polygon(0 0, 100% 0, 50% 100%)",
+                            }}
+                          />
+
+                          {/* Top ornate symbol */}
+                          <div className="relative z-10 text-[#e9c46a] text-xs">
+                            ❦ ✤ ❦
+                          </div>
+
+                          {/* Flap Calligraphy Names */}
+                          <div className="relative z-10 my-auto text-center space-y-1">
+                            <div className="text-lg font-bold text-[#fbefc0] drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] tracking-wider font-serif">
+                              {themeConfig.envelopeGroom || formData.groomName || "ដាវី តាមា"}
+                            </div>
+                            <div className="text-xs text-[#e9c46a] font-serif italic">
+                              &amp;
+                            </div>
+                            <div className="text-lg font-bold text-[#fbefc0] drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] tracking-wider font-serif">
+                              {themeConfig.envelopeBride || formData.brideName || "មេស សាសា"}
+                            </div>
+                          </div>
+
+                          {/* Wax Seal Centerpiece */}
+                          <div
+                            className="relative z-20 w-12 h-12 -mb-2 rounded-full shadow-[0_4px_12px_rgba(0,0,0,0.8)] border-2 border-[#fbefc0]/80 flex items-center justify-center cursor-pointer hover:scale-105 transition-transform"
+                            style={{
+                              backgroundColor: themeConfig.accent || "#e9c46a",
+                              backgroundImage: "radial-gradient(circle at 35% 35%, #fff5d0, #b58d2a)",
+                            }}
+                          >
+                            <span className="text-lg text-[#3a2800] drop-shadow-sm font-bold">
+                              {themeConfig.sealStyle === "crown" && "👑"}
+                              {themeConfig.sealStyle === "lotus" && "🪷"}
+                              {themeConfig.sealStyle === "monogram" && `${(themeConfig.envelopeGroom || formData.groomName || "ដ").charAt(0)}❦${(themeConfig.envelopeBride || formData.brideName || "ម").charAt(0)}`}
+                              {themeConfig.sealStyle === "knot" && "∞"}
+                              {!["crown", "lotus", "monogram", "knot"].includes(themeConfig.sealStyle || "") && "👑"}
+                            </span>
+                          </div>
+
+                          {/* Corner ornaments */}
+                          <div className="absolute bottom-1.5 left-2 text-[#e9c46a]/60 text-xs">╔</div>
+                          <div className="absolute bottom-1.5 right-2 text-[#e9c46a]/60 text-xs">╗</div>
+                        </div>
+
+                        {/* Bottom Hint */}
+                        <div className="text-[11px] text-[#fbefc0]/80 tracking-wider">
+                          — សូមចុចលើត្រា ដើម្បីបើកធៀបការ —
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Preview Footer Action */}
+                    <div className="p-3 bg-[#0d1b33] border-t border-[#D4AF37]/30 flex items-center justify-between gap-2">
+                      <div className="text-[11px] text-gray-300 truncate">
+                        Link: <span className="text-[#e9c46a] font-mono">/invite/{formData.slug || "wedding"}</span>
+                      </div>
+                      <a
+                        href={getPersonalizedUrl()}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="px-3 py-1.5 rounded-lg bg-[#AA7C11] hover:bg-[#8F660A] text-white text-xs font-bold transition flex items-center gap-1 shrink-0"
+                      >
+                        <span>បើក Link ផ្ទាល់</span>
+                        <ExternalLink className="w-3 h-3" />
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* TAB 1: TEMPLATE DESIGNS */}
           {themeSubTab === "template" && (
