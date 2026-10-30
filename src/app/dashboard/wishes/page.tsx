@@ -18,5 +18,5 @@ export default async function WishesPage() {
     return <div className="p-8">No event found.</div>;
   }
 
-  return <WishesClient initialWishes={event.wishes} eventSlug={event.slug} />;
+  return <WishesClient initialWishes={event.wishes} eventId={event.id} eventSlug={event.slug} />;
 }

@@ -37,27 +37,38 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    const ip = req.headers.get("x-forwarded-for") || "local";
-    const rate = checkRateLimit(`wish-${ip}`, 10, 60000);
-    if (!rate.success) {
-      return NextResponse.json(
-        { error: "Too many wishes submitted. Please wait a moment." },
-        { status: 429 }
-      );
+    const session = await getSession();
+    if (!session) {
+      const ip = req.headers.get("x-forwarded-for") || "local";
+      const rate = checkRateLimit(`wish-${ip}`, 10, 60000);
+      if (!rate.success) {
+        return NextResponse.json(
+          { error: "Too many wishes submitted. Please wait a moment." },
+          { status: 429 }
+        );
+      }
     }
 
-    const { eventSlug, senderName, message, relationship } = await req.json();
+    const body = await req.json();
+    const { eventSlug, eventId, senderName, message, relationship, isApproved } = body;
 
-    if (!eventSlug || !senderName?.trim() || !message?.trim()) {
+    if ((!eventSlug && !eventId) || !senderName?.trim() || !message?.trim()) {
       return NextResponse.json(
         { error: "Name and message are required." },
         { status: 400 }
       );
     }
 
-    const event = await prisma.event.findUnique({
-      where: { slug: eventSlug },
-    });
+    let event = null;
+    if (eventId) {
+      event = await prisma.event.findUnique({
+        where: { id: eventId },
+      });
+    } else if (eventSlug) {
+      event = await prisma.event.findUnique({
+        where: { slug: eventSlug },
+      });
+    }
 
     if (!event) {
       return NextResponse.json({ error: "Event not found" }, { status: 404 });
@@ -73,7 +84,7 @@ export async function POST(req: NextRequest) {
         senderName: cleanName,
         message: cleanMessage,
         relationship: cleanRelationship || null,
-        isApproved: true,
+        isApproved: isApproved !== undefined ? Boolean(isApproved) : true,
       },
     });
 
@@ -84,6 +95,45 @@ export async function POST(req: NextRequest) {
   }
 }
 
+export async function PATCH(req: NextRequest) {
+  try {
+    const session = await getSession();
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const body = await req.json();
+    const { id, senderName, message, relationship, isApproved } = body;
+
+    if (!id) {
+      return NextResponse.json({ error: "Wish ID is required." }, { status: 400 });
+    }
+
+    const data: any = {};
+    if (senderName !== undefined) data.senderName = sanitizeString(senderName.trim());
+    if (message !== undefined) data.message = sanitizeString(message.trim());
+    if (relationship !== undefined) {
+      const rel = sanitizeString(relationship.trim());
+      data.relationship = rel || null;
+    }
+    if (isApproved !== undefined) data.isApproved = Boolean(isApproved);
+
+    const updatedWish = await prisma.wish.update({
+      where: { id },
+      data,
+    });
+
+    return NextResponse.json({ success: true, wish: updatedWish });
+  } catch (error) {
+    console.error("Wish update error:", error);
+    return NextResponse.json({ error: "Failed to update wish" }, { status: 500 });
+  }
+}
+
+export async function PUT(req: NextRequest) {
+  return PATCH(req);
+}
+
 export async function DELETE(req: NextRequest) {
   try {
     const session = await getSession();
@@ -92,7 +142,14 @@ export async function DELETE(req: NextRequest) {
     }
 
     const { searchParams } = new URL(req.url);
-    const id = searchParams.get("id");
+    let id = searchParams.get("id");
+
+    if (!id) {
+      try {
+        const body = await req.json();
+        id = body?.id;
+      } catch (e) {}
+    }
 
     if (!id) {
       return NextResponse.json({ error: "ID required" }, { status: 400 });
