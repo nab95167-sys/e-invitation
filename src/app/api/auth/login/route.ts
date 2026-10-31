@@ -136,10 +136,10 @@ export async function POST(req: NextRequest) {
     });
 
     return response;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Login error:", error);
     return NextResponse.json(
-      { error: "An unexpected error occurred." },
+      { error: error?.message || "An unexpected error occurred." },
       { status: 500 }
     );
   }
