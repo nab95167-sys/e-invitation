@@ -32,9 +32,10 @@ export default function RaksmeyThemeView({
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
+  const effectiveOrigin = typeof window !== "undefined" && window.location.origin ? window.location.origin : baseUrl;
   const invitationUrl = guest?.invitationCode
-    ? `${baseUrl}/invite/${event.slug}?code=${guest.invitationCode}`
-    : `${baseUrl}/invite/${event.slug}`;
+    ? `${effectiveOrigin}/invite/${event.slug}?code=${guest.invitationCode}`
+    : `${effectiveOrigin}/invite/${event.slug}`;
 
   // Audio stream
   const musicSource =

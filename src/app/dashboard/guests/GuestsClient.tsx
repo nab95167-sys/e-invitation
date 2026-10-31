@@ -130,9 +130,17 @@ export default function GuestsClient({
     return matchesSearch && matchesStatus && matchesCategory;
   });
 
+  const getEffectiveBaseUrl = () => {
+    if (typeof window !== "undefined" && window.location.origin) {
+      return window.location.origin;
+    }
+    return baseUrl || "";
+  };
+
   const getGuestInvitationUrl = (guest: Guest) => {
+    const origin = getEffectiveBaseUrl();
     const toParam = guest.name ? `&to=${encodeURIComponent(guest.name)}` : "";
-    return `${baseUrl}/invite/${eventSlug}?code=${encodeURIComponent(guest.invitationCode)}${toParam}`;
+    return `${origin}/invite/${eventSlug}?code=${encodeURIComponent(guest.invitationCode)}${toParam}`;
   };
 
   const getGuestInvitationMessage = (guest: Guest) => {
@@ -164,8 +172,9 @@ ${dateStr ? `📅 កាលបរិច្ឆេទ៖ ${dateStr}\n` : ""}${venu
   };
 
   const handleCopyLink = (code: string, id: string, name?: string) => {
+    const origin = getEffectiveBaseUrl();
     const toParam = name ? `&to=${encodeURIComponent(name)}` : "";
-    const link = `${baseUrl}/invite/${eventSlug}?code=${encodeURIComponent(code)}${toParam}`;
+    const link = `${origin}/invite/${eventSlug}?code=${encodeURIComponent(code)}${toParam}`;
     navigator.clipboard.writeText(link);
     setCopiedId(id);
     setTimeout(() => setCopiedId(null), 2000);

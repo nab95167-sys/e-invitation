@@ -48,9 +48,10 @@ export default function InvitationClient({
   const [isOpened, setIsOpened] = useState(false);
   const [copiedBank, setCopiedBank] = useState(false);
 
+  const effectiveOrigin = typeof window !== "undefined" && window.location.origin ? window.location.origin : baseUrl;
   const invitationUrl = guest?.invitationCode
-    ? `${baseUrl}/invite/${event.slug}?code=${guest.invitationCode}`
-    : `${baseUrl}/invite/${event.slug}`;
+    ? `${effectiveOrigin}/invite/${event.slug}?code=${guest.invitationCode}`
+    : `${effectiveOrigin}/invite/${event.slug}`;
 
   const copyBankInfo = () => {
     if (!event.bankAccountInfo) return;

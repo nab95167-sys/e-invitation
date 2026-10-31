@@ -5,8 +5,8 @@ import { checkRateLimit } from "@/lib/security";
 
 export async function POST(req: NextRequest) {
   try {
-    const ip = req.headers.get("x-forwarded-for") || "local";
-    const rate = checkRateLimit(`login-${ip}`, 5, 60000); // Strict brute-force threshold
+    const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "local";
+    const rate = checkRateLimit(`login-${ip}`, 15, 60000); // 15 attempts per minute per IP
     if (!rate.success) {
       return NextResponse.json(
         { error: "Too many login attempts. Access blocked for 60 seconds." },
@@ -142,9 +142,10 @@ export async function POST(req: NextRequest) {
 
     return response;
   } catch (error: any) {
-    console.error("Login error:", error);
+    console.error("Login route error:", error);
+    const msg = error?.message || (typeof error === "string" ? error : "An unexpected error occurred.");
     return NextResponse.json(
-      { error: error?.message || "An unexpected error occurred." },
+      { error: msg },
       { status: 500 }
     );
   }
