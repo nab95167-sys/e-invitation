@@ -23,9 +23,14 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    let user = await prisma.user.findUnique({
-      where: { email: email.toLowerCase().trim() },
-    });
+    let user = null;
+    try {
+      user = await prisma.user.findUnique({
+        where: { email: email.toLowerCase().trim() },
+      });
+    } catch (lookupErr: any) {
+      console.warn("User lookup notice:", lookupErr?.message);
+    }
 
     // Auto-seed if database is blank or user not found on fresh deploy
     if (!user) {

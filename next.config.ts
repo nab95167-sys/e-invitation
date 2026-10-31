@@ -62,10 +62,6 @@ const nextConfig: NextConfig = {
   async rewrites() {
     return [
       {
-        source: '/',
-        destination: '/raksmey/index.html',
-      },
-      {
         source: '/invite/:slug*',
         destination: '/raksmey/index.html',
       },
