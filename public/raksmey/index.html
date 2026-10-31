@@ -162,34 +162,27 @@
       try {
         if (typeof themeVal === 'string' && themeVal.startsWith('{')) {
           var parsed = JSON.parse(themeVal);
-          // 1. If custom colors exist, ALWAYS use them directly
-          if (parsed.preset === 'custom' || parsed.primary) {
-            var primary = parsed.primary || '#250e44';
-            var accent = parsed.accent || '#d9b15a';
-            var envelope = parsed.envelope || primary;
-            var lining = parsed.lining || parsed.envelope || primary;
-            var card = parsed.card || primary;
-            return {
-              primary: primary,
-              night: '#07040d',
-              accent: accent,
-              accentLight: '#fbefc0',
-              envelope: envelope,
-              lining: lining,
-              card: card,
-              cardInk: '#fbefc0',
-              cardInkDim: '#dfcba5',
-            };
-          }
-          // 2. Preset lookup
-          if (parsed.preset && window.THEME_PALETTES[parsed.preset]) {
-            return window.THEME_PALETTES[parsed.preset];
-          }
-          // 3. Template style fallback
-          if (parsed.templateStyle === 'modern-minimal') return window.THEME_PALETTES.modern_obsidian;
-          if (parsed.templateStyle === 'romantic-floral') return window.THEME_PALETTES.romantic_blossom;
-          if (parsed.templateStyle === 'celestial-midnight') return window.THEME_PALETTES.celestial_midnight;
-          if (parsed.templateStyle === 'royal-heritage') return window.THEME_PALETTES.royal_khmer_purple;
+          var base = (parsed.preset && window.THEME_PALETTES[parsed.preset])
+            ? window.THEME_PALETTES[parsed.preset]
+            : (window.THEME_PALETTES[parsed.id] || window.THEME_PALETTES.royal_khmer_purple);
+
+          var primary = parsed.primary || base.primary;
+          var accent = parsed.accent || base.accent;
+          var envelope = parsed.envelope || base.envelope;
+          var lining = parsed.lining || parsed.envelope || base.lining;
+          var card = parsed.card || base.card;
+
+          return {
+            primary: primary,
+            night: base.night || '#040a14',
+            accent: accent,
+            accentLight: base.accentLight || '#fbefc0',
+            envelope: envelope,
+            lining: lining,
+            card: card,
+            cardInk: base.cardInk || '#fbefc0',
+            cardInkDim: base.cardInkDim || '#dfcba5',
+          };
         }
       } catch (e) {}
 
@@ -276,22 +269,22 @@
           background: ${pal.accent} !important;
           color: ${pal.night} !important;
         }
-        /* ENVELOPE BOX EXTERIOR (ALL SIDES) */
-        .e2, .e2__back, .e2__pocket-l:before, .e2__pocket-r:before, .e2__pocket-b:before, .e2__flap-front {
+        /* ENVELOPE BOX EXTERIOR (ALL SIDES & 3D CLOSED DOORS) */
+        .e2, .e2__back, .e2__pocket-l:before, .e2__pocket-r:before, .e2__pocket-b:before, .e2__flap-front, .tri__out {
           background-color: ${pal.envelope} !important;
           background-image: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(0,0,0,0.25)), url(/tex/paper-olive.webp) !important;
           background-blend-mode: multiply !important;
           filter: none !important;
         }
-        /* ENVELOPE INNER FLAP (WHEN OPENING THE BOX) */
-        .e2__flap-back {
+        /* ENVELOPE INNER FLAP & OPEN BOX LINING (REVEALED WHEN OPENING THE BOX) */
+        .e2__flap-back, .tri__in {
           background-color: ${pal.lining} !important;
           background-image: radial-gradient(circle at 50% 25%, ${pal.accent}33 0%, ${pal.lining} 75%, rgba(0,0,0,0.4) 100%), url(/tex/paper-lining.webp) !important;
           background-blend-mode: multiply !important;
           box-shadow: inset 0 -30px 40px rgba(0,0,0,0.5) !important;
         }
         /* ENVELOPE INNER CARD & LETTER PANELS (WHEN OPENING THE BOX) */
-        .e2__card, .tri__face, .tri__out, .tri__in, .paper, .card {
+        .e2__card, .paper, .card {
           background-color: ${pal.card} !important;
           background-image: linear-gradient(135deg, rgba(255,255,255,0.04), rgba(0,0,0,0.28)), url(/tex/paper-cream.webp) !important;
           background-blend-mode: multiply !important;
@@ -411,22 +404,22 @@
     .gate__dim {
       background: #0e051c !important;
     }
-    /* 3D ENVELOPE BOX EXTERIOR (RICH ROYAL PURPLE & GOLD) */
-    .e2__back, .e2__pocket-l:before, .e2__pocket-r:before, .e2__pocket-b:before, .e2__flap-front {
+    /* 3D ENVELOPE BOX EXTERIOR (ALL SIDES & 3D CLOSED DOORS) */
+    .e2__back, .e2__pocket-l:before, .e2__pocket-r:before, .e2__pocket-b:before, .e2__flap-front, .tri__out {
       background-color: #431475 !important;
       background-image: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(0,0,0,0.3)), url(/tex/paper-olive.webp) !important;
       background-blend-mode: multiply !important;
       filter: none !important;
     }
-    /* ENVELOPE INNER FLAP (WHEN OPENING THE BOX) */
-    .e2__flap-back {
+    /* ENVELOPE INNER FLAP & OPEN BOX LINING */
+    .e2__flap-back, .tri__in {
       background-color: #2b0b4d !important;
       background-image: radial-gradient(circle, rgba(217, 177, 90, 0.2) 0%, rgba(18, 5, 34, 0.92) 100%), url(/tex/paper-lining.webp) !important;
       background-blend-mode: multiply !important;
       box-shadow: inset 0 -30px 40px rgba(0,0,0,0.6) !important;
     }
     /* ENVELOPE INNER CARD & LETTER PANELS (WHEN OPENING THE BOX) */
-    .e2__card, .tri__face, .tri__out, .tri__in, .paper {
+    .e2__card, .paper {
       background-color: #280d4c !important;
       background-image: linear-gradient(135deg, rgba(255,255,255,0.04), rgba(0,0,0,0.28)), url(/tex/paper-cream.webp) !important;
       background-blend-mode: multiply !important;
@@ -1697,22 +1690,22 @@
             background: ${pal.accent} !important;
             color: ${pal.night} !important;
           }
-          /* ENVELOPE BOX EXTERIOR (ALL SIDES) */
-          .e2, .e2__back, .e2__pocket-l:before, .e2__pocket-r:before, .e2__pocket-b:before, .e2__flap-front {
+          /* ENVELOPE BOX EXTERIOR (ALL SIDES & 3D CLOSED DOORS) */
+          .e2, .e2__back, .e2__pocket-l:before, .e2__pocket-r:before, .e2__pocket-b:before, .e2__flap-front, .tri__out {
             background-color: ${pal.envelope} !important;
             background-image: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(0,0,0,0.25)), url(/tex/paper-olive.webp) !important;
             background-blend-mode: multiply !important;
             filter: none !important;
           }
-          /* ENVELOPE INNER FLAP (WHEN OPENING THE BOX) */
-          .e2__flap-back {
+          /* ENVELOPE INNER FLAP & OPEN BOX LINING (REVEALED WHEN OPENING THE BOX) */
+          .e2__flap-back, .tri__in {
             background-color: ${pal.lining} !important;
             background-image: radial-gradient(circle at 50% 25%, ${pal.accent}33 0%, ${pal.lining} 75%, rgba(0,0,0,0.4) 100%), url(/tex/paper-lining.webp) !important;
             background-blend-mode: multiply !important;
             box-shadow: inset 0 -30px 40px rgba(0,0,0,0.5) !important;
           }
           /* ENVELOPE INNER CARD & LETTER PANELS (WHEN OPENING THE BOX) */
-          .e2__card, .tri__face, .tri__out, .tri__in, .paper, .card {
+          .e2__card, .paper, .card {
             background-color: ${pal.card} !important;
             background-image: linear-gradient(135deg, rgba(255,255,255,0.04), rgba(0,0,0,0.28)), url(/tex/paper-cream.webp) !important;
             background-blend-mode: multiply !important;

@@ -8,6 +8,7 @@ import confetti from "canvas-confetti";
 import KbachCorner from "@/components/khmer/KbachCorner";
 import KbachDivider from "@/components/khmer/KbachDivider";
 import { Language, translations } from "@/lib/translations";
+import { ThemeConfig, parseThemeConfig, hexToRgba } from "@/lib/theme";
 
 interface EnvelopeOpeningProps {
   groomName: string;
@@ -15,6 +16,7 @@ interface EnvelopeOpeningProps {
   guestName?: string | null;
   onOpen: () => void;
   lang?: Language;
+  themeConfig?: ThemeConfig;
 }
 
 export default function EnvelopeOpening({
@@ -23,7 +25,9 @@ export default function EnvelopeOpening({
   guestName,
   onOpen,
   lang = "km",
+  themeConfig: propThemeConfig,
 }: EnvelopeOpeningProps) {
+  const theme = propThemeConfig || parseThemeConfig(null);
   const [openingState, setOpeningState] = useState<"closed" | "opening" | "opened">("closed");
   const t = translations[lang] || translations.km;
 

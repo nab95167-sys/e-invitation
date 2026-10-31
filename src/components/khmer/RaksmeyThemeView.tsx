@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { Language } from "@/lib/translations";
+import { parseThemeConfig } from "@/lib/theme";
 import { FoilDefs } from "./RaksmeyOrnaments";
 import RaksmeyHud from "./RaksmeyHud";
 import RaksmeyEnvelopeGate from "./RaksmeyEnvelopeGate";
@@ -68,8 +69,21 @@ export default function RaksmeyThemeView({
     }
   };
 
+  const themeConfig = parseThemeConfig(event.theme);
+
   return (
-    <div lang={lang} className="min-h-screen bg-[#101209] text-[#f3ebdb] relative overflow-hidden font-khmer selection:bg-[#d9b15a] selection:text-[#1d2010]">
+    <div
+      lang={lang}
+      className="min-h-screen text-[#f3ebdb] relative overflow-hidden font-khmer transition-colors duration-500"
+      style={{
+        backgroundColor: themeConfig.primary,
+        ["--theme-primary" as any]: themeConfig.primary,
+        ["--theme-accent" as any]: themeConfig.accent,
+        ["--theme-envelope" as any]: themeConfig.envelope,
+        ["--theme-lining" as any]: themeConfig.lining,
+        ["--theme-card" as any]: themeConfig.card,
+      }}
+    >
       {/* SVG Global Foil Filter Definitions */}
       <FoilDefs />
 
@@ -82,12 +96,13 @@ export default function RaksmeyThemeView({
         onEnded={() => setIsPlaying(false)}
       />
 
-      {/* 1. 3D Wax-Seal Envelope Gate */}
+      {/* 1. 3D Wax-Seal Envelope Gate with Dynamic Custom Box & Open Box Colors */}
       <RaksmeyEnvelopeGate
         groomName={event.groomName}
         brideName={event.brideName}
         guestName={guest?.name}
         lang={lang}
+        themeConfig={themeConfig}
         onOpen={handleEnvelopeOpen}
       />
 
