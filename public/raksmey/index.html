@@ -351,6 +351,147 @@
           color: ${pal.night} !important;
           box-shadow: 0 4px 15px ${pal.accent}55 !important;
         }
+
+        /* === 1:1 MATCH DASHBOARD PREVIEW ENVELOPE & INSIDE CARD === */
+        .e2__flap-logo .lockup {
+          aspect-ratio: auto !important;
+          width: 100% !important;
+          height: 100% !important;
+          position: absolute !important;
+          inset: 0 !important;
+        }
+        .e2__flap-logo .lk-orn {
+          width: 86% !important;
+          height: auto !important;
+          max-height: 85% !important;
+          position: absolute !important;
+          top: 10% !important;
+          left: 50% !important;
+          transform: translateX(-50%) !important;
+          opacity: 0.8 !important;
+        }
+        .e2__flap-logo .lk-name {
+          font-family: var(--f-moul, "Moul", serif) !important;
+          font-size: clamp(14px, 11cqw, 22px) !important;
+          font-weight: 700 !important;
+          background: linear-gradient(180deg, #fff7d6 0%, #d9b15a 50%, #9e7424 100%) !important;
+          -webkit-background-clip: text !important;
+          -webkit-text-fill-color: transparent !important;
+          filter: drop-shadow(0 2px 5px rgba(0,0,0,0.9)) !important;
+          white-space: nowrap !important;
+          letter-spacing: 0.5px !important;
+          position: absolute !important;
+          left: 50% !important;
+          transform: translateX(-50%) !important;
+        }
+        .e2__flap-logo .lk-groom {
+          top: 14% !important;
+        }
+        .e2__flap-logo .lk-bride {
+          top: 48% !important;
+          right: auto !important;
+        }
+
+        /* Inside Reveal Card: Clean, Royal, Unobstructed matching Dashboard */
+        .e2__card {
+          border-radius: 18px !important;
+          border: 2px solid ${pal.accent} !important;
+          box-shadow: 0 20px 50px rgba(0,0,0,0.8), 0 0 35px ${pal.accent}35 !important;
+          background-color: ${pal.card} !important;
+          overflow: hidden !important;
+        }
+        .e2__card-inner {
+          display: flex !important;
+          flex-direction: column !important;
+          align-items: center !important;
+          justify-content: space-evenly !important;
+          text-align: center !important;
+          inset: 5% 7% !important;
+          z-index: 20 !important;
+          padding: 0.5rem !important;
+        }
+        .e2__card-kicker {
+          font-family: var(--f-moul, serif) !important;
+          font-size: clamp(0.75rem, 3.4cqw, 1.05rem) !important;
+          color: ${pal.accent} !important;
+          background: none !important;
+          -webkit-text-fill-color: ${pal.accent} !important;
+          letter-spacing: 1px !important;
+          line-height: 1.4 !important;
+          margin: 0 !important;
+          text-shadow: 0 2px 8px rgba(0,0,0,0.8) !important;
+        }
+        .e2__card .lockup {
+          aspect-ratio: auto !important;
+          width: 100% !important;
+          height: auto !important;
+          display: flex !important;
+          flex-direction: column !important;
+          align-items: center !important;
+          justify-content: center !important;
+          margin: 0.35rem 0 !important;
+          position: relative !important;
+        }
+        .e2__card .lockup .lk-orn,
+        .e2__card .lockup .lk-butterfly {
+          display: none !important;
+        }
+        .e2__card .lk-name {
+          position: static !important;
+          font-family: var(--f-moul, "Moul", serif) !important;
+          font-size: clamp(1.1rem, 5.5cqw, 1.75rem) !important;
+          font-weight: 700 !important;
+          color: #ffffff !important;
+          background: none !important;
+          -webkit-text-fill-color: #ffffff !important;
+          line-height: 1.3 !important;
+          letter-spacing: 0.5px !important;
+          text-shadow: 0 2px 10px rgba(0,0,0,0.9), 0 0 20px ${pal.accent}40 !important;
+          padding: 0 !important;
+          white-space: normal !important;
+          transform: none !important;
+        }
+        .e2__card .lk-groom::after {
+          content: "&" !important;
+          display: block !important;
+          font-family: var(--f-serif, serif) !important;
+          font-style: italic !important;
+          font-size: 0.8em !important;
+          color: ${pal.accent} !important;
+          -webkit-text-fill-color: ${pal.accent} !important;
+          margin: 0.2rem 0 !important;
+          text-shadow: 0 1px 6px rgba(0,0,0,0.7) !important;
+        }
+        .e2__card-invite {
+          display: none !important;
+        }
+        .e2__card-date {
+          font-family: var(--f-kantumruy, sans-serif) !important;
+          font-size: clamp(0.72rem, 3cqw, 0.92rem) !important;
+          font-weight: 700 !important;
+          letter-spacing: 1px !important;
+          color: ${pal.accent} !important;
+          background: rgba(223, 183, 108, 0.12) !important;
+          border: 1px solid ${pal.accent}50 !important;
+          border-radius: 999px !important;
+          padding: 4px 16px !important;
+          margin-top: 0.2rem !important;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.4) !important;
+        }
+        .e2__card-frame {
+          border: 1.5px solid ${pal.accent} !important;
+          border-radius: 12px !important;
+        }
+
+        /* 3. Smooth Out Closet Doors so Inside Card is 100% Clear & Beautiful */
+        .e2__tri {
+          display: none !important;
+          opacity: 0 !important;
+          pointer-events: none !important;
+        }
+        .e2__tri-crest {
+          display: none !important;
+        }
       `;
       dynamicStyle.textContent = css;
     };
@@ -1977,6 +2118,147 @@
           body[data-frame-style="scalloped"] .paper {
             border-radius: 36px 36px 18px 18px !important;
           }
+
+          /* === 1:1 MATCH DASHBOARD PREVIEW ENVELOPE & INSIDE CARD === */
+          .e2__flap-logo .lockup {
+            aspect-ratio: auto !important;
+            width: 100% !important;
+            height: 100% !important;
+            position: absolute !important;
+            inset: 0 !important;
+          }
+          .e2__flap-logo .lk-orn {
+            width: 86% !important;
+            height: auto !important;
+            max-height: 85% !important;
+            position: absolute !important;
+            top: 10% !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            opacity: 0.8 !important;
+          }
+          .e2__flap-logo .lk-name {
+            font-family: var(--f-moul, "Moul", serif) !important;
+            font-size: clamp(14px, 11cqw, 22px) !important;
+            font-weight: 700 !important;
+            background: linear-gradient(180deg, #fff7d6 0%, #d9b15a 50%, #9e7424 100%) !important;
+            -webkit-background-clip: text !important;
+            -webkit-text-fill-color: transparent !important;
+            filter: drop-shadow(0 2px 5px rgba(0,0,0,0.9)) !important;
+            white-space: nowrap !important;
+            letter-spacing: 0.5px !important;
+            position: absolute !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+          }
+          .e2__flap-logo .lk-groom {
+            top: 14% !important;
+          }
+          .e2__flap-logo .lk-bride {
+            top: 48% !important;
+            right: auto !important;
+          }
+
+          /* Inside Reveal Card: Clean, Royal, Unobstructed matching Dashboard */
+          .e2__card {
+            border-radius: 18px !important;
+            border: 2px solid ${pal.accent} !important;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8), 0 0 35px ${pal.accent}35 !important;
+            background-color: ${pal.card} !important;
+            overflow: hidden !important;
+          }
+          .e2__card-inner {
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: space-evenly !important;
+            text-align: center !important;
+            inset: 5% 7% !important;
+            z-index: 20 !important;
+            padding: 0.5rem !important;
+          }
+          .e2__card-kicker {
+            font-family: var(--f-moul, serif) !important;
+            font-size: clamp(0.75rem, 3.4cqw, 1.05rem) !important;
+            color: ${pal.accent} !important;
+            background: none !important;
+            -webkit-text-fill-color: ${pal.accent} !important;
+            letter-spacing: 1px !important;
+            line-height: 1.4 !important;
+            margin: 0 !important;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.8) !important;
+          }
+          .e2__card .lockup {
+            aspect-ratio: auto !important;
+            width: 100% !important;
+            height: auto !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
+            margin: 0.35rem 0 !important;
+            position: relative !important;
+          }
+          .e2__card .lockup .lk-orn,
+          .e2__card .lockup .lk-butterfly {
+            display: none !important;
+          }
+          .e2__card .lk-name {
+            position: static !important;
+            font-family: var(--f-moul, "Moul", serif) !important;
+            font-size: clamp(1.1rem, 5.5cqw, 1.75rem) !important;
+            font-weight: 700 !important;
+            color: #ffffff !important;
+            background: none !important;
+            -webkit-text-fill-color: #ffffff !important;
+            line-height: 1.3 !important;
+            letter-spacing: 0.5px !important;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.9), 0 0 20px ${pal.accent}40 !important;
+            padding: 0 !important;
+            white-space: normal !important;
+            transform: none !important;
+          }
+          .e2__card .lk-groom::after {
+            content: "&" !important;
+            display: block !important;
+            font-family: var(--f-serif, serif) !important;
+            font-style: italic !important;
+            font-size: 0.8em !important;
+            color: ${pal.accent} !important;
+            -webkit-text-fill-color: ${pal.accent} !important;
+            margin: 0.2rem 0 !important;
+            text-shadow: 0 1px 6px rgba(0,0,0,0.7) !important;
+          }
+          .e2__card-invite {
+            display: none !important;
+          }
+          .e2__card-date {
+            font-family: var(--f-kantumruy, sans-serif) !important;
+            font-size: clamp(0.72rem, 3cqw, 0.92rem) !important;
+            font-weight: 700 !important;
+            letter-spacing: 1px !important;
+            color: ${pal.accent} !important;
+            background: rgba(223, 183, 108, 0.12) !important;
+            border: 1px solid ${pal.accent}50 !important;
+            border-radius: 999px !important;
+            padding: 4px 16px !important;
+            margin-top: 0.2rem !important;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.4) !important;
+          }
+          .e2__card-frame {
+            border: 1.5px solid ${pal.accent} !important;
+            border-radius: 12px !important;
+          }
+
+          /* 3. Smooth Out Closet Doors so Inside Card is 100% Clear & Beautiful */
+          .e2__tri {
+            display: none !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+          }
+          .e2__tri-crest {
+            display: none !important;
+          }
         `;
         dynamicStyle.textContent = css;
 
@@ -2082,6 +2364,22 @@
           document.querySelectorAll('.lockup').forEach(el => {
             el.setAttribute('aria-label', `${groom} & ${bride}`);
           });
+        }
+
+        // Inside Reveal Card kicker & date formatting matching Photo 1
+        const cardKickerEl = document.querySelector('.e2__card-kicker');
+        if (cardKickerEl && cardKickerEl.textContent !== envTitle) {
+          cardKickerEl.textContent = envTitle;
+        }
+
+        if (ev.eventDate) {
+          const d = new Date(ev.eventDate);
+          if (!isNaN(d.getTime())) {
+            const formattedDate = `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
+            document.querySelectorAll('.e2__card-date').forEach(el => {
+              if (el.textContent !== formattedDate) el.textContent = formattedDate;
+            });
+          }
         }
 
         // 2. Parents' Names
