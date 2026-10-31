@@ -12,6 +12,38 @@ import fs from "fs/promises";
 import path from "path";
 import crypto from "crypto";
 
+export const dynamic = "force-dynamic";
+
+async function uploadToCloudinary(
+  buffer: Buffer,
+  mimeType: string,
+  filename: string
+): Promise<string | null> {
+  const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
+  const uploadPreset = process.env.CLOUDINARY_UPLOAD_PRESET;
+
+  if (cloudName && uploadPreset) {
+    try {
+      const formData = new FormData();
+      const blob = new Blob([new Uint8Array(buffer)], { type: mimeType });
+      formData.append("file", blob, filename);
+      formData.append("upload_preset", uploadPreset);
+      const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`, {
+        method: "POST",
+        body: formData,
+      });
+      if (res.ok) {
+        const json = await res.json();
+        return json.secure_url || json.url || null;
+      }
+    } catch (e) {
+      console.warn("Cloudinary upload failed:", e);
+    }
+  }
+
+  return null;
+}
+
 export async function POST(req: NextRequest) {
   try {
     const session = await getSession();
@@ -79,15 +111,26 @@ export async function POST(req: NextRequest) {
     }
 
     const safeFilename = `${crypto.randomUUID()}${extension}`;
-    const uploadDir = path.join(process.cwd(), "public", "uploads");
+    let publicUrl = "";
 
-    // Ensure dir exists
-    await fs.mkdir(uploadDir, { recursive: true });
-
-    const filePath = path.join(uploadDir, safeFilename);
-    await fs.writeFile(filePath, buffer);
-
-    const publicUrl = `/uploads/${safeFilename}`;
+    // 1. Try Cloudinary if configured
+    const cloudinaryUrl = await uploadToCloudinary(buffer, mimeType, safeFilename);
+    if (cloudinaryUrl) {
+      publicUrl = cloudinaryUrl;
+    } else {
+      // 2. Try writing to local public/uploads directory (works locally)
+      try {
+        const uploadDir = path.join(process.cwd(), "public", "uploads");
+        await fs.mkdir(uploadDir, { recursive: true });
+        const filePath = path.join(uploadDir, safeFilename);
+        await fs.writeFile(filePath, buffer);
+        publicUrl = `/uploads/${safeFilename}`;
+      } catch (fsErr: any) {
+        // 3. Vercel Serverless Fallback (read-only filesystem) -> High-res Base64 Data URL
+        console.warn("Local disk read-only (Vercel Serverless). Using Base64 Data URL:", fsErr?.message);
+        publicUrl = `data:${mimeType || "image/jpeg"};base64,${buffer.toString("base64")}`;
+      }
+    }
 
     return NextResponse.json({
       success: true,
@@ -96,8 +139,11 @@ export async function POST(req: NextRequest) {
       originalName: file.name,
       size: file.size,
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Upload error:", error);
-    return NextResponse.json({ error: "File upload failed." }, { status: 500 });
+    return NextResponse.json(
+      { error: error?.message || "File upload failed." },
+      { status: 500 }
+    );
   }
 }
