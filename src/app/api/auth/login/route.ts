@@ -6,10 +6,10 @@ import { checkRateLimit } from "@/lib/security";
 export async function POST(req: NextRequest) {
   try {
     const ip = req.headers.get("x-forwarded-for") || "local";
-    const rate = checkRateLimit(`login-${ip}`, 10, 60000);
+    const rate = checkRateLimit(`login-${ip}`, 5, 60000); // Strict brute-force threshold
     if (!rate.success) {
       return NextResponse.json(
-        { error: "Too many login attempts. Please wait a minute and try again." },
+        { error: "Too many login attempts. Access blocked for 60 seconds." },
         { status: 429 }
       );
     }
@@ -130,7 +130,7 @@ export async function POST(req: NextRequest) {
     response.cookies.set(AUTH_COOKIE_NAME, token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
+      sameSite: "strict",
       maxAge: 60 * 60 * 24 * 7, // 7 days
       path: "/",
     });

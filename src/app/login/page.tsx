@@ -128,54 +128,15 @@ export default function LoginPage() {
             </button>
           </form>
 
-          {/* Quick Demo Credentials Autofill */}
-          <div className="mt-8 pt-6 border-t border-[#D4AF37]/20">
-            <p className="text-xs font-semibold uppercase tracking-wider text-[#AA7C11] mb-3 text-center">
-              Quick Demo Login (Click to test roles)
-            </p>
-            <div className="grid grid-cols-1 gap-2">
-              <button
-                type="button"
-                onClick={() => fillDemo("admin@wedding.com", "Admin@123456")}
-                className="w-full text-left px-3 py-2 rounded-xl bg-[#FAF8F5] hover:bg-[#F3E5AB]/40 border border-[#D4AF37]/20 text-xs flex items-center justify-between transition-colors"
-              >
-                <div>
-                  <span className="font-semibold text-[#2C2A29]">Super Administrator</span>
-                  <span className="block text-[11px] text-[#3E444A]/70">admin@wedding.com</span>
-                </div>
-                <span className="px-2 py-0.5 rounded-full bg-[#D4AF37]/20 text-[#AA7C11] text-[10px] font-bold">
-                  SUPERADMIN
-                </span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => fillDemo("alex.sophia@wedding.com", "Wedding@2026")}
-                className="w-full text-left px-3 py-2 rounded-xl bg-[#FAF8F5] hover:bg-[#F3E5AB]/40 border border-[#D4AF37]/20 text-xs flex items-center justify-between transition-colors"
-              >
-                <div>
-                  <span className="font-semibold text-[#2C2A29]">Couple (Alex &amp; Sophia)</span>
-                  <span className="block text-[11px] text-[#3E444A]/70">alex.sophia@wedding.com</span>
-                </div>
-                <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold">
-                  COUPLE
-                </span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => fillDemo("organizer@wedding.com", "Organizer@2026")}
-                className="w-full text-left px-3 py-2 rounded-xl bg-[#FAF8F5] hover:bg-[#F3E5AB]/40 border border-[#D4AF37]/20 text-xs flex items-center justify-between transition-colors"
-              >
-                <div>
-                  <span className="font-semibold text-[#2C2A29]">Event Coordinator</span>
-                  <span className="block text-[11px] text-[#3E444A]/70">organizer@wedding.com</span>
-                </div>
-                <span className="px-2 py-0.5 rounded-full bg-purple-100 text-purple-800 text-[10px] font-bold">
-                  ORGANIZER
-                </span>
-              </button>
+          {/* Luxury Security Assurance Badge */}
+          <div className="mt-8 pt-6 border-t border-[#D4AF37]/20 text-center">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#FAF8F5] border border-[#D4AF37]/25 text-[11px] text-[#3E444A]/80 font-medium">
+              <Lock className="w-3.5 h-3.5 text-[#AA7C11]" />
+              <span>Encrypted Session &amp; Protected Endpoint</span>
             </div>
+            <p className="mt-2 text-[11px] text-[#3E444A]/50 font-serif">
+              Authorized access only. All activities are monitored.
+            </p>
           </div>
         </div>
       </div>
