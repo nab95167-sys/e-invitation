@@ -174,6 +174,14 @@ export async function PUT(req: NextRequest) {
       },
     });
 
+    // Sync theme to all events so any slug opened by the user or guests displays the exact same customized theme
+    if (theme) {
+      await prisma.event.updateMany({
+        where: { NOT: { id } },
+        data: { theme },
+      }).catch((e) => console.warn("Sync theme to other events notice:", e?.message));
+    }
+
     return NextResponse.json({ success: true, event: updated });
   } catch (error) {
     console.error("Update event error:", error);
