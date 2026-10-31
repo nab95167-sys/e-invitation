@@ -3,6 +3,15 @@ import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import { sanitizeString } from "@/lib/security";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
+const NO_CACHE_HEADERS = {
+  "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0",
+  Pragma: "no-cache",
+  Expires: "0",
+};
+
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
@@ -32,9 +41,9 @@ export async function GET(req: NextRequest) {
       }
 
       if (!event) {
-        return NextResponse.json({ error: "Event not found" }, { status: 404 });
+        return NextResponse.json({ error: "Event not found" }, { status: 404, headers: NO_CACHE_HEADERS });
       }
-      return NextResponse.json({ success: true, event });
+      return NextResponse.json({ success: true, event }, { headers: NO_CACHE_HEADERS });
     }
 
     const session = await getSession();
@@ -49,13 +58,13 @@ export async function GET(req: NextRequest) {
     });
 
     if (!event) {
-      return NextResponse.json({ error: "Event not found" }, { status: 404 });
+      return NextResponse.json({ error: "Event not found" }, { status: 404, headers: NO_CACHE_HEADERS });
     }
 
-    return NextResponse.json({ success: true, event });
+    return NextResponse.json({ success: true, event }, { headers: NO_CACHE_HEADERS });
   } catch (error) {
     console.error("GET /api/events error:", error);
-    return NextResponse.json({ error: "Failed to load event", details: String(error) }, { status: 500 });
+    return NextResponse.json({ error: "Failed to load event", details: String(error) }, { status: 500, headers: NO_CACHE_HEADERS });
   }
 }
 
