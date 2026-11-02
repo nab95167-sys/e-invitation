@@ -365,8 +365,8 @@
           background-size: 220% 100% !important;
           -webkit-background-clip: text !important;
           background-clip: text !important;
-          padding: .3em .1em .45em !important;
-          font-size: 23cqw !important;
+          padding: .2em .1em .35em !important;
+          font-size: 17.5cqw !important;
           font-weight: 400 !important;
           line-height: 1 !important;
           position: absolute !important;
@@ -374,14 +374,14 @@
         }
 
         .e2__flap-logo .lk-groom {
-          top: 9% !important;
-          left: 2% !important;
+          top: 11% !important;
+          left: 5% !important;
           right: auto !important;
         }
 
         .e2__flap-logo .lk-bride {
-          top: 41% !important;
-          right: 1% !important;
+          top: 44% !important;
+          right: 4% !important;
           left: auto !important;
         }
 
@@ -1818,8 +1818,8 @@
             background-size: 220% 100% !important;
             -webkit-background-clip: text !important;
             background-clip: text !important;
-            padding: .3em .1em .45em !important;
-            font-size: 23cqw !important;
+            padding: .2em .1em .35em !important;
+            font-size: 17.5cqw !important;
             font-weight: 400 !important;
             line-height: 1 !important;
             position: absolute !important;
@@ -1827,14 +1827,14 @@
           }
 
           .e2__flap-logo .lk-groom {
-            top: 9% !important;
-            left: 2% !important;
+            top: 11% !important;
+            left: 5% !important;
             right: auto !important;
           }
 
           .e2__flap-logo .lk-bride {
-            top: 41% !important;
-            right: 1% !important;
+            top: 44% !important;
+            right: 4% !important;
             left: auto !important;
           }
 
@@ -2210,14 +2210,19 @@
           });
         }
 
-        // Auto-scale only if custom names exceed standard single-name length (> 10 characters)
+        // Refined auto-scaling: comfortable luxury proportions avoiding crowded or oversized text
         const maxFlapLen = Math.max(envGroom.length, envBride.length);
-        if (maxFlapLen > 10) {
-          const flapFontSize = maxFlapLen > 14 ? '17cqw' : '19.5cqw';
-          document.querySelectorAll('.e2__flap-logo .lk-name').forEach(el => {
-            el.style.setProperty('font-size', flapFontSize, 'important');
-          });
+        let flapFontSize = '17.5cqw';
+        if (maxFlapLen > 11) {
+          flapFontSize = '14cqw';
+        } else if (maxFlapLen > 7) {
+          flapFontSize = '15.5cqw';
+        } else {
+          flapFontSize = '17.5cqw';
         }
+        document.querySelectorAll('.e2__flap-logo .lk-name').forEach(el => {
+          el.style.setProperty('font-size', flapFontSize, 'important');
+        });
 
         if (groom && bride) {
           const fullTitle = decodeEntities(ev.title) || (`សិរីសួស្តីអាពាហ៍ពិពាហ៍ · ${groom} & ${bride}`);
