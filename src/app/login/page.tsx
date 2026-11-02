@@ -21,19 +21,20 @@ export default function LoginPage() {
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email: email.trim(), password }),
       });
 
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
 
       if (!res.ok) {
-        throw new Error(data.error || "Login failed");
+        throw new Error(data.error || (res.status === 401 ? "Invalid email or password." : `Login failed (${res.status})`));
       }
 
       router.push("/dashboard");
       router.refresh();
     } catch (err: any) {
-      setError(err.message);
+      console.error("Login attempt error:", err);
+      setError(err.message || "An unexpected error occurred. Please try again.");
     } finally {
       setLoading(false);
     }

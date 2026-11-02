@@ -14,7 +14,16 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { email, password } = await req.json();
+    const rawBody = await req.json().catch(() => null);
+    if (!rawBody || typeof rawBody !== "object") {
+      return NextResponse.json(
+        { error: "Invalid request payload." },
+        { status: 400 }
+      );
+    }
+
+    const email = typeof rawBody.email === "string" ? rawBody.email.trim() : "";
+    const password = typeof rawBody.password === "string" ? rawBody.password : "";
 
     if (!email || !password) {
       return NextResponse.json(

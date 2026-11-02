@@ -273,19 +273,40 @@
           background: ${pal.accent} !important;
           color: ${pal.night} !important;
         }
-        /* ENVELOPE BOX EXTERIOR (ALL SIDES & 3D CLOSED DOORS) */
-        .e2, .e2__back, .e2__pocket-l:before, .e2__pocket-r:before, .e2__pocket-b:before, .e2__flap-front, .tri__out {
+        /* ENVELOPE BOX EXTERIOR (ALL SIDES & 3D CLOSED DOORS) - DIRECT DYNAMIC PALETTE COLOR */
+        .e2, .e2__stage, .e2__back, .e2__pocket, .e2__flap, .e2__pocket-l:before, .e2__pocket-r:before, .e2__pocket-b:before, .e2__flap-front, .tri__out, .e2__tri--l .tri__out, .e2__tri--r .tri__out {
           background-color: ${pal.envelope} !important;
-          background-image: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(0,0,0,0.25)), url(/tex/paper-olive.webp) !important;
-          background-blend-mode: multiply !important;
+          background-image: radial-gradient(ellipse at 50% 30%, rgba(255,255,255,0.18) 0%, rgba(0,0,0,0.18) 100%) !important;
+          background-blend-mode: normal !important;
           filter: none !important;
+          -webkit-filter: none !important;
+        }
+        .e2__back {
+          background-color: ${pal.envelope} !important;
+          filter: none !important;
+          -webkit-filter: none !important;
+        }
+        .e2__flap-front {
+          background-color: ${pal.envelope} !important;
+          background-image: radial-gradient(ellipse at 50% 30%, rgba(255,255,255,0.22) 0%, rgba(0,0,0,0.15) 100%) !important;
+          background-blend-mode: normal !important;
+          filter: none !important;
+          -webkit-filter: none !important;
+        }
+        .e2__pocket-l:before, .e2__pocket-r:before, .e2__pocket-b:before {
+          background-color: ${pal.envelope} !important;
+          background-image: none !important;
+          filter: none !important;
+          -webkit-filter: none !important;
         }
         /* ENVELOPE INNER FLAP & OPEN BOX LINING (REVEALED WHEN OPENING THE BOX) */
-        .e2__flap-back, .tri__in {
+        .e2__flap-back, .tri__in, .e2__tri--l .tri__in, .e2__tri--r .tri__in {
           background-color: ${pal.lining} !important;
-          background-image: radial-gradient(circle at 50% 25%, ${pal.accent}33 0%, ${pal.lining} 75%, rgba(0,0,0,0.4) 100%), url(/tex/paper-lining.webp) !important;
-          background-blend-mode: multiply !important;
-          box-shadow: inset 0 -30px 40px rgba(0,0,0,0.5) !important;
+          background-image: radial-gradient(circle at 50% 25%, ${pal.accent}33 0%, ${pal.lining} 75%, rgba(0,0,0,0.3) 100%) !important;
+          background-blend-mode: normal !important;
+          box-shadow: inset 0 -30px 40px rgba(0,0,0,0.45) !important;
+          filter: none !important;
+          -webkit-filter: none !important;
         }
         /* ENVELOPE INNER CARD & LETTER PANELS (WHEN OPENING THE BOX) */
         .e2__card, .paper, .card {
@@ -350,7 +371,14 @@
         }
       `;
       dynamicStyle.textContent = css;
+      if (document.head && dynamicStyle.parentNode !== document.head) {
+        document.head.appendChild(dynamicStyle);
+      }
     };
+    // Immediately invoke with default Royal Purple so initial render matches Photo 1 immediately
+    try {
+      window.applyThemePalette(window.__activeEventData ? window.__activeEventData.theme : 'royal_khmer_purple');
+    } catch(e) {}
   </script>
   <script>
     // Safeguard #gallery and #story sections from being removed by template scripts
@@ -1615,19 +1643,40 @@
             background: ${pal.accent} !important;
             color: ${pal.night} !important;
           }
-          /* ENVELOPE BOX EXTERIOR (ALL SIDES & 3D CLOSED DOORS) */
-          .e2, .e2__back, .e2__pocket-l:before, .e2__pocket-r:before, .e2__pocket-b:before, .e2__flap-front, .tri__out {
+          /* ENVELOPE BOX EXTERIOR (ALL SIDES & 3D CLOSED DOORS) - DIRECT DYNAMIC PALETTE COLOR */
+          .e2, .e2__stage, .e2__back, .e2__pocket, .e2__flap, .e2__pocket-l:before, .e2__pocket-r:before, .e2__pocket-b:before, .e2__flap-front, .tri__out, .e2__tri--l .tri__out, .e2__tri--r .tri__out {
             background-color: ${pal.envelope} !important;
-            background-image: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(0,0,0,0.25)), url(/tex/paper-olive.webp) !important;
-            background-blend-mode: multiply !important;
+            background-image: radial-gradient(ellipse at 50% 30%, rgba(255,255,255,0.18) 0%, rgba(0,0,0,0.18) 100%) !important;
+            background-blend-mode: normal !important;
             filter: none !important;
+            -webkit-filter: none !important;
+          }
+          .e2__back {
+            background-color: ${pal.envelope} !important;
+            filter: none !important;
+            -webkit-filter: none !important;
+          }
+          .e2__flap-front {
+            background-color: ${pal.envelope} !important;
+            background-image: radial-gradient(ellipse at 50% 30%, rgba(255,255,255,0.22) 0%, rgba(0,0,0,0.15) 100%) !important;
+            background-blend-mode: normal !important;
+            filter: none !important;
+            -webkit-filter: none !important;
+          }
+          .e2__pocket-l:before, .e2__pocket-r:before, .e2__pocket-b:before {
+            background-color: ${pal.envelope} !important;
+            background-image: none !important;
+            filter: none !important;
+            -webkit-filter: none !important;
           }
           /* ENVELOPE INNER FLAP & OPEN BOX LINING (REVEALED WHEN OPENING THE BOX) */
-          .e2__flap-back, .tri__in {
+          .e2__flap-back, .tri__in, .e2__tri--l .tri__in, .e2__tri--r .tri__in {
             background-color: ${pal.lining} !important;
-            background-image: radial-gradient(circle at 50% 25%, ${pal.accent}33 0%, ${pal.lining} 75%, rgba(0,0,0,0.4) 100%), url(/tex/paper-lining.webp) !important;
-            background-blend-mode: multiply !important;
-            box-shadow: inset 0 -30px 40px rgba(0,0,0,0.5) !important;
+            background-image: radial-gradient(circle at 50% 25%, ${pal.accent}33 0%, ${pal.lining} 75%, rgba(0,0,0,0.3) 100%) !important;
+            background-blend-mode: normal !important;
+            box-shadow: inset 0 -30px 40px rgba(0,0,0,0.45) !important;
+            filter: none !important;
+            -webkit-filter: none !important;
           }
           /* ENVELOPE INNER CARD & LETTER PANELS (WHEN OPENING THE BOX) */
           .e2__card, .paper, .card {
@@ -2645,6 +2694,9 @@
           if (ev && (ev.id || ev.slug || ev.groomName || ev.brideName || ev.title)) {
             activeEventData = ev;
             if (activeEventData.slug) { window.__eventSlug = activeEventData.slug; }
+            if (activeEventData.theme && typeof window.applyThemePalette === 'function') {
+              window.applyThemePalette(activeEventData.theme);
+            }
             applyEventDOM();
             loadWishes();
           }
