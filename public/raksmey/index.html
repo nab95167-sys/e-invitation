@@ -15,6 +15,9 @@
   <meta property="og:image:height" content="630" />
   <meta name="twitter:card" content="summary_large_image" />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@300;400;500;600;700&family=Moul&family=Noto+Serif+Khmer:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="preload" as="image" imagesrcset="/img/hero-m-640.webp 640w, /img/hero-m-1280.webp 1280w, /img/hero-m-2000.webp 2000w" imagesizes="100vw" media="(max-aspect-ratio: 1/1)" />
   <script>
     (function() {
@@ -332,6 +335,109 @@
         }
         .e2__seal {
           filter: drop-shadow(0 8px 18px rgba(0,0,0,0.65)) drop-shadow(0 0 15px ${pal.accent}40) !important;
+        }
+
+        /* =========================================================
+           ROYAL KHMER ENVELOPE TYPOGRAPHY & CALLIGRAPHY STYLING
+           ========================================================= */
+        /* 1. Completely hide Latin swashes that slice through Khmer letters */
+        .lk-swash,
+        .lk-swash2,
+        .lockup .lk-swash,
+        .lockup .lk-swash2,
+        .e2__flap-logo .lk-swash,
+        .e2__flap-logo .lk-swash2 {
+          display: none !important;
+          visibility: hidden !important;
+          opacity: 0 !important;
+        }
+
+        /* 2. Center and expand envelope flap logo area */
+        .e2__flap-logo {
+          position: absolute !important;
+          top: 6% !important;
+          left: 17% !important;
+          right: 17% !important;
+          width: 66% !important;
+          margin: 0 auto !important;
+          pointer-events: none !important;
+        }
+
+        .e2__flap-logo .lockup {
+          aspect-ratio: 600 / 440 !important;
+          width: 100% !important;
+          position: relative !important;
+          container-type: inline-size !important;
+        }
+
+        /* 3. Pure Khmer Moul Font - Royal, Upright, and Elegant */
+        .lk-name,
+        .e2__flap-logo .lk-name,
+        .e2__card .lk-name,
+        .lockup .lk-name {
+          font-family: 'Moul', var(--f-moul), 'Noto Serif Khmer', serif !important;
+          font-style: normal !important;
+          font-weight: 400 !important;
+          line-height: 1.45 !important;
+          padding: 0.2em 0.35em !important;
+          white-space: nowrap !important;
+          overflow: visible !important;
+          background: linear-gradient(135deg, #fff7d6 0%, #e5b95c 30%, #fdf5df 55%, #c89528 80%, #fff7d6 100%) !important;
+          -webkit-background-clip: text !important;
+          background-clip: text !important;
+          color: transparent !important;
+          filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 10px rgba(217, 177, 90, 0.45)) !important;
+          letter-spacing: 0.02em !important;
+          text-shadow: none !important;
+          position: absolute !important;
+        }
+
+        /* Flap specific typography: generous vertical separation preventing ANY overlap */
+        .e2__flap-logo .lk-name {
+          font-size: clamp(14px, 16.5cqw, 23px) !important;
+        }
+
+        .e2__flap-logo .lk-groom {
+          top: 11% !important;
+          left: 6% !important;
+          right: auto !important;
+          text-align: left !important;
+        }
+
+        .e2__flap-logo .lk-bride {
+          top: 48% !important;
+          right: 6% !important;
+          left: auto !important;
+          text-align: right !important;
+        }
+
+        /* 4. Royal Heart & Butterfly Accents */
+        .e2__flap-logo .lk-heart {
+          fill: ${pal.accent} !important;
+          filter: drop-shadow(0 0 8px rgba(217, 177, 90, 0.6)) !important;
+          transform: translate(0, 8px) scale(0.9) !important;
+          opacity: 0.9 !important;
+        }
+
+        .e2__flap-logo .lk-butterfly {
+          width: 13% !important;
+          top: 10% !important;
+          right: 4% !important;
+          filter: drop-shadow(0 0 8px rgba(217, 177, 90, 0.5)) !important;
+        }
+
+        /* Inside card typography */
+        .e2__card .lk-name {
+          font-size: clamp(13px, 16.5cqw, 22px) !important;
+          position: absolute !important;
+        }
+        .e2__card .lk-groom {
+          top: 12% !important;
+          left: 5% !important;
+        }
+        .e2__card .lk-bride {
+          top: 46% !important;
+          right: 5% !important;
         }
         /* SECTIONS */
         .programme {
@@ -1703,6 +1809,101 @@
           .e2__seal {
             filter: drop-shadow(0 8px 18px rgba(0,0,0,0.65)) drop-shadow(0 0 15px ${pal.accent}40) !important;
           }
+
+          /* ROYAL KHMER ENVELOPE TYPOGRAPHY & CALLIGRAPHY STYLING */
+          .lk-swash,
+          .lk-swash2,
+          .lockup .lk-swash,
+          .lockup .lk-swash2,
+          .e2__flap-logo .lk-swash,
+          .e2__flap-logo .lk-swash2 {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+          }
+
+          .e2__flap-logo {
+            position: absolute !important;
+            top: 6% !important;
+            left: 17% !important;
+            right: 17% !important;
+            width: 66% !important;
+            margin: 0 auto !important;
+            pointer-events: none !important;
+          }
+
+          .e2__flap-logo .lockup {
+            aspect-ratio: 600 / 440 !important;
+            width: 100% !important;
+            position: relative !important;
+            container-type: inline-size !important;
+          }
+
+          .lk-name,
+          .e2__flap-logo .lk-name,
+          .e2__card .lk-name,
+          .lockup .lk-name {
+            font-family: 'Moul', var(--f-moul), 'Noto Serif Khmer', serif !important;
+            font-style: normal !important;
+            font-weight: 400 !important;
+            line-height: 1.45 !important;
+            padding: 0.2em 0.35em !important;
+            white-space: nowrap !important;
+            overflow: visible !important;
+            background: linear-gradient(135deg, #fff7d6 0%, #e5b95c 30%, #fdf5df 55%, #c89528 80%, #fff7d6 100%) !important;
+            -webkit-background-clip: text !important;
+            background-clip: text !important;
+            color: transparent !important;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 10px rgba(217, 177, 90, 0.45)) !important;
+            letter-spacing: 0.02em !important;
+            text-shadow: none !important;
+            position: absolute !important;
+          }
+
+          .e2__flap-logo .lk-name {
+            font-size: clamp(14px, 16.5cqw, 23px) !important;
+          }
+
+          .e2__flap-logo .lk-groom {
+            top: 11% !important;
+            left: 6% !important;
+            right: auto !important;
+            text-align: left !important;
+          }
+
+          .e2__flap-logo .lk-bride {
+            top: 48% !important;
+            right: 6% !important;
+            left: auto !important;
+            text-align: right !important;
+          }
+
+          .e2__flap-logo .lk-heart {
+            fill: ${pal.accent} !important;
+            filter: drop-shadow(0 0 8px rgba(217, 177, 90, 0.6)) !important;
+            transform: translate(0, 8px) scale(0.9) !important;
+            opacity: 0.9 !important;
+          }
+
+          .e2__flap-logo .lk-butterfly {
+            width: 13% !important;
+            top: 10% !important;
+            right: 4% !important;
+            filter: drop-shadow(0 0 8px rgba(217, 177, 90, 0.5)) !important;
+          }
+
+          .e2__card .lk-name {
+            font-size: clamp(13px, 16.5cqw, 22px) !important;
+            position: absolute !important;
+          }
+          .e2__card .lk-groom {
+            top: 12% !important;
+            left: 5% !important;
+          }
+          .e2__card .lk-bride {
+            top: 46% !important;
+            right: 5% !important;
+          }
           /* SECTIONS */
           .programme {
             background: ${pal.night} !important;
@@ -2038,6 +2239,13 @@
             if (el.textContent !== envBride) el.textContent = envBride;
           });
         }
+
+        // Auto-scale envelope flap calligraphy font size based on name length to ensure 0 collisions
+        const maxFlapLen = Math.max(envGroom.length, envBride.length);
+        const flapFontSize = maxFlapLen > 11 ? 'clamp(12px, 13.5cqw, 19px)' : maxFlapLen > 8 ? 'clamp(13px, 15cqw, 21px)' : 'clamp(14px, 16.5cqw, 23px)';
+        document.querySelectorAll('.e2__flap-logo .lk-name').forEach(el => {
+          el.style.setProperty('font-size', flapFontSize, 'important');
+        });
 
         if (groom && bride) {
           const fullTitle = decodeEntities(ev.title) || (`សិរីសួស្តីអាពាហ៍ពិពាហ៍ · ${groom} & ${bride}`);
