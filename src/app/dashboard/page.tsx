@@ -25,7 +25,7 @@ export default async function DashboardOverviewPage() {
       wishes: true,
       media: true,
     },
-  });
+  }).catch(() => null);
 
   if (!event) {
     return (

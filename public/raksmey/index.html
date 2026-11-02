@@ -338,106 +338,88 @@
         }
 
         /* =========================================================
-           ROYAL KHMER ENVELOPE TYPOGRAPHY & CALLIGRAPHY STYLING
+           AUTHENTIC ROYAL KHMER CALLIGRAPHY (MATCHING PHOTO 2)
            ========================================================= */
-        /* 1. Completely hide Latin swashes that slice through Khmer letters */
-        .lk-swash,
-        .lk-swash2,
-        .lockup .lk-swash,
-        .lockup .lk-swash2,
-        .e2__flap-logo .lk-swash,
-        .e2__flap-logo .lk-swash2 {
-          display: none !important;
-          visibility: hidden !important;
-          opacity: 0 !important;
-        }
-
-        /* 2. Center and expand envelope flap logo area */
         .e2__flap-logo {
           position: absolute !important;
-          top: 6% !important;
-          left: 17% !important;
-          right: 17% !important;
-          width: 66% !important;
-          margin: 0 auto !important;
-          pointer-events: none !important;
+          top: 7% !important;
+          left: 27% !important;
+          right: 27% !important;
         }
 
         .e2__flap-logo .lockup {
-          aspect-ratio: 600 / 440 !important;
+          aspect-ratio: 600 / 470 !important;
           width: 100% !important;
           position: relative !important;
           container-type: inline-size !important;
         }
 
-        /* 3. Pure Khmer Moul Font - Royal, Upright, and Elegant */
         .lk-name,
-        .e2__flap-logo .lk-name,
-        .e2__card .lk-name,
-        .lockup .lk-name {
-          font-family: 'Moul', var(--f-moul), 'Noto Serif Khmer', serif !important;
-          font-style: normal !important;
-          font-weight: 400 !important;
-          line-height: 1.45 !important;
-          padding: 0.2em 0.35em !important;
+        .e2__flap-logo .lk-name {
+          font-family: "Moulpali", var(--f-moul), serif !important;
           white-space: nowrap !important;
-          overflow: visible !important;
-          background: linear-gradient(135deg, #fff7d6 0%, #e5b95c 30%, #fdf5df 55%, #c89528 80%, #fff7d6 100%) !important;
+          letter-spacing: 0 !important;
+          background: var(--foil-grad) !important;
+          color: #0000 !important;
+          background-position: 30% !important;
+          background-size: 220% 100% !important;
           -webkit-background-clip: text !important;
           background-clip: text !important;
-          color: transparent !important;
-          filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 10px rgba(217, 177, 90, 0.45)) !important;
-          letter-spacing: 0.02em !important;
-          text-shadow: none !important;
+          padding: .3em .1em .45em !important;
+          font-size: 23cqw !important;
+          font-weight: 400 !important;
+          line-height: 1 !important;
           position: absolute !important;
-        }
-
-        /* Flap specific typography: generous vertical separation preventing ANY overlap */
-        .e2__flap-logo .lk-name {
-          font-size: clamp(14px, 16.5cqw, 23px) !important;
+          filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.55)) !important;
         }
 
         .e2__flap-logo .lk-groom {
-          top: 11% !important;
-          left: 6% !important;
+          top: 9% !important;
+          left: 2% !important;
           right: auto !important;
-          text-align: left !important;
         }
 
         .e2__flap-logo .lk-bride {
-          top: 48% !important;
-          right: 6% !important;
+          top: 41% !important;
+          right: 1% !important;
           left: auto !important;
-          text-align: right !important;
         }
 
-        /* 4. Royal Heart & Butterfly Accents */
-        .e2__flap-logo .lk-heart {
-          fill: ${pal.accent} !important;
-          filter: drop-shadow(0 0 8px rgba(217, 177, 90, 0.6)) !important;
-          transform: translate(0, 8px) scale(0.9) !important;
-          opacity: 0.9 !important;
+        .lk-swash {
+          display: block !important;
+          fill: none !important;
+          stroke: url(#g-foil) !important;
+          stroke-width: 3px !important;
+          stroke-linecap: round !important;
         }
 
-        .e2__flap-logo .lk-butterfly {
-          width: 13% !important;
-          top: 10% !important;
-          right: 4% !important;
-          filter: drop-shadow(0 0 8px rgba(217, 177, 90, 0.5)) !important;
+        .lk-swash2 {
+          display: block !important;
+          fill: none !important;
+          stroke: url(#g-foil) !important;
+          stroke-width: 2.2px !important;
+          stroke-linecap: round !important;
         }
 
-        /* Inside card typography */
-        .e2__card .lk-name {
-          font-size: clamp(13px, 16.5cqw, 22px) !important;
+        .lk-heart {
+          display: block !important;
+          fill: url(#g-foil) !important;
+        }
+
+        .lk-butterfly {
+          display: block !important;
+          width: 14% !important;
           position: absolute !important;
+          top: 18% !important;
+          right: 6% !important;
+          transform: rotate(16deg) !important;
         }
-        .e2__card .lk-groom {
-          top: 12% !important;
-          left: 5% !important;
-        }
-        .e2__card .lk-bride {
-          top: 46% !important;
-          right: 5% !important;
+
+        .lk-butterfly svg {
+          width: 100% !important;
+          height: auto !important;
+          display: block !important;
+          overflow: visible !important;
         }
         /* SECTIONS */
         .programme {
@@ -1810,99 +1792,87 @@
             filter: drop-shadow(0 8px 18px rgba(0,0,0,0.65)) drop-shadow(0 0 15px ${pal.accent}40) !important;
           }
 
-          /* ROYAL KHMER ENVELOPE TYPOGRAPHY & CALLIGRAPHY STYLING */
-          .lk-swash,
-          .lk-swash2,
-          .lockup .lk-swash,
-          .lockup .lk-swash2,
-          .e2__flap-logo .lk-swash,
-          .e2__flap-logo .lk-swash2 {
-            display: none !important;
-            visibility: hidden !important;
-            opacity: 0 !important;
-          }
-
+          /* AUTHENTIC ROYAL KHMER CALLIGRAPHY (MATCHING PHOTO 2) */
           .e2__flap-logo {
             position: absolute !important;
-            top: 6% !important;
-            left: 17% !important;
-            right: 17% !important;
-            width: 66% !important;
-            margin: 0 auto !important;
-            pointer-events: none !important;
+            top: 7% !important;
+            left: 27% !important;
+            right: 27% !important;
           }
 
           .e2__flap-logo .lockup {
-            aspect-ratio: 600 / 440 !important;
+            aspect-ratio: 600 / 470 !important;
             width: 100% !important;
             position: relative !important;
             container-type: inline-size !important;
           }
 
           .lk-name,
-          .e2__flap-logo .lk-name,
-          .e2__card .lk-name,
-          .lockup .lk-name {
-            font-family: 'Moul', var(--f-moul), 'Noto Serif Khmer', serif !important;
-            font-style: normal !important;
-            font-weight: 400 !important;
-            line-height: 1.45 !important;
-            padding: 0.2em 0.35em !important;
+          .e2__flap-logo .lk-name {
+            font-family: "Moulpali", var(--f-moul), serif !important;
             white-space: nowrap !important;
-            overflow: visible !important;
-            background: linear-gradient(135deg, #fff7d6 0%, #e5b95c 30%, #fdf5df 55%, #c89528 80%, #fff7d6 100%) !important;
+            letter-spacing: 0 !important;
+            background: var(--foil-grad) !important;
+            color: #0000 !important;
+            background-position: 30% !important;
+            background-size: 220% 100% !important;
             -webkit-background-clip: text !important;
             background-clip: text !important;
-            color: transparent !important;
-            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 10px rgba(217, 177, 90, 0.45)) !important;
-            letter-spacing: 0.02em !important;
-            text-shadow: none !important;
+            padding: .3em .1em .45em !important;
+            font-size: 23cqw !important;
+            font-weight: 400 !important;
+            line-height: 1 !important;
             position: absolute !important;
-          }
-
-          .e2__flap-logo .lk-name {
-            font-size: clamp(14px, 16.5cqw, 23px) !important;
+            filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.55)) !important;
           }
 
           .e2__flap-logo .lk-groom {
-            top: 11% !important;
-            left: 6% !important;
+            top: 9% !important;
+            left: 2% !important;
             right: auto !important;
-            text-align: left !important;
           }
 
           .e2__flap-logo .lk-bride {
-            top: 48% !important;
-            right: 6% !important;
+            top: 41% !important;
+            right: 1% !important;
             left: auto !important;
-            text-align: right !important;
           }
 
-          .e2__flap-logo .lk-heart {
-            fill: ${pal.accent} !important;
-            filter: drop-shadow(0 0 8px rgba(217, 177, 90, 0.6)) !important;
-            transform: translate(0, 8px) scale(0.9) !important;
-            opacity: 0.9 !important;
+          .lk-swash {
+            display: block !important;
+            fill: none !important;
+            stroke: url(#g-foil) !important;
+            stroke-width: 3px !important;
+            stroke-linecap: round !important;
           }
 
-          .e2__flap-logo .lk-butterfly {
-            width: 13% !important;
-            top: 10% !important;
-            right: 4% !important;
-            filter: drop-shadow(0 0 8px rgba(217, 177, 90, 0.5)) !important;
+          .lk-swash2 {
+            display: block !important;
+            fill: none !important;
+            stroke: url(#g-foil) !important;
+            stroke-width: 2.2px !important;
+            stroke-linecap: round !important;
           }
 
-          .e2__card .lk-name {
-            font-size: clamp(13px, 16.5cqw, 22px) !important;
+          .lk-heart {
+            display: block !important;
+            fill: url(#g-foil) !important;
+          }
+
+          .lk-butterfly {
+            display: block !important;
+            width: 14% !important;
             position: absolute !important;
+            top: 18% !important;
+            right: 6% !important;
+            transform: rotate(16deg) !important;
           }
-          .e2__card .lk-groom {
-            top: 12% !important;
-            left: 5% !important;
-          }
-          .e2__card .lk-bride {
-            top: 46% !important;
-            right: 5% !important;
+
+          .lk-butterfly svg {
+            width: 100% !important;
+            height: auto !important;
+            display: block !important;
+            overflow: visible !important;
           }
           /* SECTIONS */
           .programme {
@@ -2194,11 +2164,11 @@
           }
         } catch (e) {}
 
-        // Custom Envelope Flap Calligraphy Names (falls back to custom envelopeGroom/Bride, or full groom/bride, or short)
+        // Custom Envelope Flap Calligraphy Names (Single given names default for royal 3D flap lockup matching benchmark Photo 2)
         const customEnvGroom = decodeEntities(themeObj.envelopeGroom || ev.envelopeGroom || '');
         const customEnvBride = decodeEntities(themeObj.envelopeBride || ev.envelopeBride || '');
-        const envGroom = customEnvGroom || (groom.length <= 14 ? groom : groomShort);
-        const envBride = customEnvBride || (bride.length <= 14 ? bride : brideShort);
+        const envGroom = customEnvGroom || groomShort || groom;
+        const envBride = customEnvBride || brideShort || bride;
 
         window.__customGroomInit = envGroom.charAt(0) || groom.charAt(0) || 'ដ';
         window.__customBrideInit = envBride.charAt(0) || bride.charAt(0) || 'ម';
@@ -2240,12 +2210,14 @@
           });
         }
 
-        // Auto-scale envelope flap calligraphy font size based on name length to ensure 0 collisions
+        // Auto-scale only if custom names exceed standard single-name length (> 10 characters)
         const maxFlapLen = Math.max(envGroom.length, envBride.length);
-        const flapFontSize = maxFlapLen > 11 ? 'clamp(12px, 13.5cqw, 19px)' : maxFlapLen > 8 ? 'clamp(13px, 15cqw, 21px)' : 'clamp(14px, 16.5cqw, 23px)';
-        document.querySelectorAll('.e2__flap-logo .lk-name').forEach(el => {
-          el.style.setProperty('font-size', flapFontSize, 'important');
-        });
+        if (maxFlapLen > 10) {
+          const flapFontSize = maxFlapLen > 14 ? '17cqw' : '19.5cqw';
+          document.querySelectorAll('.e2__flap-logo .lk-name').forEach(el => {
+            el.style.setProperty('font-size', flapFontSize, 'important');
+          });
+        }
 
         if (groom && bride) {
           const fullTitle = decodeEntities(ev.title) || (`សិរីសួស្តីអាពាហ៍ពិពាហ៍ · ${groom} & ${bride}`);

@@ -26,8 +26,8 @@ export default async function DashboardLayout({
   const userEvent = await prisma.event.findFirst({
     where: session.role === "SUPERADMIN" ? {} : { userId: session.userId },
     select: { slug: true },
-  });
-  const eventSlug = userEvent?.slug || "davita-and-meassa";
+  }).catch(() => null);
+  const eventSlug = userEvent?.slug || "raksmey-and-pheakdey";
 
   const roleColors: Record<string, string> = {
     SUPERADMIN: "bg-red-100 text-red-800 border-red-200",

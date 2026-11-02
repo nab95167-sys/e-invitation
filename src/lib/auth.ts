@@ -52,15 +52,30 @@ export async function getCurrentUser() {
   const session = await getSession();
   if (!session) return null;
 
-  return prisma.user.findUnique({
-    where: { id: session.userId },
-    select: {
-      id: true,
-      email: true,
-      name: true,
-      role: true,
-      avatarUrl: true,
-      createdAt: true,
-    },
-  });
+  try {
+    const dbUser = await prisma.user.findUnique({
+      where: { id: session.userId },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        role: true,
+        avatarUrl: true,
+        createdAt: true,
+      },
+    });
+    if (dbUser) return dbUser;
+  } catch (e) {
+    console.warn("Notice: DB user fetch fallback to session:", e);
+  }
+
+  // Fallback to valid decoded session so portal dashboard never crashes
+  return {
+    id: session.userId,
+    email: session.email,
+    name: session.name,
+    role: session.role,
+    avatarUrl: null,
+    createdAt: new Date(),
+  };
 }
