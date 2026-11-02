@@ -14,10 +14,13 @@
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta name="twitter:card" content="summary_large_image" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@300;400;500;600;700&family=Moul&family=Noto+Serif+Khmer:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Moulpali&family=Moul&family=Kantumruy+Pro:wght@300;400;500;600;700&family=Noto+Serif+Khmer:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="preload" as="image" imagesrcset="/img/hero-m-640.webp 640w, /img/hero-m-1280.webp 1280w, /img/hero-m-2000.webp 2000w" imagesizes="100vw" media="(max-aspect-ratio: 1/1)" />
   <script>
     (function() {
@@ -340,11 +343,17 @@
         /* =========================================================
            AUTHENTIC ROYAL KHMER CALLIGRAPHY (MATCHING PHOTO 2)
            ========================================================= */
+        .e2__flap-border {
+          z-index: 1 !important;
+          pointer-events: none !important;
+        }
         .e2__flap-logo {
           position: absolute !important;
           top: 7% !important;
           left: 27% !important;
           right: 27% !important;
+          z-index: 25 !important;
+          pointer-events: none !important;
         }
 
         .e2__flap-logo .lockup {
@@ -366,22 +375,23 @@
           -webkit-background-clip: text !important;
           background-clip: text !important;
           padding: .2em .1em .35em !important;
-          font-size: 17.5cqw !important;
+          font-size: 15cqw !important;
           font-weight: 400 !important;
           line-height: 1 !important;
           position: absolute !important;
-          filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.55)) !important;
+          z-index: 30 !important;
+          filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.65)) !important;
         }
 
         .e2__flap-logo .lk-groom {
-          top: 11% !important;
-          left: 5% !important;
+          top: 10% !important;
+          left: 8% !important;
           right: auto !important;
         }
 
         .e2__flap-logo .lk-bride {
-          top: 44% !important;
-          right: 4% !important;
+          top: 42% !important;
+          right: 17% !important;
           left: auto !important;
         }
 
@@ -391,6 +401,7 @@
           stroke: url(#g-foil) !important;
           stroke-width: 3px !important;
           stroke-linecap: round !important;
+          z-index: 20 !important;
         }
 
         .lk-swash2 {
@@ -399,19 +410,22 @@
           stroke: url(#g-foil) !important;
           stroke-width: 2.2px !important;
           stroke-linecap: round !important;
+          z-index: 20 !important;
         }
 
         .lk-heart {
           display: block !important;
           fill: url(#g-foil) !important;
+          z-index: 20 !important;
         }
 
         .lk-butterfly {
           display: block !important;
-          width: 14% !important;
+          width: 11% !important;
           position: absolute !important;
-          top: 18% !important;
-          right: 6% !important;
+          top: 14% !important;
+          right: 10% !important;
+          z-index: 26 !important;
           transform: rotate(16deg) !important;
         }
 
@@ -1800,6 +1814,19 @@
             right: 27% !important;
           }
 
+          .e2__flap-border {
+            z-index: 1 !important;
+            pointer-events: none !important;
+          }
+          .e2__flap-logo {
+            position: absolute !important;
+            top: 7% !important;
+            left: 27% !important;
+            right: 27% !important;
+            z-index: 25 !important;
+            pointer-events: none !important;
+          }
+
           .e2__flap-logo .lockup {
             aspect-ratio: 600 / 470 !important;
             width: 100% !important;
@@ -1819,22 +1846,23 @@
             -webkit-background-clip: text !important;
             background-clip: text !important;
             padding: .2em .1em .35em !important;
-            font-size: 17.5cqw !important;
+            font-size: 15cqw !important;
             font-weight: 400 !important;
             line-height: 1 !important;
             position: absolute !important;
-            filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.55)) !important;
+            z-index: 30 !important;
+            filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.65)) !important;
           }
 
           .e2__flap-logo .lk-groom {
-            top: 11% !important;
-            left: 5% !important;
+            top: 10% !important;
+            left: 8% !important;
             right: auto !important;
           }
 
           .e2__flap-logo .lk-bride {
-            top: 44% !important;
-            right: 4% !important;
+            top: 42% !important;
+            right: 17% !important;
             left: auto !important;
           }
 
@@ -1844,6 +1872,7 @@
             stroke: url(#g-foil) !important;
             stroke-width: 3px !important;
             stroke-linecap: round !important;
+            z-index: 20 !important;
           }
 
           .lk-swash2 {
@@ -1852,19 +1881,22 @@
             stroke: url(#g-foil) !important;
             stroke-width: 2.2px !important;
             stroke-linecap: round !important;
+            z-index: 20 !important;
           }
 
           .lk-heart {
             display: block !important;
             fill: url(#g-foil) !important;
+            z-index: 20 !important;
           }
 
           .lk-butterfly {
             display: block !important;
-            width: 14% !important;
+            width: 11% !important;
             position: absolute !important;
-            top: 18% !important;
-            right: 6% !important;
+            top: 14% !important;
+            right: 10% !important;
+            z-index: 26 !important;
             transform: rotate(16deg) !important;
           }
 
@@ -2212,13 +2244,13 @@
 
         // Refined auto-scaling: comfortable luxury proportions avoiding crowded or oversized text
         const maxFlapLen = Math.max(envGroom.length, envBride.length);
-        let flapFontSize = '17.5cqw';
+        let flapFontSize = '15cqw';
         if (maxFlapLen > 11) {
-          flapFontSize = '14cqw';
+          flapFontSize = '12.5cqw';
         } else if (maxFlapLen > 7) {
-          flapFontSize = '15.5cqw';
+          flapFontSize = '13.8cqw';
         } else {
-          flapFontSize = '17.5cqw';
+          flapFontSize = '15cqw';
         }
         document.querySelectorAll('.e2__flap-logo .lk-name').forEach(el => {
           el.style.setProperty('font-size', flapFontSize, 'important');

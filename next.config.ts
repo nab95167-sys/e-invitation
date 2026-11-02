@@ -25,6 +25,24 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
+        source: '/invite/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0',
+          },
+        ],
+      },
+      {
+        source: '/raksmey/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0',
+          },
+        ],
+      },
+      {
         source: '/:path*',
         headers: [
           {
