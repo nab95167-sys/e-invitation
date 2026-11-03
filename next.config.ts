@@ -3,7 +3,7 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   outputFileTracingIncludes: {
-    '/**': ['./prisma/**'],
+    '/**': ['./prisma/**', './public/**'],
   },
   images: {
     remotePatterns: [
@@ -79,10 +79,6 @@ const nextConfig: NextConfig = {
   },
   async rewrites() {
     return [
-      {
-        source: '/invite/:slug*',
-        destination: '/raksmey/index.html',
-      },
       {
         source: '/raksmey',
         destination: '/raksmey/index.html',

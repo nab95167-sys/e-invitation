@@ -4,16 +4,19 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#250e44" />
-  <title>សិរីសួស្តីអាពាហ៍ពិពាហ៍ · ផៃ រស្មី & មាស ភក្ដី</title>
-  <meta name="description" content="សូមគោរពអញ្ជើញចូលរួមពិធីអាពាហ៍ពិពាហ៍ ផៃ រស្មី & មាស ភក្ដី · Phay Raksmey & Meas Pheakdey wedding invitation" />
+  <title>សិរីសួស្តីអាពាហ៍ពិពាហ៍ · ហឿន ផានិត & សៀ ស្រីនិត</title>
+  <meta name="description" content="សូមគោរពអញ្ជើញចូលរួមពិធីអាពាហ៍ពិពាហ៍ ហឿន ផានិត & សៀ ស្រីនិត · Hoeurn Phanith & Seourr Sreynith wedding invitation" />
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="សិរីសួស្តីអាពាហ៍ពិពាហ៍ · រស្មី & ភក្ដី" />
-  <meta property="og:description" content="សូមគោរពអញ្ជើញ · You are warmly invited to the wedding of Phay Raksmey & Meas Pheakdey" />
-  <meta property="og:image" content="https://raksmey-pheakdey.vercel.app/og.jpg" />
-  <meta property="og:url" content="https://raksmey-pheakdey.vercel.app/" />
+  <meta property="og:title" content="សិរីសួស្តីអាពាហ៍ពិពាហ៍ · ហឿន ផានិត & សៀ ស្រីនិត" />
+  <meta property="og:description" content="សូមគោរពអញ្ជើញចូលរួមពិធីសិរីសួស្តីអាពាហ៍ពិពាហ៍រវាង ហឿន ផានិត & សៀ ស្រីនិត" />
+  <meta property="og:image" content="https://e-invitation-bice.vercel.app/img/hero-m-1280.webp" />
+  <meta property="og:url" content="https://e-invitation-bice.vercel.app/" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="សិរីសួស្តីអាពាហ៍ពិពាហ៍ · ហឿន ផានិត & សៀ ស្រីនិត" />
+  <meta name="twitter:description" content="សូមគោរពអញ្ជើញចូលរួមពិធីសិរីសួស្តីអាពាហ៍ពិពាហ៍រវាង ហឿន ផានិត & សៀ ស្រីនិត" />
+  <meta name="twitter:image" content="https://e-invitation-bice.vercel.app/img/hero-m-1280.webp" />
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
@@ -28,15 +31,27 @@
         var p = new URLSearchParams(window.location.search);
         var to = p.get('to') || p.get('guest');
         var code = p.get('code');
-        if (to) { window.__initialGuestName = to; }
+        if (window.__SSR_GUEST_NAME__) {
+          window.__initialGuestName = window.__SSR_GUEST_NAME__;
+        } else if (to) {
+          window.__initialGuestName = to;
+        }
+
+        if (window.__SSR_EVENT__) {
+          var ssrEv = window.__SSR_EVENT__;
+          window.__activeEventData = ssrEv;
+          if (ssrEv.slug) { window.__eventSlug = ssrEv.slug; }
+          if (ssrEv.musicUrl !== undefined) { window.__customWeddingMusicUrl = ssrEv.musicUrl; }
+        }
+
         if (code) {
           window.__guestLookupPromise = fetch('/api/guests/lookup?code=' + encodeURIComponent(code) + '&_t=' + Date.now(), { cache: 'no-store' })
             .then(function(r) { return r.ok ? r.json() : null; })
             .catch(function() { return null; });
         }
         var pathParts = window.location.pathname.split('/').filter(Boolean);
-        var currentSlug = (pathParts[0] === 'invite' && pathParts[1]) ? pathParts[1] : '';
-        window.__eventSlug = currentSlug || '';
+        var currentSlug = window.__SSR_SLUG__ || ((pathParts[0] === 'invite' && pathParts[1]) ? pathParts[1] : '');
+        window.__eventSlug = currentSlug || window.__eventSlug || '';
         var apiUrl = currentSlug ? ('/api/events?slug=' + encodeURIComponent(currentSlug) + '&_t=' + Date.now()) : ('/api/events?_t=' + Date.now());
 
         window.__eventPromise = fetch(apiUrl, { cache: 'no-store' })
