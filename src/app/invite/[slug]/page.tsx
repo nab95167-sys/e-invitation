@@ -7,11 +7,12 @@ export const dynamic = "force-dynamic";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
-  searchParams: Promise<{ code?: string }>;
+  searchParams: Promise<{ code?: string; to?: string }>;
 }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata({ params, searchParams }: PageProps): Promise<Metadata> {
   const { slug } = await params;
+  const { code, to } = (await searchParams) || {};
   const event = await prisma.event.findUnique({
     where: { slug },
   });
@@ -22,20 +23,65 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     };
   }
 
+  let guestName = to ? decodeURIComponent(to).trim() : "";
+  if (!guestName && code) {
+    try {
+      const guest = await prisma.guest.findUnique({
+        where: { invitationCode: code },
+        select: { name: true },
+      });
+      if (guest?.name) guestName = guest.name;
+    } catch (e) {}
+  }
+
+  const coupleTitle = `${event.groomName} & ${event.brideName}`;
+  const title = guestName
+    ? `💌 លិខិតគោរពអញ្ជើញ៖ ${guestName} · ${coupleTitle}`
+    : `សិរីសួស្តីអាពាហ៍ពិពាហ៍ · ${coupleTitle}`;
+
+  let dateFormatted = "";
+  try {
+    const d = new Date(event.eventDate);
+    dateFormatted = d.toLocaleDateString("km-KH", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
+  } catch (e) {}
+
+  const description = guestName
+    ? `សូមគោរពអញ្ជើញ ${guestName} ចូលរួមពិធីសិរីសួស្តីអាពាហ៍ពិពាហ៍រវាង ${coupleTitle} ${dateFormatted ? `នៅថ្ងៃ ${dateFormatted}` : ""} ${event.venueName ? `ទីតាំង៖ ${event.venueName}` : ""}`
+    : `សូមគោរពអញ្ជើញចូលរួមពិធីសិរីសួស្តីអាពាហ៍ពិពាហ៍រវាង ${coupleTitle} ${dateFormatted ? `នៅថ្ងៃ ${dateFormatted}` : ""} ${event.venueName ? `ទីតាំង៖ ${event.venueName}` : ""}`;
+
+  const images = event.coverImageUrl
+    ? [event.coverImageUrl]
+    : event.couplePhotoUrl
+    ? [event.couplePhotoUrl]
+    : ["/orn/pattern.svg"];
+
   return {
-    title: `${event.groomName} & ${event.brideName} — Wedding Invitation`,
-    description: `You are cordially invited to celebrate the marriage of ${event.groomName} & ${event.brideName}.`,
+    title,
+    description,
     openGraph: {
-      title: `${event.groomName} & ${event.brideName}'s Wedding Celebration`,
-      description: `Join us on ${new Date(event.eventDate).toLocaleDateString()} at ${event.venueName}.`,
-      images: [event.coverImageUrl || ""],
+      title,
+      description,
+      images,
+      type: "website",
+      locale: "km_KH",
+      siteName: "Digital Wedding Invitation · ធៀបការឌីជីថល",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images,
     },
   };
 }
 
 export default async function InvitationPage({ params, searchParams }: PageProps) {
   const { slug } = await params;
-  const { code } = await searchParams;
+  const { code, to } = (await searchParams) || {};
 
   const event = await prisma.event.findUnique({
     where: { slug },
@@ -71,6 +117,19 @@ export default async function InvitationPage({ params, searchParams }: PageProps
         },
       });
     }
+  }
+
+  // Graceful fallback for personalized links using ?to=GuestName
+  if (!guest && to) {
+    guest = {
+      name: decodeURIComponent(to).trim(),
+      category: "VIP Guest",
+      tableNumber: null,
+      maxGuests: 2,
+      rsvpStatus: "PENDING",
+      attendeesCount: 1,
+      invitationCode: code || "guest",
+    };
   }
 
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
