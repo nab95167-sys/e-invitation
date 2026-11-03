@@ -490,6 +490,140 @@ export const parseLetterConfig = (raw: string | null | undefined) => {
   return { ...defaultLetter, quote: raw };
 };
 
+// Helper to safely parse JSON responses and gracefully handle 413 "Request Entity Too Large"
+async function safeJsonResponse(res: Response, fallbackError = "Request failed") {
+  const text = await res.text();
+  let data: any = null;
+  try {
+    data = JSON.parse(text);
+  } catch {
+    if (
+      res.status === 413 ||
+      text.toLowerCase().includes("request entity too large") ||
+      text.toLowerCase().includes("payload too large")
+    ) {
+      throw new Error(
+        "ទំហំរូបភាព ឬទិន្នន័យធំពេក (Request Entity Too Large / 413)។ ប្រព័ន្ធបានកំណត់កម្រិតទំហំ ដើម្បីរក្សាល្បឿនលឿន។ សូមជ្រើសរើសរូបភាពដែលមានទំហំតូចជាងមុន។"
+      );
+    }
+    throw new Error(`${fallbackError} (Status ${res.status}): ${text.slice(0, 140)}`);
+  }
+  if (!res.ok) {
+    throw new Error(data?.error || fallbackError);
+  }
+  return data;
+}
+
+// Client-side image compression: automatically resize and compress photos before uploading
+async function compressImageFile(
+  file: File,
+  maxWidth = 1920,
+  maxHeight = 1920,
+  quality = 0.82
+): Promise<File> {
+  if (
+    !file.type.startsWith("image/") ||
+    file.type.includes("svg") ||
+    file.type.includes("gif")
+  ) {
+    return file;
+  }
+  // If already under 350KB, keep as-is
+  if (file.size <= 350 * 1024) {
+    return file;
+  }
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        let width = img.width;
+        let height = img.height;
+        if (width > maxWidth || height > maxHeight) {
+          if (width / maxWidth > height / maxHeight) {
+            height = Math.round((height * maxWidth) / width);
+            width = maxWidth;
+          } else {
+            width = Math.round((width * maxHeight) / height);
+            height = maxHeight;
+          }
+        }
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) {
+          resolve(file);
+          return;
+        }
+        ctx.drawImage(img, 0, 0, width, height);
+        canvas.toBlob(
+          (blob) => {
+            if (!blob || blob.size >= file.size) {
+              resolve(file);
+            } else {
+              const compressedFile = new File(
+                [blob],
+                file.name.replace(/\.[^/.]+$/, ".jpg"),
+                {
+                  type: "image/jpeg",
+                  lastModified: Date.now(),
+                }
+              );
+              resolve(compressedFile);
+            }
+          },
+          "image/jpeg",
+          quality
+        );
+      };
+      img.onerror = () => resolve(file);
+      img.src = e.target?.result as string;
+    };
+    reader.onerror = () => resolve(file);
+    reader.readAsDataURL(file);
+  });
+}
+
+// Downscale any large Data URLs already stored in formData so payload stays well under 1MB
+async function downscaleDataUrl(
+  dataUrl: string,
+  maxDimension = 1200,
+  quality = 0.78
+): Promise<string> {
+  if (!dataUrl || !dataUrl.startsWith("data:image/") || dataUrl.length < 250000) {
+    return dataUrl;
+  }
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      let width = img.width;
+      let height = img.height;
+      if (width > maxDimension || height > maxDimension) {
+        if (width > height) {
+          height = Math.round((height * maxDimension) / width);
+          width = maxDimension;
+        } else {
+          width = Math.round((width * maxDimension) / height);
+          height = maxDimension;
+        }
+      }
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) {
+        resolve(dataUrl);
+        return;
+      }
+      ctx.drawImage(img, 0, 0, width, height);
+      resolve(canvas.toDataURL("image/jpeg", quality));
+    };
+    img.onerror = () => resolve(dataUrl);
+    img.src = dataUrl;
+  });
+}
+
 interface EventClientProps {
   initialEvent: any;
   initialMedia?: any[];
@@ -672,10 +806,7 @@ ${url}`;
           theme: stringified,
         }),
       });
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err.error || "Failed to save theme to database");
-      }
+      await safeJsonResponse(res, "Failed to save theme to database");
       const msg = customSuccessMsg || "✓ បានកែប្រែ និងរក្សាទុកស្ទីលពណ៌ដោយជោគជ័យ! (Theme & Colors saved)";
       setSuccess(msg);
       setThemeSaveSuccess(msg);
@@ -931,18 +1062,18 @@ ${url}`;
     setError(null);
 
     try {
+      // Auto-compress high-res camera photos before uploading to stay well below limits
+      const optimizedFile = await compressImageFile(file);
+
       const uploadFormData = new FormData();
-      uploadFormData.append("file", file);
+      uploadFormData.append("file", optimizedFile);
 
       const res = await fetch("/api/upload", {
         method: "POST",
         body: uploadFormData,
       });
 
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.error || "Image upload failed");
-      }
+      const data = await safeJsonResponse(res, "Image upload failed");
 
       // Update local state
       let updatedBank = bankConfig;
@@ -971,10 +1102,7 @@ ${url}`;
         body: JSON.stringify(autoSavePayload),
       });
 
-      if (!saveRes.ok) {
-        const errData = await saveRes.json().catch(() => ({}));
-        throw new Error(errData.error || "Photo uploaded but failed to save to event.");
-      }
+      await safeJsonResponse(saveRes, "Photo uploaded but failed to save to event.");
 
       setSuccess(`✓ Photo "${file.name}" uploaded and saved automatically to your wedding celebration!`);
     } catch (err: any) {
@@ -997,18 +1125,17 @@ ${url}`;
       const added: any[] = [];
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
+        // Auto-compress high-res gallery images
+        const optimizedFile = await compressImageFile(file);
         const formDataUpload = new FormData();
-        formDataUpload.append("file", file);
+        formDataUpload.append("file", optimizedFile);
 
         const uploadRes = await fetch("/api/upload", {
           method: "POST",
           body: formDataUpload,
         });
-        if (!uploadRes.ok) {
-          const errData = await uploadRes.json().catch(() => ({}));
-          throw new Error(errData.error || `Failed to upload ${file.name}`);
-        }
-        const { url } = await uploadRes.json();
+        const uploadData = await safeJsonResponse(uploadRes, `Failed to upload ${file.name}`);
+        const { url } = uploadData;
 
         const createRes = await fetch("/api/media", {
           method: "POST",
@@ -1021,13 +1148,8 @@ ${url}`;
             category: "GALLERY",
           }),
         });
-        if (createRes.ok) {
-          const { item } = await createRes.json();
-          added.push(item);
-        } else {
-          const errData = await createRes.json().catch(() => ({}));
-          throw new Error(errData.error || `Failed to save ${file.name} to gallery`);
-        }
+        const mediaData = await safeJsonResponse(createRes, `Failed to save ${file.name} to gallery`);
+        added.push(mediaData.item);
       }
       setMediaList((prev) => [...added, ...prev]);
       setSuccess(`✓ បានបន្ថែមរូបថត ${added.length} សន្លឹកទៅកាន់កម្រងរូបភាពអាពាហ៍ពិពាហ៍ដោយជោគជ័យ!`);
@@ -1076,19 +1198,17 @@ ${url}`;
         body: uploadFormData,
       });
 
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.error || "Audio upload failed");
-      }
+      const data = await safeJsonResponse(res, "Audio upload failed");
 
       setFormData((prev) => ({ ...prev, musicUrl: data.url }));
 
       // Immediately auto-save musicUrl to database
-      await fetch("/api/events", {
+      const saveAudioRes = await fetch("/api/events", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: initialEvent.id, musicUrl: data.url }),
       });
+      await safeJsonResponse(saveAudioRes, "Audio saved to event");
 
       setSuccess(`✓ Audio file "${file.name}" uploaded and saved automatically!`);
 
@@ -1146,12 +1266,40 @@ ${url}`;
     setError(null);
 
     try {
+      // Downscale any large data URLs in formData before submission to ensure payload stays lightweight (< 500KB)
+      const sanitizedFormData = { ...formData };
+      const imageKeys = [
+        "coverImageUrl",
+        "couplePhotoUrl",
+        "groomPhotoUrl",
+        "bridePhotoUrl",
+        "venuePhotoUrl",
+      ] as const;
+
+      for (const k of imageKeys) {
+        if (sanitizedFormData[k] && sanitizedFormData[k].startsWith("data:image/")) {
+          sanitizedFormData[k] = await downscaleDataUrl(sanitizedFormData[k]);
+        }
+      }
+
+      let sanitizedBankConfig = { ...bankConfig };
+      if (
+        sanitizedBankConfig.qrImageUrl &&
+        sanitizedBankConfig.qrImageUrl.startsWith("data:image/")
+      ) {
+        sanitizedBankConfig.qrImageUrl = await downscaleDataUrl(
+          sanitizedBankConfig.qrImageUrl,
+          800,
+          0.75
+        );
+      }
+
       const payload = {
-        ...formData,
+        ...sanitizedFormData,
         theme: JSON.stringify(themeConfig),
         programme: JSON.stringify(programmeDays),
         contacts: JSON.stringify(contactsList),
-        bankAccountInfo: JSON.stringify(bankConfig),
+        bankAccountInfo: JSON.stringify(sanitizedBankConfig),
         quote: JSON.stringify(letterConfig),
       };
 
@@ -1161,12 +1309,9 @@ ${url}`;
         body: JSON.stringify(payload),
       });
 
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.error || "Failed to update event settings");
-      }
+      await safeJsonResponse(res, "Failed to update event settings");
 
-      setSuccess("Wedding details successfully saved and updated!");
+      setSuccess("✓ បានរក្សាទុកព័ត៌មានលម្អិតពិធីមង្គលការដោយជោគជ័យ! (Wedding details saved successfully!)");
     } catch (err: any) {
       setError(err.message);
     } finally {

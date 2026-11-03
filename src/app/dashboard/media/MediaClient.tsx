@@ -16,6 +16,100 @@ import {
   Sparkles,
 } from "lucide-react";
 
+// Helper to safely parse JSON responses and gracefully handle 413 "Request Entity Too Large"
+async function safeJsonResponse(res: Response, fallbackError = "Request failed") {
+  const text = await res.text();
+  let data: any = null;
+  try {
+    data = JSON.parse(text);
+  } catch {
+    if (
+      res.status === 413 ||
+      text.toLowerCase().includes("request entity too large") ||
+      text.toLowerCase().includes("payload too large")
+    ) {
+      throw new Error(
+        "ទំហំរូបភាព ឬទិន្នន័យធំពេក (Request Entity Too Large / 413)។ សូមជ្រើសរើសរូបភាពដែលមានទំហំតូចជាងមុន។"
+      );
+    }
+    throw new Error(`${fallbackError} (Status ${res.status}): ${text.slice(0, 140)}`);
+  }
+  if (!res.ok) {
+    throw new Error(data?.error || fallbackError);
+  }
+  return data;
+}
+
+// Client-side image compression: automatically resize and compress photos before uploading
+async function compressImageFile(
+  file: File,
+  maxWidth = 1920,
+  maxHeight = 1920,
+  quality = 0.82
+): Promise<File> {
+  if (
+    !file.type.startsWith("image/") ||
+    file.type.includes("svg") ||
+    file.type.includes("gif")
+  ) {
+    return file;
+  }
+  if (file.size <= 350 * 1024) {
+    return file;
+  }
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        let width = img.width;
+        let height = img.height;
+        if (width > maxWidth || height > maxHeight) {
+          if (width / maxWidth > height / maxHeight) {
+            height = Math.round((height * maxWidth) / width);
+            width = maxWidth;
+          } else {
+            width = Math.round((width * maxHeight) / height);
+            height = maxHeight;
+          }
+        }
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) {
+          resolve(file);
+          return;
+        }
+        ctx.drawImage(img, 0, 0, width, height);
+        canvas.toBlob(
+          (blob) => {
+            if (!blob || blob.size >= file.size) {
+              resolve(file);
+            } else {
+              const compressedFile = new File(
+                [blob],
+                file.name.replace(/\.[^/.]+$/, ".jpg"),
+                {
+                  type: "image/jpeg",
+                  lastModified: Date.now(),
+                }
+              );
+              resolve(compressedFile);
+            }
+          },
+          "image/jpeg",
+          quality
+        );
+      };
+      img.onerror = () => resolve(file);
+      img.src = e.target?.result as string;
+    };
+    reader.onerror = () => resolve(file);
+    reader.readAsDataURL(file);
+  });
+}
+
 interface MediaItem {
   id: string;
   title?: string | null;
@@ -88,8 +182,11 @@ export default function MediaClient({ initialMedia, eventId, eventSlug }: MediaC
 
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
+        const isPhoto = file.type.startsWith("image/");
+        const optimizedFile = isPhoto ? await compressImageFile(file) : file;
+
         const formData = new FormData();
-        formData.append("file", file);
+        formData.append("file", optimizedFile);
 
         // Upload to server
         const uploadRes = await fetch("/api/upload", {
@@ -97,12 +194,8 @@ export default function MediaClient({ initialMedia, eventId, eventSlug }: MediaC
           body: formData,
         });
 
-        if (!uploadRes.ok) {
-          const errData = await uploadRes.json();
-          throw new Error(errData.error || `Failed to upload ${file.name}`);
-        }
-
-        const { url } = await uploadRes.json();
+        const uploadData = await safeJsonResponse(uploadRes, `Failed to upload ${file.name}`);
+        const { url } = uploadData;
         const mediaType = file.type.startsWith("video/") ? "VIDEO" : "PHOTO";
 
         // Create MediaItem record in DB
@@ -119,13 +212,8 @@ export default function MediaClient({ initialMedia, eventId, eventSlug }: MediaC
           }),
         });
 
-        if (createRes.ok) {
-          const { item } = await createRes.json();
-          addedItems.push(item);
-        } else {
-          const errData = await createRes.json().catch(() => ({}));
-          throw new Error(errData.error || `Failed to save ${file.name} to media gallery.`);
-        }
+        const mediaData = await safeJsonResponse(createRes, `Failed to save ${file.name} to media gallery.`);
+        addedItems.push(mediaData.item);
       }
 
       setMedia([...addedItems, ...media]);
@@ -159,12 +247,7 @@ export default function MediaClient({ initialMedia, eventId, eventSlug }: MediaC
         }),
       });
 
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error || "Failed to add media item");
-      }
-
-      const { item } = await res.json();
+      const { item } = await safeJsonResponse(res, "Failed to add media item");
       setMedia([item, ...media]);
       setSuccess("Media item added successfully.");
       setUrlInput("");
@@ -194,12 +277,7 @@ export default function MediaClient({ initialMedia, eventId, eventSlug }: MediaC
         }),
       });
 
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error || "Failed to update media item");
-      }
-
-      const { item } = await res.json();
+      const { item } = await safeJsonResponse(res, "Failed to update media item");
       setMedia(media.map((m) => (m.id === item.id ? { ...m, ...item } : m)));
       setSuccess("Media details updated.");
       setEditingItem(null);
