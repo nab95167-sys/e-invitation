@@ -343,6 +343,16 @@
         /* =========================================================
            AUTHENTIC ROYAL KHMER CALLIGRAPHY (MATCHING PHOTO 2)
            ========================================================= */
+        /* Prevent inside card text from leaking through closed envelope */
+        .gate:not(.is-opening) .e2__card {
+          opacity: 0 !important;
+          visibility: hidden !important;
+          pointer-events: none !important;
+        }
+        .gate.is-opening .e2__card {
+          visibility: visible !important;
+        }
+
         .e2__flap-border {
           z-index: 1 !important;
           pointer-events: none !important;
@@ -350,8 +360,8 @@
         .e2__flap-logo {
           position: absolute !important;
           top: 7% !important;
-          left: 27% !important;
-          right: 27% !important;
+          left: 24% !important;
+          right: 24% !important;
           z-index: 25 !important;
           pointer-events: none !important;
         }
@@ -363,7 +373,6 @@
           container-type: inline-size !important;
         }
 
-        .lk-name,
         .e2__flap-logo .lk-name {
           font-family: "Moulpali", var(--f-moul), serif !important;
           white-space: nowrap !important;
@@ -374,25 +383,42 @@
           background-size: 220% 100% !important;
           -webkit-background-clip: text !important;
           background-clip: text !important;
-          padding: .2em .1em .35em !important;
-          font-size: 15cqw !important;
+          padding: .15em .2em .3em !important;
+          font-size: 14cqw !important;
           font-weight: 400 !important;
           line-height: 1 !important;
           position: absolute !important;
-          z-index: 30 !important;
-          filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.65)) !important;
+          left: 50% !important;
+          transform: translateX(-50%) !important;
+          text-align: center !important;
+          z-index: 25 !important;
+          filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.65)) drop-shadow(0 0 8px rgba(229,193,124,0.35)) !important;
         }
 
         .e2__flap-logo .lk-groom {
-          top: 10% !important;
-          left: 8% !important;
+          top: 15% !important;
+          left: 50% !important;
           right: auto !important;
+          transform: translateX(-50%) !important;
         }
 
         .e2__flap-logo .lk-bride {
-          top: 42% !important;
-          right: 17% !important;
-          left: auto !important;
+          top: 48% !important;
+          left: 50% !important;
+          right: auto !important;
+          transform: translateX(-50%) !important;
+        }
+
+        .e2__card .lk-name {
+          position: absolute !important;
+          z-index: 1 !important;
+          font-family: "Moulpali", var(--f-moul), serif !important;
+          white-space: nowrap !important;
+          background: var(--foil-grad) !important;
+          color: #0000 !important;
+          -webkit-background-clip: text !important;
+          background-clip: text !important;
+          filter: none !important;
         }
 
         .lk-swash {
@@ -424,7 +450,7 @@
           width: 11% !important;
           position: absolute !important;
           top: 14% !important;
-          right: 10% !important;
+          right: 8% !important;
           z-index: 26 !important;
           transform: rotate(16deg) !important;
         }
@@ -1806,12 +1832,14 @@
             filter: drop-shadow(0 8px 18px rgba(0,0,0,0.65)) drop-shadow(0 0 15px ${pal.accent}40) !important;
           }
 
-          /* AUTHENTIC ROYAL KHMER CALLIGRAPHY (MATCHING PHOTO 2) */
-          .e2__flap-logo {
-            position: absolute !important;
-            top: 7% !important;
-            left: 27% !important;
-            right: 27% !important;
+          /* Prevent inside card text from leaking through closed envelope */
+          .gate:not(.is-opening) .e2__card {
+            opacity: 0 !important;
+            visibility: hidden !important;
+            pointer-events: none !important;
+          }
+          .gate.is-opening .e2__card {
+            visibility: visible !important;
           }
 
           .e2__flap-border {
@@ -1821,8 +1849,8 @@
           .e2__flap-logo {
             position: absolute !important;
             top: 7% !important;
-            left: 27% !important;
-            right: 27% !important;
+            left: 24% !important;
+            right: 24% !important;
             z-index: 25 !important;
             pointer-events: none !important;
           }
@@ -1834,7 +1862,6 @@
             container-type: inline-size !important;
           }
 
-          .lk-name,
           .e2__flap-logo .lk-name {
             font-family: "Moulpali", var(--f-moul), serif !important;
             white-space: nowrap !important;
@@ -1845,25 +1872,42 @@
             background-size: 220% 100% !important;
             -webkit-background-clip: text !important;
             background-clip: text !important;
-            padding: .2em .1em .35em !important;
-            font-size: 15cqw !important;
+            padding: .15em .2em .3em !important;
+            font-size: 14cqw !important;
             font-weight: 400 !important;
             line-height: 1 !important;
             position: absolute !important;
-            z-index: 30 !important;
-            filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.65)) !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            text-align: center !important;
+            z-index: 25 !important;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.65)) drop-shadow(0 0 8px rgba(229,193,124,0.35)) !important;
           }
 
           .e2__flap-logo .lk-groom {
-            top: 10% !important;
-            left: 8% !important;
+            top: 15% !important;
+            left: 50% !important;
             right: auto !important;
+            transform: translateX(-50%) !important;
           }
 
           .e2__flap-logo .lk-bride {
-            top: 42% !important;
-            right: 17% !important;
-            left: auto !important;
+            top: 48% !important;
+            left: 50% !important;
+            right: auto !important;
+            transform: translateX(-50%) !important;
+          }
+
+          .e2__card .lk-name {
+            position: absolute !important;
+            z-index: 1 !important;
+            font-family: "Moulpali", var(--f-moul), serif !important;
+            white-space: nowrap !important;
+            background: var(--foil-grad) !important;
+            color: #0000 !important;
+            -webkit-background-clip: text !important;
+            background-clip: text !important;
+            filter: none !important;
           }
 
           .lk-swash {
@@ -1895,7 +1939,7 @@
             width: 11% !important;
             position: absolute !important;
             top: 14% !important;
-            right: 10% !important;
+            right: 8% !important;
             z-index: 26 !important;
             transform: rotate(16deg) !important;
           }
@@ -2242,15 +2286,15 @@
           });
         }
 
-        // Refined auto-scaling: comfortable luxury proportions avoiding crowded or oversized text
+        // Refined auto-scaling: comfortable luxury proportions matching Benchmark Photo 5
         const maxFlapLen = Math.max(envGroom.length, envBride.length);
-        let flapFontSize = '15cqw';
+        let flapFontSize = '14cqw';
         if (maxFlapLen > 11) {
-          flapFontSize = '12.5cqw';
+          flapFontSize = '11cqw';
         } else if (maxFlapLen > 7) {
-          flapFontSize = '13.8cqw';
+          flapFontSize = '12.5cqw';
         } else {
-          flapFontSize = '15cqw';
+          flapFontSize = '14.5cqw';
         }
         document.querySelectorAll('.e2__flap-logo .lk-name').forEach(el => {
           el.style.setProperty('font-size', flapFontSize, 'important');
