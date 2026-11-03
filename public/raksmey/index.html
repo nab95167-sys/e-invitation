@@ -341,16 +341,17 @@
         }
 
         /* =========================================================
-           AUTHENTIC ROYAL KHMER CALLIGRAPHY (MATCHING PHOTO 2)
+           AUTHENTIC ROYAL KHMER CALLIGRAPHY & FLAWLESS LAYER ISOLATION
            ========================================================= */
-        /* Prevent inside card text from leaking through closed envelope */
+        /* 1. Closed: hide inside card completely so it never bleeds into flap */
         .gate:not(.is-opening) .e2__card {
-          opacity: 0 !important;
-          visibility: hidden !important;
-          pointer-events: none !important;
+          display: none !important;
         }
-        .gate.is-opening .e2__card {
-          visibility: visible !important;
+
+        /* 2. Opening/opened: hide flap front and flap logo so it NEVER ghosts onto card */
+        .gate.is-opening .e2__flap-logo,
+        .gate.is-opening .e2__flap-front {
+          display: none !important;
         }
 
         .e2__flap-border {
@@ -362,7 +363,6 @@
           top: 7% !important;
           left: 24% !important;
           right: 24% !important;
-          z-index: 25 !important;
           pointer-events: none !important;
         }
 
@@ -391,7 +391,6 @@
           left: 50% !important;
           transform: translateX(-50%) !important;
           text-align: center !important;
-          z-index: 25 !important;
           filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.65)) drop-shadow(0 0 8px rgba(229,193,124,0.35)) !important;
         }
 
@@ -409,16 +408,57 @@
           transform: translateX(-50%) !important;
         }
 
+        /* 3. Inside card folding doors vs inner content stacking */
+        .e2__tri {
+          z-index: 10 !important;
+        }
+        .e2__tri--l, .e2__tri--r {
+          z-index: 10 !important;
+        }
+        .e2__tri-crest {
+          z-index: 12 !important;
+        }
+        .e2__card-inner {
+          z-index: 2 !important;
+        }
+
+        /* 4. Inside card text proportions */
+        .e2__card .lockup {
+          width: 65% !important;
+          max-width: 280px !important;
+          margin: 0 auto !important;
+          position: relative !important;
+        }
         .e2__card .lk-name {
-          position: absolute !important;
-          z-index: 1 !important;
           font-family: "Moulpali", var(--f-moul), serif !important;
           white-space: nowrap !important;
+          letter-spacing: 0 !important;
           background: var(--foil-grad) !important;
           color: #0000 !important;
+          background-position: 30% !important;
+          background-size: 220% 100% !important;
           -webkit-background-clip: text !important;
           background-clip: text !important;
+          font-size: 11cqw !important;
+          font-weight: 400 !important;
+          line-height: 1 !important;
+          position: absolute !important;
+          left: 50% !important;
+          transform: translateX(-50%) !important;
+          text-align: center !important;
           filter: none !important;
+        }
+        .e2__card .lk-groom {
+          top: 15% !important;
+          left: 50% !important;
+          right: auto !important;
+          transform: translateX(-50%) !important;
+        }
+        .e2__card .lk-bride {
+          top: 48% !important;
+          left: 50% !important;
+          right: auto !important;
+          transform: translateX(-50%) !important;
         }
 
         .lk-swash {
@@ -1832,14 +1872,15 @@
             filter: drop-shadow(0 8px 18px rgba(0,0,0,0.65)) drop-shadow(0 0 15px ${pal.accent}40) !important;
           }
 
-          /* Prevent inside card text from leaking through closed envelope */
+          /* 1. Closed: hide inside card completely so it never bleeds into flap */
           .gate:not(.is-opening) .e2__card {
-            opacity: 0 !important;
-            visibility: hidden !important;
-            pointer-events: none !important;
+            display: none !important;
           }
-          .gate.is-opening .e2__card {
-            visibility: visible !important;
+
+          /* 2. Opening/opened: hide flap front and flap logo so it NEVER ghosts onto card */
+          .gate.is-opening .e2__flap-logo,
+          .gate.is-opening .e2__flap-front {
+            display: none !important;
           }
 
           .e2__flap-border {
@@ -1851,7 +1892,6 @@
             top: 7% !important;
             left: 24% !important;
             right: 24% !important;
-            z-index: 25 !important;
             pointer-events: none !important;
           }
 
@@ -1880,7 +1920,6 @@
             left: 50% !important;
             transform: translateX(-50%) !important;
             text-align: center !important;
-            z-index: 25 !important;
             filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.65)) drop-shadow(0 0 8px rgba(229,193,124,0.35)) !important;
           }
 
@@ -1898,16 +1937,57 @@
             transform: translateX(-50%) !important;
           }
 
+          /* 3. Inside card folding doors vs inner content stacking */
+          .e2__tri {
+            z-index: 10 !important;
+          }
+          .e2__tri--l, .e2__tri--r {
+            z-index: 10 !important;
+          }
+          .e2__tri-crest {
+            z-index: 12 !important;
+          }
+          .e2__card-inner {
+            z-index: 2 !important;
+          }
+
+          /* 4. Inside card text proportions */
+          .e2__card .lockup {
+            width: 65% !important;
+            max-width: 280px !important;
+            margin: 0 auto !important;
+            position: relative !important;
+          }
           .e2__card .lk-name {
-            position: absolute !important;
-            z-index: 1 !important;
             font-family: "Moulpali", var(--f-moul), serif !important;
             white-space: nowrap !important;
+            letter-spacing: 0 !important;
             background: var(--foil-grad) !important;
             color: #0000 !important;
+            background-position: 30% !important;
+            background-size: 220% 100% !important;
             -webkit-background-clip: text !important;
             background-clip: text !important;
+            font-size: 11cqw !important;
+            font-weight: 400 !important;
+            line-height: 1 !important;
+            position: absolute !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            text-align: center !important;
             filter: none !important;
+          }
+          .e2__card .lk-groom {
+            top: 15% !important;
+            left: 50% !important;
+            right: auto !important;
+            transform: translateX(-50%) !important;
+          }
+          .e2__card .lk-bride {
+            top: 48% !important;
+            left: 50% !important;
+            right: auto !important;
+            transform: translateX(-50%) !important;
           }
 
           .lk-swash {
@@ -2289,15 +2369,22 @@
         // Refined auto-scaling: comfortable luxury proportions matching Benchmark Photo 5
         const maxFlapLen = Math.max(envGroom.length, envBride.length);
         let flapFontSize = '14cqw';
+        let cardFontSize = '11cqw';
         if (maxFlapLen > 11) {
           flapFontSize = '11cqw';
+          cardFontSize = '9.5cqw';
         } else if (maxFlapLen > 7) {
           flapFontSize = '12.5cqw';
+          cardFontSize = '10.5cqw';
         } else {
           flapFontSize = '14.5cqw';
+          cardFontSize = '11.5cqw';
         }
         document.querySelectorAll('.e2__flap-logo .lk-name').forEach(el => {
           el.style.setProperty('font-size', flapFontSize, 'important');
+        });
+        document.querySelectorAll('.e2__card .lk-name').forEach(el => {
+          el.style.setProperty('font-size', cardFontSize, 'important');
         });
 
         if (groom && bride) {
