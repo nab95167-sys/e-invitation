@@ -1606,17 +1606,17 @@ export default function EventClient({ initialEvent, initialMedia, initialGuests 
             </div>
             {/* The Image that Telegram sees */}
             <div className="w-full aspect-[1.91/1] rounded-xl overflow-hidden bg-gray-200 border border-gray-300 relative flex items-center justify-center">
-              {formData.coverImageUrl || formData.couplePhotoUrl || formData.groomPhotoUrl ? (
+              {formData.couplePhotoUrl || formData.groomPhotoUrl || formData.coverImageUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
-                  src={formData.coverImageUrl || formData.couplePhotoUrl || formData.groomPhotoUrl}
+                  src={formData.couplePhotoUrl || formData.groomPhotoUrl || formData.coverImageUrl}
                   alt="Social Preview Thumbnail"
                   className="w-full h-full object-cover"
                 />
               ) : (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
-                  src="/img/hero-m-1280.webp"
+                  src="/og.jpg"
                   alt="Social Preview Thumbnail"
                   className="w-full h-full object-cover"
                 />

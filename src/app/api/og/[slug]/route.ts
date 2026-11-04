@@ -26,6 +26,7 @@ export async function GET(
           bridePhotoUrl: true,
           groomName: true,
           brideName: true,
+          theme: true,
         },
       });
     }
@@ -45,6 +46,7 @@ export async function GET(
           bridePhotoUrl: true,
           groomName: true,
           brideName: true,
+          theme: true,
         },
       });
     }
@@ -58,16 +60,31 @@ export async function GET(
           bridePhotoUrl: true,
           groomName: true,
           brideName: true,
+          theme: true,
         },
       });
     }
 
     // 2. Select image candidate
+    // Priority:
+    // 1. themeConfig.socialSharePhoto (explicitly selected in dashboard)
+    // 2. couplePhotoUrl (Center couple portrait from The Couple section)
+    // 3. groomPhotoUrl / bridePhotoUrl (Portraits)
+    // 4. coverImageUrl (Hero / Gate background)
+    // 5. fallback public/og.jpg
+    let themeConfig: any = {};
+    if (event?.theme) {
+      try {
+        themeConfig = typeof event.theme === "string" ? JSON.parse(event.theme) : event.theme;
+      } catch (e) {}
+    }
+
     const rawImage =
-      event?.coverImageUrl ||
+      themeConfig?.socialSharePhoto ||
       event?.couplePhotoUrl ||
       event?.groomPhotoUrl ||
-      event?.bridePhotoUrl;
+      event?.bridePhotoUrl ||
+      event?.coverImageUrl;
 
     if (rawImage) {
       // Case A: Base64 Data URL (e.g. data:image/jpeg;base64,...)
