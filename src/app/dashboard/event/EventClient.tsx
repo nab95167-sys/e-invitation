@@ -1553,6 +1553,58 @@ ${url}`;
           </div>
         </div>
 
+        {/* Telegram / Social Share Live Preview Card */}
+        <div className="p-4 rounded-2xl bg-white border border-[#229ED9]/30 shadow-xs space-y-3">
+          <div className="flex items-center justify-between flex-wrap gap-2">
+            <div className="flex items-center gap-2">
+              <span className="w-6 h-6 rounded-lg bg-[#229ED9]/15 text-[#229ED9] flex items-center justify-center text-xs font-bold">
+                📱
+              </span>
+              <div>
+                <span className="text-xs font-bold text-[#2C2A29]">
+                  ផ្ទាំងបង្ហាញពេលផ្ញើលើ Telegram / Messenger / WhatsApp (Social Share Preview Card)
+                </span>
+                <p className="text-[10px] text-gray-500">
+                  នេះជារូបភាព និងចំណងជើងដែលភ្ញៀវនឹងឃើញពេលអ្នកផ្ញើតំណភ្ជាប់ (Link) ទៅកាន់ពួកគាត់
+                </p>
+              </div>
+            </div>
+            <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-semibold border border-emerald-200">
+              ✓ Open Graph Active
+            </span>
+          </div>
+
+          <div className="max-w-md rounded-2xl border border-gray-200 bg-gray-50/70 p-3 space-y-2">
+            <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+              {typeof window !== "undefined" ? window.location.hostname : "e-invitation-bice.vercel.app"}
+            </div>
+            <div className="font-bold text-xs text-[#1a0dab] line-clamp-1">
+              💌 លិខិតគោរពអញ្ជើញ៖ {guestNameInput.trim() || "ភ្ញៀវកិត្តិយស"} · {formData.groomName || "ហឿន ផានិត"} & {formData.brideName || "សៀ ស្រីនិត"}
+            </div>
+            <div className="text-[11px] text-gray-600 line-clamp-2 leading-tight">
+              សូមគោរពអញ្ជើញ {guestNameInput.trim() || "ភ្ញៀវកិត្តិយស"} ចូលរួមពិធីសិរីសួស្តីអាពាហ៍ពិពាហ៍រវាង {formData.groomName || "ហឿន ផានិត"} & {formData.brideName || "សៀ ស្រីនិត"}...
+            </div>
+            {/* The Image that Telegram sees */}
+            <div className="w-full aspect-[1.91/1] rounded-xl overflow-hidden bg-gray-200 border border-gray-300 relative flex items-center justify-center">
+              {formData.coverImageUrl || formData.couplePhotoUrl || formData.groomPhotoUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={formData.coverImageUrl || formData.couplePhotoUrl || formData.groomPhotoUrl}
+                  alt="Social Preview Thumbnail"
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src="/img/hero-m-1280.webp"
+                  alt="Social Preview Thumbnail"
+                  className="w-full h-full object-cover"
+                />
+              )}
+            </div>
+          </div>
+        </div>
+
         {/* 💡 Visual explanation breakdown answering "Why links look similar" */}
         <div className="p-3.5 rounded-2xl bg-[#FBF9F5] border border-[#D4AF37]/30 text-xs text-[#3E444A] space-y-2">
           <div className="font-bold text-[#AA7C11] flex items-center justify-between gap-2 flex-wrap">
