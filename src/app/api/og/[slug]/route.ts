@@ -11,13 +11,33 @@ export async function GET(
   { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
-    const { slug } = await params;
+    const rawParams = await params;
+    const slug = rawParams?.slug ? decodeURIComponent(rawParams.slug).trim().replace(/\s+/g, "") : "";
 
     // 1. Fetch event from DB
     let event = null;
     if (slug) {
-      event = await prisma.event.findUnique({
-        where: { slug },
+      event = await prisma.event.findFirst({
+        where: { slug: { equals: slug, mode: "insensitive" } },
+        select: {
+          coverImageUrl: true,
+          couplePhotoUrl: true,
+          groomPhotoUrl: true,
+          bridePhotoUrl: true,
+          groomName: true,
+          brideName: true,
+        },
+      });
+    }
+
+    if (!event) {
+      event = await prisma.event.findFirst({
+        where: {
+          OR: [
+            { slug: "hoeurn-phanith-and-seourr-sreynith" },
+            { groomName: { contains: "ផានិត" } },
+          ],
+        },
         select: {
           coverImageUrl: true,
           couplePhotoUrl: true,
@@ -94,14 +114,14 @@ export async function GET(
       }
     }
 
-    // Fallback: Default wedding hero image
-    const fallbackPath = path.join(process.cwd(), "public", "img", "hero-m-1280.webp");
+    // Fallback: User's default wedding portrait
+    const fallbackPath = path.join(process.cwd(), "public", "og.jpg");
     try {
       const fallbackBuffer = await fs.readFile(fallbackPath);
       return new Response(fallbackBuffer, {
         status: 200,
         headers: {
-          "Content-Type": "image/webp",
+          "Content-Type": "image/jpeg",
           "Cache-Control": "public, max-age=86400",
         },
       });

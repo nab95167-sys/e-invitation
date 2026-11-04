@@ -11,16 +11,27 @@ export async function GET(
   { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
-    const { slug } = await params;
+    const rawParams = await params;
+    const slug = rawParams?.slug ? decodeURIComponent(rawParams.slug).trim().replace(/\s+/g, "") : "";
     const { searchParams } = new URL(req.url);
-    const code = searchParams.get("code");
+    const code = searchParams.get("code")?.trim();
     const to = searchParams.get("to") || searchParams.get("guest");
 
     // 1. Fetch event from DB
     let event = null;
     if (slug) {
-      event = await prisma.event.findUnique({
-        where: { slug },
+      event = await prisma.event.findFirst({
+        where: { slug: { equals: slug, mode: "insensitive" } },
+      });
+    }
+    if (!event) {
+      event = await prisma.event.findFirst({
+        where: {
+          OR: [
+            { slug: "hoeurn-phanith-and-seourr-sreynith" },
+            { groomName: { contains: "ផានិត" } },
+          ],
+        },
       });
     }
     if (!event) {

@@ -138,9 +138,16 @@ export default function GuestsClient({
   };
 
   const getGuestInvitationUrl = (guest: Guest) => {
-    const origin = getEffectiveBaseUrl();
-    const toParam = guest.name ? `&to=${encodeURIComponent(guest.name)}` : "";
-    return `${origin}/invite/${eventSlug}?code=${encodeURIComponent(guest.invitationCode)}${toParam}`;
+    const origin = getEffectiveBaseUrl().trim().replace(/\/+$/, "");
+    const cleanSlug = (eventSlug || "").trim().replace(/\s+/g, "");
+    const cleanCode = (guest.invitationCode || "").trim();
+    if (cleanCode) {
+      return `${origin}/invite/${cleanSlug}?code=${encodeURIComponent(cleanCode)}`;
+    }
+    const cleanName = (guest.name || "").trim();
+    return cleanName
+      ? `${origin}/invite/${cleanSlug}?to=${encodeURIComponent(cleanName)}`
+      : `${origin}/invite/${cleanSlug}`;
   };
 
   const getGuestInvitationMessage = (guest: Guest) => {
@@ -172,9 +179,12 @@ ${dateStr ? `📅 កាលបរិច្ឆេទ៖ ${dateStr}\n` : ""}${venu
   };
 
   const handleCopyLink = (code: string, id: string, name?: string) => {
-    const origin = getEffectiveBaseUrl();
-    const toParam = name ? `&to=${encodeURIComponent(name)}` : "";
-    const link = `${origin}/invite/${eventSlug}?code=${encodeURIComponent(code)}${toParam}`;
+    const origin = getEffectiveBaseUrl().trim().replace(/\/+$/, "");
+    const cleanSlug = (eventSlug || "").trim().replace(/\s+/g, "");
+    const cleanCode = (code || "").trim();
+    const link = cleanCode
+      ? `${origin}/invite/${cleanSlug}?code=${encodeURIComponent(cleanCode)}`
+      : (name?.trim() ? `${origin}/invite/${cleanSlug}?to=${encodeURIComponent(name.trim())}` : `${origin}/invite/${cleanSlug}`);
     navigator.clipboard.writeText(link);
     setCopiedId(id);
     setTimeout(() => setCopiedId(null), 2000);
@@ -187,9 +197,8 @@ ${dateStr ? `📅 កាលបរិច្ឆេទ៖ ${dateStr}\n` : ""}${venu
   };
 
   const handleShareTelegram = (guest: Guest) => {
-    const link = getGuestInvitationUrl(guest);
     const text = getGuestInvitationMessage(guest);
-    const tgUrl = `https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(text)}`;
+    const tgUrl = `https://t.me/share/url?text=${encodeURIComponent(text)}`;
     window.open(tgUrl, "_blank");
   };
 

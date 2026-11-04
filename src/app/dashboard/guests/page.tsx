@@ -24,7 +24,7 @@ export default async function GuestsPage() {
     <GuestsClient
       initialGuests={event.guests}
       eventId={event.id}
-      eventSlug={event.slug}
+      eventSlug={(event.slug || "").trim()}
       groomName={event.groomName}
       brideName={event.brideName}
       eventDate={event.eventDate ? event.eventDate.toISOString() : undefined}

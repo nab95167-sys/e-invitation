@@ -744,32 +744,36 @@ export default function EventClient({ initialEvent, initialMedia, initialGuests 
   const [isQrModalOpen, setIsQrModalOpen] = useState(false);
 
   const getPersonalizedUrl = () => {
-    const origin = typeof window !== "undefined" ? window.location.origin : "";
+    const origin = (typeof window !== "undefined" ? window.location.origin : "").trim().replace(/\/+$/, "");
+    const activeSlug = (formData.slug || initialEvent.slug || "hoeurn-phanith-and-seourr-sreynith").trim().replace(/\s+/g, "");
+    const cleanCode = selectedGuestCode.trim();
     const cleanName = guestNameInput.trim();
-    const queryParts: string[] = [];
-    if (selectedGuestCode) {
-      queryParts.push(`code=${encodeURIComponent(selectedGuestCode)}`);
+
+    if (cleanCode) {
+      return `${origin}/invite/${activeSlug}?code=${encodeURIComponent(cleanCode)}`;
     }
     if (cleanName) {
-      queryParts.push(`to=${encodeURIComponent(cleanName)}`);
+      return `${origin}/invite/${activeSlug}?to=${encodeURIComponent(cleanName)}`;
     }
-    const qs = queryParts.length > 0 ? `?${queryParts.join("&")}` : "";
-    const activeSlug = (formData.slug || initialEvent.slug || "davita-and-meassa").trim();
-    return `${origin}/invite/${activeSlug}${qs}`;
+    return `${origin}/invite/${activeSlug}`;
   };
 
   const getKhmerShareMessage = () => {
     const url = getPersonalizedUrl();
     const guest = guestNameInput.trim() || "ភ្ញៀវកិត្តិយស";
-    return `សូមគោរពអញ្ជើញ ${guest}
-ចូលរួមជាអធិបតី និងជាភ្ញៀវកិត្តិយសក្នុងពិធីអាពាហ៍ពិពាហ៍របស់យើងខ្ញុំ
-🤵 កូនកំលោះ: ${formData.groomName || "ដាវីតា​"}
-👰 កូនក្រមុំ: ${formData.brideName || "មេស សា"}
-📅 កាលបរិច្ឆេទ: ${formData.eventDate || "សិរីសួស្តីអាពាហ៍ពិពាហ៍"}
-📍 ទីតាំង: ${formData.venueName || formData.venueAddress || "ភ្នំពេញ"}
+    return `💌 លិខិតគោរពអញ្ជើញអាពាហ៍ពិពាហ៍ឌីជីថល (Digital Wedding Invitation)
 
-សូមចុចលើតំណភ្ជាប់ខាងក្រោមដើម្បីបើកធៀបការឌីជីថល (Digital Invitation):
-${url}`;
+សូមគោរពអញ្ជើញ៖ ${guest}
+ចូលរួមពិធីសិរីសួស្តីអាពាហ៍ពិពាហ៍រវាង៖
+🤵 ${formData.groomName || "ហឿន ផានិត"}  &  👰 ${formData.brideName || "សៀ ស្រីនិត"}
+
+📅 កាលបរិច្ឆេទ៖ ${formData.eventDate || "ថ្ងៃទី១៨ ខែកុម្ភៈ ឆ្នាំ២០២៧"}
+📍 ទីតាំង៖ ${formData.venueName || formData.venueAddress || "គេហដ្ឋានខាងស្រី"}
+
+✨ សូមចុចតំណភ្ជាប់ខាងក្រោម ដើម្បីបើកមើលធៀបការ 3D និងឆ្លើយតបការចូលរួម (RSVP)៖
+👉 ${url}
+
+សូមអរគុណយ៉ាងជ្រាលជ្រៅ!`;
   };
 
   const handleOpenQrCode = async () => {
@@ -1531,7 +1535,7 @@ ${url}`;
 
             {/* 1-Click Telegram Share */}
             <a
-              href={`https://t.me/share/url?url=${encodeURIComponent(getPersonalizedUrl())}&text=${encodeURIComponent(getKhmerShareMessage())}`}
+              href={`https://t.me/share/url?text=${encodeURIComponent(getKhmerShareMessage())}`}
               target="_blank"
               rel="noopener noreferrer"
               className="px-3 py-1.5 rounded-xl bg-[#229ED9] text-white text-xs font-semibold hover:brightness-105 flex items-center gap-1.5 shadow-2xs transition active:scale-95"

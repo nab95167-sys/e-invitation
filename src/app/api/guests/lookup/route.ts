@@ -7,7 +7,7 @@ export const revalidate = 0;
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
-    const code = searchParams.get("code");
+    const code = searchParams.get("code")?.trim();
     if (!code) {
       return NextResponse.json({ error: "Code required" }, { status: 400 });
     }
