@@ -196,9 +196,36 @@ ${dateStr ? `📅 កាលបរិច្ឆេទ៖ ${dateStr}\n` : ""}${venu
     setActiveQrModal({ name: guest.name, url: link, qr });
   };
 
+  const getGuestTelegramMessage = (guest: Guest) => {
+    let dateStr = "";
+    if (eventDate) {
+      try {
+        const d = new Date(eventDate);
+        dateStr = d.toLocaleDateString("km-KH", {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        });
+      } catch (e) {}
+    }
+
+    return `💌 លិខិតគោរពអញ្ជើញអាពាហ៍ពិពាហ៍ឌីជីថល (Digital Wedding Invitation)
+
+សូមគោរពអញ្ជើញ៖ ${guest.name}
+ចូលរួមពិធីសិរីសួស្តីអាពាហ៍ពិពាហ៍រវាង៖
+🤵 ${groomName}  &  👰 ${brideName}
+
+${dateStr ? `📅 កាលបរិច្ឆេទ៖ ${dateStr}\n` : ""}${venueName ? `📍 ទីតាំង៖ ${venueName}\n` : ""}
+✨ សូមចុចតំណភ្ជាប់ខាងលើ ដើម្បីបើកមើលធៀបការ 3D និងឆ្លើយតបការចូលរួម (RSVP)
+
+សូមអរគុណយ៉ាងជ្រាលជ្រៅ!`;
+  };
+
   const handleShareTelegram = (guest: Guest) => {
-    const text = getGuestInvitationMessage(guest);
-    const tgUrl = `https://t.me/share/url?text=${encodeURIComponent(text)}`;
+    const link = getGuestInvitationUrl(guest);
+    const text = getGuestTelegramMessage(guest);
+    const tgUrl = `https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(text)}`;
     window.open(tgUrl, "_blank");
   };
 

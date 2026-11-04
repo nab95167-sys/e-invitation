@@ -776,6 +776,22 @@ export default function EventClient({ initialEvent, initialMedia, initialGuests 
 សូមអរគុណយ៉ាងជ្រាលជ្រៅ!`;
   };
 
+  const getKhmerTelegramMessage = () => {
+    const guest = guestNameInput.trim() || "ភ្ញៀវកិត្តិយស";
+    return `💌 លិខិតគោរពអញ្ជើញអាពាហ៍ពិពាហ៍ឌីជីថល (Digital Wedding Invitation)
+
+សូមគោរពអញ្ជើញ៖ ${guest}
+ចូលរួមពិធីសិរីសួស្តីអាពាហ៍ពិពាហ៍រវាង៖
+🤵 ${formData.groomName || "ហឿន ផានិត"}  &  👰 ${formData.brideName || "សៀ ស្រីនិត"}
+
+📅 កាលបរិច្ឆេទ៖ ${formData.eventDate || "ថ្ងៃទី១៨ ខែកុម្ភៈ ឆ្នាំ២០២៧"}
+📍 ទីតាំង៖ ${formData.venueName || formData.venueAddress || "គេហដ្ឋានខាងស្រី"}
+
+✨ សូមចុចតំណភ្ជាប់ខាងលើ ដើម្បីបើកមើលធៀបការ 3D និងឆ្លើយតបការចូលរួម (RSVP)
+
+សូមអរគុណយ៉ាងជ្រាលជ្រៅ!`;
+  };
+
   const handleOpenQrCode = async () => {
     const url = getPersonalizedUrl();
     try {
@@ -1535,7 +1551,7 @@ export default function EventClient({ initialEvent, initialMedia, initialGuests 
 
             {/* 1-Click Telegram Share */}
             <a
-              href={`https://t.me/share/url?text=${encodeURIComponent(getKhmerShareMessage())}`}
+              href={`https://t.me/share/url?url=${encodeURIComponent(getPersonalizedUrl())}&text=${encodeURIComponent(getKhmerTelegramMessage())}`}
               target="_blank"
               rel="noopener noreferrer"
               className="px-3 py-1.5 rounded-xl bg-[#229ED9] text-white text-xs font-semibold hover:brightness-105 flex items-center gap-1.5 shadow-2xs transition active:scale-95"
