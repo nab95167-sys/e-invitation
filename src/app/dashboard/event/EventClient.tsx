@@ -1606,21 +1606,65 @@ export default function EventClient({ initialEvent, initialMedia, initialGuests 
             </div>
             {/* The Image that Telegram sees */}
             <div className="w-full aspect-[1.91/1] rounded-xl overflow-hidden bg-gray-200 border border-gray-300 relative flex items-center justify-center">
-              {formData.couplePhotoUrl || formData.groomPhotoUrl || formData.coverImageUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={formData.couplePhotoUrl || formData.groomPhotoUrl || formData.coverImageUrl}
-                  alt="Social Preview Thumbnail"
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src="/og.jpg"
-                  alt="Social Preview Thumbnail"
-                  className="w-full h-full object-cover"
-                />
-              )}
+              {(() => {
+                const isCoupleSelected = (themeConfig as any)?.socialShareSource === "couple";
+                const displayImg = isCoupleSelected
+                  ? (formData.couplePhotoUrl || formData.coverImageUrl || formData.groomPhotoUrl)
+                  : (formData.coverImageUrl || formData.couplePhotoUrl || formData.groomPhotoUrl);
+                return displayImg ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={displayImg}
+                    alt="Social Preview Thumbnail"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src="/og.jpg"
+                    alt="Social Preview Thumbnail"
+                    className="w-full h-full object-cover"
+                  />
+                );
+              })()}
+            </div>
+
+            {/* Quick Toggle for Social Share Image Source */}
+            <div className="pt-2 space-y-1.5 border-t border-gray-200">
+              <span className="text-[11px] font-semibold text-gray-600 block">
+                ជ្រើសរើសរូបភាពបង្ហាញលើ Link (Telegram / Messenger / WhatsApp):
+              </span>
+              <div className="flex flex-wrap items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => updateEnvelopeField("socialShareSource", "cover")}
+                  className={`text-xs px-2.5 py-1.5 rounded-xl border font-semibold flex items-center gap-1.5 transition ${
+                    ((themeConfig as any)?.socialShareSource || "cover") === "cover"
+                      ? "bg-[#AA7C11] text-white border-[#AA7C11] shadow-2xs"
+                      : "bg-white text-gray-700 border-gray-300 hover:border-[#D4AF37]"
+                  }`}
+                >
+                  <span>🖼️ រូបគម្រប (Hero &amp; Gate Cover)</span>
+                  {((themeConfig as any)?.socialShareSource || "cover") === "cover" && <span>✓</span>}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => updateEnvelopeField("socialShareSource", "couple")}
+                  className={`text-xs px-2.5 py-1.5 rounded-xl border font-semibold flex items-center gap-1.5 transition ${
+                    (themeConfig as any)?.socialShareSource === "couple"
+                      ? "bg-[#AA7C11] text-white border-[#AA7C11] shadow-2xs"
+                      : "bg-white text-gray-700 border-gray-300 hover:border-[#D4AF37]"
+                  }`}
+                >
+                  <span>💑 រូបថតគូស្នេហ៍ (Center Couple Portrait)</span>
+                  {(themeConfig as any)?.socialShareSource === "couple" && <span>✓</span>}
+                </button>
+              </div>
+              <p className="text-[10px] text-gray-500">
+                {((themeConfig as any)?.socialShareSource || "cover") === "cover"
+                  ? "✓ កំពុងយករូបពី «Hero & 3D Envelope Gate Background Image» មកបង្ហាញលើ Telegram/Facebook។ នៅពេលអ្នកប្តូររូបគម្រប នោះរូបលើ Link នឹងប្តូរតាមភ្លាមៗ!"
+                  : "✓ កំពុងយករូបពី «Center Couple Portrait (រូបថតគូស្នេហ៍ / ផ្ទឹម)» មកបង្ហាញលើ Telegram/Facebook។"}
+              </p>
             </div>
           </div>
         </div>
@@ -3118,7 +3162,7 @@ export default function EventClient({ initialEvent, initialMedia, initialGuests 
 
                 <div className="pt-2 border-t border-gray-200/60 flex flex-wrap items-center gap-2">
                   <a
-                    href={`https://t.me/share/url?url=${encodeURIComponent(getPersonalizedUrl())}&text=${encodeURIComponent(getKhmerShareMessage())}`}
+                    href={`https://t.me/share/url?url=${encodeURIComponent(getPersonalizedUrl())}&text=${encodeURIComponent(getKhmerTelegramMessage())}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="px-3 py-1.5 rounded-xl bg-[#229ED9] text-white text-xs font-semibold hover:brightness-105 flex items-center gap-1.5"

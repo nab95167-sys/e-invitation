@@ -523,7 +523,7 @@ ${dateStr ? `📅 កាលបរិច្ឆេទ៖ ${dateStr}\n` : ""}${venu
                 <tr key={g.id} className="hover:bg-[#FAF8F5]/60 transition-colors">
                   <td className="py-3 px-4">
                     <a
-                      href={`/invite/${eventSlug}?code=${encodeURIComponent(g.invitationCode)}&to=${encodeURIComponent(g.name)}`}
+                      href={`/invite/${eventSlug}?code=${encodeURIComponent(g.invitationCode)}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="font-bold text-[#2C2A29] hover:text-[#AA7C11] hover:underline inline-flex items-center gap-1.5 text-sm group"

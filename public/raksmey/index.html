@@ -375,14 +375,14 @@
         }
         .e2__flap-logo {
           position: absolute !important;
-          top: 7% !important;
-          left: 24% !important;
-          right: 24% !important;
+          top: 4% !important;
+          left: 6% !important;
+          right: 6% !important;
           pointer-events: none !important;
         }
 
         .e2__flap-logo .lockup {
-          aspect-ratio: 600 / 470 !important;
+          aspect-ratio: 600 / 320 !important;
           width: 100% !important;
           position: relative !important;
           container-type: inline-size !important;
@@ -398,8 +398,8 @@
           background-size: 220% 100% !important;
           -webkit-background-clip: text !important;
           background-clip: text !important;
-          padding: .15em .2em .3em !important;
-          font-size: 14cqw !important;
+          padding: .1em .2em .2em !important;
+          font-size: 10cqw !important;
           font-weight: 400 !important;
           line-height: 1 !important;
           position: absolute !important;
@@ -410,17 +410,24 @@
         }
 
         .e2__flap-logo .lk-groom {
-          top: 15% !important;
+          top: 5% !important;
           left: 50% !important;
           right: auto !important;
           transform: translateX(-50%) !important;
         }
 
         .e2__flap-logo .lk-bride {
-          top: 48% !important;
+          top: 30% !important;
           left: 50% !important;
           right: auto !important;
           transform: translateX(-50%) !important;
+        }
+
+        /* Clean flap presentation: hide asymmetric stray side-swashes on flap */
+        .e2__flap-logo .lk-swash,
+        .e2__flap-logo .lk-swash2,
+        .e2__flap-logo .lk-butterfly {
+          display: none !important;
         }
 
         /* 3. Inside card folding doors vs inner content stacking */
@@ -435,6 +442,14 @@
         }
         .e2__card-inner {
           z-index: 2 !important;
+          opacity: 0 !important;
+          pointer-events: none !important;
+          transition: opacity 0.5s ease;
+        }
+        .e2__card.doors-opened .e2__card-inner,
+        .gate.doors-opened .e2__card-inner {
+          opacity: 1 !important;
+          pointer-events: auto !important;
         }
 
         /* 4. Inside card text proportions */
@@ -1904,14 +1919,14 @@
           }
           .e2__flap-logo {
             position: absolute !important;
-            top: 7% !important;
-            left: 24% !important;
-            right: 24% !important;
+            top: 4% !important;
+            left: 6% !important;
+            right: 6% !important;
             pointer-events: none !important;
           }
 
           .e2__flap-logo .lockup {
-            aspect-ratio: 600 / 470 !important;
+            aspect-ratio: 600 / 320 !important;
             width: 100% !important;
             position: relative !important;
             container-type: inline-size !important;
@@ -1927,8 +1942,8 @@
             background-size: 220% 100% !important;
             -webkit-background-clip: text !important;
             background-clip: text !important;
-            padding: .15em .2em .3em !important;
-            font-size: 14cqw !important;
+            padding: .1em .2em .2em !important;
+            font-size: 10cqw !important;
             font-weight: 400 !important;
             line-height: 1 !important;
             position: absolute !important;
@@ -1939,17 +1954,24 @@
           }
 
           .e2__flap-logo .lk-groom {
-            top: 15% !important;
+            top: 5% !important;
             left: 50% !important;
             right: auto !important;
             transform: translateX(-50%) !important;
           }
 
           .e2__flap-logo .lk-bride {
-            top: 48% !important;
+            top: 30% !important;
             left: 50% !important;
             right: auto !important;
             transform: translateX(-50%) !important;
+          }
+
+          /* Clean flap presentation: hide asymmetric stray side-swashes on flap */
+          .e2__flap-logo .lk-swash,
+          .e2__flap-logo .lk-swash2,
+          .e2__flap-logo .lk-butterfly {
+            display: none !important;
           }
 
           /* 3. Inside card folding doors vs inner content stacking */
@@ -1964,6 +1986,14 @@
           }
           .e2__card-inner {
             z-index: 2 !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+            transition: opacity 0.5s ease;
+          }
+          .e2__card.doors-opened .e2__card-inner,
+          .gate.doors-opened .e2__card-inner {
+            opacity: 1 !important;
+            pointer-events: auto !important;
           }
 
           /* 4. Inside card text proportions */
@@ -2381,19 +2411,19 @@
           });
         }
 
-        // Refined auto-scaling: comfortable luxury proportions matching Benchmark Photo 5
+        // Refined auto-scaling: comfortable luxury proportions avoiding overflow on full Khmer names
         const maxFlapLen = Math.max(envGroom.length, envBride.length);
-        let flapFontSize = '14cqw';
-        let cardFontSize = '11cqw';
-        if (maxFlapLen > 11) {
-          flapFontSize = '11cqw';
-          cardFontSize = '9.5cqw';
-        } else if (maxFlapLen > 7) {
-          flapFontSize = '12.5cqw';
-          cardFontSize = '10.5cqw';
+        let flapFontSize = '11cqw';
+        let cardFontSize = '9.5cqw';
+        if (maxFlapLen > 10) {
+          flapFontSize = '8cqw';
+          cardFontSize = '7.5cqw';
+        } else if (maxFlapLen > 6) {
+          flapFontSize = '9.5cqw';
+          cardFontSize = '8.5cqw';
         } else {
-          flapFontSize = '14.5cqw';
-          cardFontSize = '11.5cqw';
+          flapFontSize = '12cqw';
+          cardFontSize = '10cqw';
         }
         document.querySelectorAll('.e2__flap-logo .lk-name').forEach(el => {
           el.style.setProperty('font-size', flapFontSize, 'important');
@@ -2401,6 +2431,24 @@
         document.querySelectorAll('.e2__card .lk-name').forEach(el => {
           el.style.setProperty('font-size', cardFontSize, 'important');
         });
+
+        // Ensure inside card only fades in when the doors open
+        try {
+          const gateEl = document.getElementById('gate');
+          if (gateEl && !window.__doorsObserverAttached) {
+            window.__doorsObserverAttached = true;
+            const obs = new MutationObserver(() => {
+              if (gateEl.classList.contains('is-opening')) {
+                setTimeout(() => {
+                  const cardEl = document.getElementById('env-card');
+                  if (cardEl) cardEl.classList.add('doors-opened');
+                  gateEl.classList.add('doors-opened');
+                }, 2100);
+              }
+            });
+            obs.observe(gateEl, { attributes: true, attributeFilter: ['class'] });
+          }
+        } catch (e) {}
 
         if (groom && bride) {
           const fullTitle = decodeEntities(ev.title) || (`សិរីសួស្តីអាពាហ៍ពិពាហ៍ · ${groom} & ${bride}`);

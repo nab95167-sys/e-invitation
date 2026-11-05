@@ -83,7 +83,7 @@ export default async function DashboardOverviewPage() {
           </Link>
           {guests.length > 0 ? (
             <Link
-              href={`/invite/${event.slug}?code=${encodeURIComponent(guests[0].invitationCode)}&to=${encodeURIComponent(guests[0].name)}`}
+              href={`/invite/${event.slug}?code=${encodeURIComponent(guests[0].invitationCode)}`}
               target="_blank"
               className="px-5 py-2.5 rounded-full bg-white border border-[#D4AF37]/30 text-[#2C2A29] text-xs font-semibold shadow-card hover:bg-[#FAF8F5] transition-all flex items-center gap-1.5"
             >

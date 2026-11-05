@@ -86,7 +86,7 @@ export async function GET(
     const origin = req.nextUrl.origin || "https://e-invitation-bice.vercel.app";
     const activeSlug = slug || event?.slug || "wedding";
     const eventVersion = event?.updatedAt ? new Date(event.updatedAt).getTime() : Date.now();
-    const ogImage = `${origin}/api/og/${encodeURIComponent(activeSlug)}?v=${eventVersion}&img=couple`;
+    const ogImage = `${origin}/api/og/${encodeURIComponent(activeSlug)}?v=${eventVersion}`;
 
     // 5. Replace metadata tags in HTML head
     html = html.replace(/<title>.*?<\/title>/i, `<title>${title}</title>`);

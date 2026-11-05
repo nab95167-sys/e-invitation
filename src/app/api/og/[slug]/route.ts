@@ -67,11 +67,10 @@ export async function GET(
 
     // 2. Select image candidate
     // Priority:
-    // 1. themeConfig.socialSharePhoto (explicitly selected in dashboard)
-    // 2. couplePhotoUrl (Center couple portrait from The Couple section)
-    // 3. groomPhotoUrl / bridePhotoUrl (Portraits)
-    // 4. coverImageUrl (Hero / Gate background)
-    // 5. fallback public/og.jpg
+    // 1. themeConfig.socialSharePhoto (if explicitly designated)
+    // 2. If themeConfig.socialShareSource === "couple": couplePhotoUrl -> coverImageUrl
+    // 3. Default: coverImageUrl (Hero & 3D Envelope Gate Background) -> couplePhotoUrl
+    // 4. Fallback: groomPhotoUrl / bridePhotoUrl -> public/og.jpg
     let themeConfig: any = {};
     if (event?.theme) {
       try {
@@ -81,10 +80,11 @@ export async function GET(
 
     const rawImage =
       themeConfig?.socialSharePhoto ||
-      event?.couplePhotoUrl ||
+      (themeConfig?.socialShareSource === "couple"
+        ? (event?.couplePhotoUrl || event?.coverImageUrl)
+        : (event?.coverImageUrl || event?.couplePhotoUrl)) ||
       event?.groomPhotoUrl ||
-      event?.bridePhotoUrl ||
-      event?.coverImageUrl;
+      event?.bridePhotoUrl;
 
     if (rawImage) {
       // Case A: Base64 Data URL (e.g. data:image/jpeg;base64,...)
