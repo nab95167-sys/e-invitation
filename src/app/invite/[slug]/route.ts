@@ -86,14 +86,37 @@ export async function GET(
     const origin = req.nextUrl.origin || "https://e-invitation-bice.vercel.app";
     const activeSlug = slug || event?.slug || "wedding";
     const eventVersion = event?.updatedAt ? new Date(event.updatedAt).getTime() : Date.now();
-    const ogImage = `${origin}/api/og/${encodeURIComponent(activeSlug)}?v=${eventVersion}`;
+
+    let themeConfig: any = {};
+    if (event?.theme) {
+      try {
+        themeConfig = typeof event.theme === "string" ? JSON.parse(event.theme) : event.theme;
+      } catch (e) {}
+    }
+
+    const preferredImage =
+      themeConfig?.socialSharePhoto ||
+      (themeConfig?.socialShareSource === "couple"
+        ? (event?.couplePhotoUrl || event?.coverImageUrl)
+        : (event?.coverImageUrl || event?.couplePhotoUrl)) ||
+      event?.groomPhotoUrl ||
+      event?.bridePhotoUrl ||
+      "/og.jpg";
+
+    let ogImage: string;
+    if (preferredImage.startsWith("data:")) {
+      ogImage = `${origin}/api/og/${encodeURIComponent(activeSlug)}?v=${eventVersion}`;
+    } else {
+      ogImage = preferredImage.startsWith("/") ? `${origin}${preferredImage}` : preferredImage;
+      ogImage = ogImage.includes("?") ? `${ogImage}&v=${eventVersion}` : `${ogImage}?v=${eventVersion}`;
+    }
 
     // 5. Replace metadata tags in HTML head
     html = html.replace(/<title>.*?<\/title>/i, `<title>${title}</title>`);
     html = html.replace(/<meta name="description" content=".*?" \/>/i, `<meta name="description" content="${description}" />`);
     html = html.replace(/<meta property="og:title" content=".*?" \/>/i, `<meta property="og:title" content="${title}" />`);
     html = html.replace(/<meta property="og:description" content=".*?" \/>/i, `<meta property="og:description" content="${description}" />`);
-    html = html.replace(/<meta property="og:image" content=".*?" \/>/i, `<meta property="og:image" content="${ogImage}" />`);
+    html = html.replace(/<meta property="og:image" content=".*?" \/>/i, `<meta property="og:image" content="${ogImage}" />\n  <meta property="og:image:secure_url" content="${ogImage}" />`);
     html = html.replace(/<meta property="og:url" content=".*?" \/>/i, `<meta property="og:url" content="${req.url}" />`);
     html = html.replace(/<meta name="twitter:title" content=".*?" \/>/i, `<meta name="twitter:title" content="${title}" />`);
     html = html.replace(/<meta name="twitter:description" content=".*?" \/>/i, `<meta name="twitter:description" content="${description}" />`);

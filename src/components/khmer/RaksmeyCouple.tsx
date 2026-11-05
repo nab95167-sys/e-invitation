@@ -8,12 +8,14 @@ interface RaksmeyCoupleProps {
   groomName: string;
   brideName: string;
   lang: Language;
+  photoUrl?: string;
 }
 
 export default function RaksmeyCouple({
   groomName,
   brideName,
   lang,
+  photoUrl,
 }: RaksmeyCoupleProps) {
   const isKm = lang === "km";
 
@@ -41,7 +43,7 @@ export default function RaksmeyCouple({
           {/* Left: Groom Profile */}
           <div className="md:col-span-4 flex flex-col items-center md:items-end text-center md:text-right space-y-3">
             <div className="w-14 h-14 rounded-full bg-[#2a2f16] border border-[#d9b15a]/60 flex items-center justify-center text-[#d9b15a] shadow-lg">
-              <span className="font-moul text-base text-[#fbefc0]">រ</span>
+              <span className="font-moul text-base text-[#fbefc0]">{groomName ? groomName.charAt(0) : "ក"}</span>
             </div>
             <span className="text-xs uppercase tracking-widest text-[#d9b15a] font-semibold">
               {isKm ? "កូនប្រុស" : "The Groom"}
@@ -50,7 +52,7 @@ export default function RaksmeyCouple({
               {groomName}
             </h3>
             <p className="font-serif italic text-sm text-[#d9b15a]/90">
-              PHEAY RAKSMEY
+              {groomName}
             </p>
             <p className="font-khmer text-xs sm:text-sm text-[#f3ebdb]/80 leading-relaxed max-w-xs">
               {isKm
@@ -69,8 +71,8 @@ export default function RaksmeyCouple({
             <div className="relative w-64 sm:w-72 aspect-[4/5] rounded-[2.5rem] overflow-hidden p-2 bg-gradient-to-b from-[#f5d77f]/40 via-[#d9b15a]/20 to-[#2a2f16] shadow-[0_20px_50px_rgba(0,0,0,0.9)] border border-[#d9b15a]/60">
               <div className="relative w-full h-full rounded-[2rem] overflow-hidden">
                 <Image
-                  src="/raksmey-assets/img/cozy-1280.webp"
-                  alt="Raksmey & Pheakdey in cozy pose"
+                  src={photoUrl || "/raksmey-assets/img/cozy-1280.webp"}
+                  alt={`${groomName} & ${brideName}`}
                   fill
                   className="object-cover object-center filter brightness-[0.98] contrast-[1.05]"
                 />
@@ -86,7 +88,7 @@ export default function RaksmeyCouple({
           {/* Right: Bride Profile */}
           <div className="md:col-span-4 flex flex-col items-center md:items-start text-center md:text-left space-y-3">
             <div className="w-14 h-14 rounded-full bg-[#2a2f16] border border-[#d9b15a]/60 flex items-center justify-center text-[#d9b15a] shadow-lg">
-              <span className="font-moul text-base text-[#fbefc0]">ភ</span>
+              <span className="font-moul text-base text-[#fbefc0]">{brideName ? brideName.charAt(0) : "ក"}</span>
             </div>
             <span className="text-xs uppercase tracking-widest text-[#d9b15a] font-semibold">
               {isKm ? "កូនស្រី" : "The Bride"}
@@ -95,7 +97,7 @@ export default function RaksmeyCouple({
               {brideName}
             </h3>
             <p className="font-serif italic text-sm text-[#d9b15a]/90">
-              MEAS PHEAKDEY
+              {brideName}
             </p>
             <p className="font-khmer text-xs sm:text-sm text-[#f3ebdb]/80 leading-relaxed max-w-xs">
               {isKm

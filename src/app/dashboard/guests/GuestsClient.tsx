@@ -137,21 +137,29 @@ export default function GuestsClient({
     return baseUrl || "";
   };
 
-  const getGuestInvitationUrl = (guest: Guest) => {
+  const getGuestInvitationUrl = (guest: Guest, cacheBust: boolean = false) => {
     const origin = getEffectiveBaseUrl().trim().replace(/\/+$/, "");
     const cleanSlug = (eventSlug || "").trim().replace(/\s+/g, "");
     const cleanCode = (guest.invitationCode || "").trim();
-    if (cleanCode) {
-      return `${origin}/invite/${cleanSlug}?code=${encodeURIComponent(cleanCode)}`;
-    }
     const cleanName = (guest.name || "").trim();
-    return cleanName
-      ? `${origin}/invite/${cleanSlug}?to=${encodeURIComponent(cleanName)}`
-      : `${origin}/invite/${cleanSlug}`;
+    let url = `${origin}/invite/${cleanSlug}`;
+    const params: string[] = [];
+    if (cleanCode) {
+      params.push(`code=${encodeURIComponent(cleanCode)}`);
+    } else if (cleanName) {
+      params.push(`to=${encodeURIComponent(cleanName)}`);
+    }
+    if (cacheBust) {
+      params.push(`v=${Date.now()}`);
+    }
+    if (params.length > 0) {
+      url += `?${params.join("&")}`;
+    }
+    return url;
   };
 
   const getGuestInvitationMessage = (guest: Guest) => {
-    const link = getGuestInvitationUrl(guest);
+    const link = getGuestInvitationUrl(guest, true);
     let dateStr = "";
     if (eventDate) {
       try {
@@ -182,16 +190,23 @@ ${dateStr ? `📅 កាលបរិច្ឆេទ៖ ${dateStr}\n` : ""}${venu
     const origin = getEffectiveBaseUrl().trim().replace(/\/+$/, "");
     const cleanSlug = (eventSlug || "").trim().replace(/\s+/g, "");
     const cleanCode = (code || "").trim();
-    const link = cleanCode
-      ? `${origin}/invite/${cleanSlug}?code=${encodeURIComponent(cleanCode)}`
-      : (name?.trim() ? `${origin}/invite/${cleanSlug}?to=${encodeURIComponent(name.trim())}` : `${origin}/invite/${cleanSlug}`);
+    const cleanName = (name || "").trim();
+    let link = `${origin}/invite/${cleanSlug}`;
+    const params: string[] = [];
+    if (cleanCode) {
+      params.push(`code=${encodeURIComponent(cleanCode)}`);
+    } else if (cleanName) {
+      params.push(`to=${encodeURIComponent(cleanName)}`);
+    }
+    params.push(`v=${Date.now().toString().slice(-6)}`);
+    link += `?${params.join("&")}`;
     navigator.clipboard.writeText(link);
     setCopiedId(id);
     setTimeout(() => setCopiedId(null), 2000);
   };
 
   const handleShowQr = async (guest: Guest) => {
-    const link = getGuestInvitationUrl(guest);
+    const link = getGuestInvitationUrl(guest, false);
     const qr = await QRCode.toDataURL(link, { width: 300, margin: 2 });
     setActiveQrModal({ name: guest.name, url: link, qr });
   };
@@ -223,7 +238,7 @@ ${dateStr ? `📅 កាលបរិច្ឆេទ៖ ${dateStr}\n` : ""}${venu
   };
 
   const handleShareTelegram = (guest: Guest) => {
-    const link = getGuestInvitationUrl(guest);
+    const link = getGuestInvitationUrl(guest, true);
     const text = getGuestTelegramMessage(guest);
     const tgUrl = `https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(text)}`;
     window.open(tgUrl, "_blank");

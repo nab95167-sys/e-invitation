@@ -314,6 +314,130 @@ export const FRAME_STYLES: FrameStyle[] = [
   { id: "scalloped", nameKm: "ស៊ុមរាងកោងស្ថាបត្យកម្ម (Royal Scalloped Arch)", desc: "ស៊ុមកោងរាងព្រះបរមរាជវាំង" },
 ];
 
+export interface WeddingSongPreset {
+  id: string;
+  category: "khmer_traditional" | "piano_violin" | "romantic_acoustic";
+  categoryKm: string;
+  titleKm: string;
+  titleEn: string;
+  vibe: string;
+  icon: string;
+  url: string;
+}
+
+export const WEDDING_SONG_LIBRARY: WeddingSongPreset[] = [
+  {
+    id: "khmer_classic_suite",
+    category: "khmer_traditional",
+    categoryKm: "ភ្លេងការខ្មែរ",
+    titleKm: "ភ្លេងការប្រពៃណីខ្មែរពិរោះៗ (Royal Khmer Wedding Theme)",
+    titleEn: "Classic Royal Khmer Wedding Suite",
+    vibe: "ប្រពៃណីខ្មែរ · ឧឡារិក",
+    icon: "👑",
+    url: "/audio/music.mp3",
+  },
+  {
+    id: "khmer_blessing_harmony",
+    category: "khmer_traditional",
+    categoryKm: "ភ្លេងការខ្មែរ",
+    titleKm: "ភ្លេងការមង្គលមនោរម្យ (Cambodian Wedding Blessing Harmony)",
+    titleEn: "Traditional Khmer Wedding Melody",
+    vibe: "ប្រពៃណីខ្មែរ · សិរីសួស្តី",
+    icon: "🌸",
+    url: "/uploads/9e8c6132-ec03-4037-9eaf-9e55e266881f.mp3",
+  },
+  {
+    id: "canon_in_d",
+    category: "piano_violin",
+    categoryKm: "ព្យាណូ & វីយូឡុង",
+    titleKm: "Canon in D (Pachelbel) - ភ្លេងមង្គលការបុរាណលំដាប់ពិភពលោក",
+    titleEn: "Pachelbel - Canon in D (Acoustic Harmony)",
+    vibe: "ព្យាណូ & វីយូឡុង · សុភាពរាបសារ",
+    icon: "🎻",
+    url: "https://cdn.pixabay.com/download/audio/2022/01/18/audio_d0a13f69d2.mp3?filename=wedding-piano-10339.mp3",
+  },
+  {
+    id: "romantic_piano_mellow",
+    category: "piano_violin",
+    categoryKm: "ព្យាណូ & វីយូឡុង",
+    titleKm: "Romantic Wedding Piano - ភ្លេងព្យាណូស្នេហារ៉ូមែនទិក",
+    titleEn: "Romantic Piano Wedding & Love Theme",
+    vibe: "ព្យាណូ · រ៉ូមែនទិកផ្អែមល្ហែម",
+    icon: "🎹",
+    url: "https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=romantic-piano-112199.mp3",
+  },
+  {
+    id: "gentle_love_story",
+    category: "romantic_acoustic",
+    categoryKm: "រ៉ូមែនទិក",
+    titleKm: "Gentle Love Story - សាច់ភ្លេងទន់ភ្លន់រឿងរ៉ាវស្នេហា",
+    titleEn: "Gentle Piano Love Story & Soft Strings",
+    vibe: "ទន់ភ្លន់ · អារម្មណ៍ស្ងប់",
+    icon: "✨",
+    url: "https://cdn.pixabay.com/download/audio/2022/03/10/audio_c330833a64.mp3?filename=gentle-piano-love-story-10826.mp3",
+  },
+  {
+    id: "wedding_march_grand",
+    category: "piano_violin",
+    categoryKm: "ព្យាណូ & វីយូឡុង",
+    titleKm: "Wedding March & Grand Romance - ភ្លេងដើរចូលរោងជ័យ",
+    titleEn: "Grand Classical Wedding March",
+    vibe: "ឧឡារិក · កក់ក្តៅ",
+    icon: "💍",
+    url: "https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8a7351b.mp3?filename=wedding-march-10257.mp3",
+  },
+  {
+    id: "sweet_love_sunlight",
+    category: "romantic_acoustic",
+    categoryKm: "រ៉ូមែនទិក",
+    titleKm: "Sweet Love & Warm Sunlight - ស្នេហាផ្អែមត្រជាក់",
+    titleEn: "Sweet Love Acoustic Romance",
+    vibe: "សូរសៀងរលោង · ស្រស់ស្រាយ",
+    icon: "💖",
+    url: "https://cdn.pixabay.com/download/audio/2021/08/04/audio_bb630cc098.mp3?filename=sweet-love-11116.mp3",
+  },
+  {
+    id: "cinematic_royal_wedding",
+    category: "romantic_acoustic",
+    categoryKm: "រ៉ូមែនទិក",
+    titleKm: "Cinematic Royal Wedding - សំឡេងតន្ត្រីរាជវាំងស្កឹមស្កៃ",
+    titleEn: "Cinematic Royal Wedding Orchestral",
+    vibe: "អស្ចារ្យ · ប្រណិតភាព",
+    icon: "🏰",
+    url: "https://cdn.pixabay.com/download/audio/2022/08/02/audio_884fe92c21.mp3?filename=cinematic-wedding-118855.mp3",
+  },
+  {
+    id: "inspiring_emotional_piano",
+    category: "piano_violin",
+    categoryKm: "ព្យាណូ & វីយូឡុង",
+    titleKm: "Inspiring Emotional Ceremony - ព្យាណូជំរុញអារម្មណ៍រំភើប",
+    titleEn: "Inspiring Emotional Uplifting Piano",
+    vibe: "រំភើបចិត្ត · ជ្រាលជ្រៅ",
+    icon: "🕊️",
+    url: "https://cdn.pixabay.com/download/audio/2022/10/14/audio_9939f792cb.mp3?filename=inspiring-emotional-uplifting-piano-112623.mp3",
+  },
+  {
+    id: "memories_soft_piano",
+    category: "romantic_acoustic",
+    categoryKm: "រ៉ូមែនទិក",
+    titleKm: "Memories of Love - ការចងចាំដ៏ស្រស់បំព្រង",
+    titleEn: "Memories - Soft Wedding Piano Solo",
+    vibe: "អនុស្សាវរីយ៍ · ក្តីស្រឡាញ់",
+    icon: "💌",
+    url: "https://cdn.pixabay.com/download/audio/2022/11/06/audio_24a2cbff4e.mp3?filename=memories-piano-solo-124976.mp3",
+  },
+  {
+    id: "acoustic_guitars_ambient",
+    category: "romantic_acoustic",
+    categoryKm: "រ៉ូមែនទិក",
+    titleKm: "Acoustic Guitar Romance - ហ្គីតាអាគូស្ទិកស្ងប់ចិត្ត",
+    titleEn: "Acoustic Guitar Romance & Soft Ambience",
+    vibe: "ហ្គីតា · ទំនើបស្រទន់",
+    icon: "🎸",
+    url: "https://cdn.pixabay.com/download/audio/2023/04/18/audio_2d52ff2a48.mp3?filename=acoustic-guitars-ambient-uplifting-146603.mp3",
+  },
+];
+
 export const parseThemeConfig = (raw: string) => {
   const defaultTheme = {
     preset: "royal_khmer_purple",
@@ -743,23 +867,30 @@ export default function EventClient({ initialEvent, initialMedia, initialGuests 
   const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string | null>(null);
   const [isQrModalOpen, setIsQrModalOpen] = useState(false);
 
-  const getPersonalizedUrl = () => {
+  const getPersonalizedUrl = (cacheBust: boolean = false) => {
     const origin = (typeof window !== "undefined" ? window.location.origin : "").trim().replace(/\/+$/, "");
     const activeSlug = (formData.slug || initialEvent.slug || "hoeurn-phanith-and-seourr-sreynith").trim().replace(/\s+/g, "");
     const cleanCode = selectedGuestCode.trim();
     const cleanName = guestNameInput.trim();
 
+    let url = `${origin}/invite/${activeSlug}`;
+    const params: string[] = [];
     if (cleanCode) {
-      return `${origin}/invite/${activeSlug}?code=${encodeURIComponent(cleanCode)}`;
+      params.push(`code=${encodeURIComponent(cleanCode)}`);
+    } else if (cleanName) {
+      params.push(`to=${encodeURIComponent(cleanName)}`);
     }
-    if (cleanName) {
-      return `${origin}/invite/${activeSlug}?to=${encodeURIComponent(cleanName)}`;
+    if (cacheBust) {
+      params.push(`v=${Date.now()}`);
     }
-    return `${origin}/invite/${activeSlug}`;
+    if (params.length > 0) {
+      url += `?${params.join("&")}`;
+    }
+    return url;
   };
 
   const getKhmerShareMessage = () => {
-    const url = getPersonalizedUrl();
+    const url = getPersonalizedUrl(true);
     const guest = guestNameInput.trim() || "ភ្ញៀវកិត្តិយស";
     return `💌 លិខិតគោរពអញ្ជើញអាពាហ៍ពិពាហ៍ឌីជីថល (Digital Wedding Invitation)
 
@@ -1279,6 +1410,59 @@ export default function EventClient({ initialEvent, initialMedia, initialGuests 
     }
   };
 
+  const [activeMusicFilter, setActiveMusicFilter] = useState<string>("all");
+  const [playingSongId, setPlayingSongId] = useState<string | null>(null);
+  const songPreviewRef = useRef<HTMLAudioElement | null>(null);
+
+  const handlePlaySongPreview = (song: typeof WEDDING_SONG_LIBRARY[0]) => {
+    if (playingSongId === song.id) {
+      if (songPreviewRef.current) {
+        songPreviewRef.current.pause();
+      }
+      setPlayingSongId(null);
+      return;
+    }
+
+    if (songPreviewRef.current) {
+      songPreviewRef.current.pause();
+    }
+    if (previewAudioRef.current && previewPlaying) {
+      previewAudioRef.current.pause();
+      setPreviewPlaying(false);
+    }
+
+    const audio = new Audio(song.url);
+    audio.volume = 0.75;
+    audio.play().then(() => {
+      setPlayingSongId(song.id);
+    }).catch((err) => {
+      console.warn("Song preview error:", err);
+      setPlayingSongId(null);
+    });
+
+    audio.onended = () => {
+      setPlayingSongId(null);
+    };
+
+    songPreviewRef.current = audio;
+  };
+
+  const handleSelectSong = async (song: typeof WEDDING_SONG_LIBRARY[0]) => {
+    setFormData((prev: any) => ({ ...prev, musicUrl: song.url }));
+    setPreviewError(null);
+    try {
+      await fetch("/api/events", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: initialEvent.id, musicUrl: song.url }),
+      });
+      setSuccess(`✓ បានកំណត់បទភ្លេង «${song.titleKm}» ចូលក្នុងធៀបការដោយជោគជ័យ!`);
+      setTimeout(() => setSuccess(null), 4000);
+    } catch (saveErr) {
+      console.warn("Auto-save music failed:", saveErr);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -1524,7 +1708,7 @@ export default function EventClient({ initialEvent, initialMedia, initialGuests 
             <button
               type="button"
               onClick={() => {
-                navigator.clipboard.writeText(getPersonalizedUrl());
+                navigator.clipboard.writeText(getPersonalizedUrl(true));
                 setCopiedLink(true);
                 setTimeout(() => setCopiedLink(false), 2000);
                 setSuccess("✓ បានចម្លងតំណភ្ជាប់ធៀបការភ្ញៀវរួចរាល់! (Copied guest link)");
@@ -1551,7 +1735,7 @@ export default function EventClient({ initialEvent, initialMedia, initialGuests 
 
             {/* 1-Click Telegram Share */}
             <a
-              href={`https://t.me/share/url?url=${encodeURIComponent(getPersonalizedUrl())}&text=${encodeURIComponent(getKhmerTelegramMessage())}`}
+              href={`https://t.me/share/url?url=${encodeURIComponent(getPersonalizedUrl(true))}&text=${encodeURIComponent(getKhmerTelegramMessage())}`}
               target="_blank"
               rel="noopener noreferrer"
               className="px-3 py-1.5 rounded-xl bg-[#229ED9] text-white text-xs font-semibold hover:brightness-105 flex items-center gap-1.5 shadow-2xs transition active:scale-95"
@@ -3136,7 +3320,7 @@ export default function EventClient({ initialEvent, initialMedia, initialGuests 
                       <button
                         type="button"
                         onClick={() => {
-                          navigator.clipboard.writeText(getPersonalizedUrl());
+                          navigator.clipboard.writeText(getPersonalizedUrl(true));
                           setCopiedLink(true);
                           setTimeout(() => setCopiedLink(false), 2000);
                           setSuccess("✓ បានចម្លងតំណភ្ជាប់ធៀបការភ្ញៀវរួចរាល់!");
@@ -3162,7 +3346,7 @@ export default function EventClient({ initialEvent, initialMedia, initialGuests 
 
                 <div className="pt-2 border-t border-gray-200/60 flex flex-wrap items-center gap-2">
                   <a
-                    href={`https://t.me/share/url?url=${encodeURIComponent(getPersonalizedUrl())}&text=${encodeURIComponent(getKhmerTelegramMessage())}`}
+                    href={`https://t.me/share/url?url=${encodeURIComponent(getPersonalizedUrl(true))}&text=${encodeURIComponent(getKhmerTelegramMessage())}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="px-3 py-1.5 rounded-xl bg-[#229ED9] text-white text-xs font-semibold hover:brightness-105 flex items-center gap-1.5"
@@ -4030,11 +4214,19 @@ export default function EventClient({ initialEvent, initialMedia, initialGuests 
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <label className="block text-xs font-semibold uppercase text-[#3E444A]">
-                  Background Music Audio
-                </label>
+            {/* Wedding Background Music Section */}
+            <div className="bg-[#FAF8F5]/90 p-5 rounded-2xl border border-[#D4AF37]/40 space-y-4">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <h3 className="text-sm font-bold text-[#2C2A29] flex items-center gap-2">
+                    <Music className="w-4.5 h-4.5 text-[#AA7C11]" />
+                    <span>តន្ត្រីកំដរពិធីមង្គលការ (Wedding Background Music)</span>
+                  </h3>
+                  <p className="text-xs text-[#3E444A]/70 mt-0.5">
+                    ជ្រើសរើសបទចម្រៀងពិរោះៗពីបណ្ណាល័យ ឬបង្ហោះបទផ្ទាល់ខ្លួន ដើម្បីចាក់កំដរភ្ញៀវដោយស្វ័យប្រវត្តិក្នងធៀបការ 3D
+                  </p>
+                </div>
+
                 <div className="flex items-center gap-2">
                   <input
                     type="file"
@@ -4047,92 +4239,188 @@ export default function EventClient({ initialEvent, initialMedia, initialGuests 
                     type="button"
                     onClick={() => audioFileInputRef.current?.click()}
                     disabled={audioUploading}
-                    className="px-3 py-1 rounded-xl bg-[#FAF8F5] border border-[#D4AF37]/40 text-[#AA7C11] text-[11px] font-semibold hover:bg-[#F3E5AB]/30 flex items-center gap-1.5 transition-all shadow-sm"
+                    className="px-3.5 py-1.5 rounded-xl bg-white border border-[#D4AF37]/40 text-[#AA7C11] text-xs font-semibold hover:bg-[#F3E5AB]/30 flex items-center gap-1.5 transition-all shadow-xs"
                   >
-                    <UploadCloud className="w-3.5 h-3.5" />
-                    <span>{audioUploading ? "Uploading..." : "Upload Music File"}</span>
+                    <UploadCloud className="w-4 h-4" />
+                    <span>{audioUploading ? "កំពុងបង្ហោះ..." : "បង្ហោះបទផ្ទាល់ខ្លួន (Upload)"}</span>
                   </button>
-
-                  {formData.musicUrl && (
-                    <button
-                      type="button"
-                      onClick={togglePreview}
-                      className={`px-3 py-1 rounded-xl text-[11px] font-semibold flex items-center gap-1.5 transition-all shadow-sm ${
-                        previewPlaying
-                          ? "bg-red-50 text-red-700 border border-red-200"
-                          : "bg-emerald-50 text-emerald-800 border border-emerald-200"
-                      }`}
-                    >
-                      {previewPlaying ? (
-                        <>
-                          <Square className="w-3 h-3 fill-red-600" />
-                          <span>Stop Preview</span>
-                        </>
-                      ) : (
-                        <>
-                          <Play className="w-3 h-3 fill-emerald-600" />
-                          <span>Test Play Audio</span>
-                        </>
-                      )}
-                    </button>
-                  )}
                 </div>
               </div>
 
-              <input
-                type="text"
-                value={formData.musicUrl}
-                onChange={(e) => {
-                  setFormData({ ...formData, musicUrl: e.target.value });
-                  setPreviewError(null);
-                }}
-                placeholder="https://...mp3 or /uploads/... or YouTube URL"
-                className="w-full px-4 py-2.5 bg-[#FAF8F5] border border-[#D4AF37]/30 rounded-xl text-xs text-[#2C2A29] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
-              />
+              {/* CURRENT ACTIVE SONG DISPLAY */}
+              <div className="p-3.5 rounded-xl bg-gradient-to-r from-amber-500/15 via-amber-500/5 to-transparent border border-[#D4AF37]/50 flex flex-wrap items-center justify-between gap-3 shadow-2xs">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#D4AF37] to-[#AA7C11] text-white flex items-center justify-center shrink-0 shadow-sm">
+                    <Volume2 className="w-5 h-5 animate-pulse" />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-[#AA7C11] bg-amber-100/90 px-2 py-0.5 rounded-md">
+                        បទភ្លេងកំពុងដំណើរការ (Active Music)
+                      </span>
+                    </div>
+                    <p className="text-xs font-bold text-[#2C2A29] truncate mt-0.5">
+                      {WEDDING_SONG_LIBRARY.find((s) => s.url === formData.musicUrl)?.titleKm || formData.musicUrl || "មិនទាន់បានជ្រើសរើសបទភ្លេងនៅឡើយ"}
+                    </p>
+                  </div>
+                </div>
 
-              {previewError && (
-                <p className="text-[11px] text-red-600 flex items-center gap-1">
-                  <AlertCircle className="w-3.5 h-3.5 shrink-0" />
-                  <span>{previewError}</span>
-                </p>
-              )}
-
-              {/* Supported formats guidance & presets */}
-              <div className="flex flex-wrap items-center gap-2 pt-1">
-                <span className="text-[10px] text-[#3E444A]/70 uppercase font-bold tracking-wider">
-                  Quick Presets:
-                </span>
-                <button
-                  type="button"
-                  onClick={() =>
-                    setFormData({
-                      ...formData,
-                      musicUrl:
-                        "https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=romantic-piano-112199.mp3",
-                    })
-                  }
-                  className="px-2 py-0.5 rounded-lg bg-stone-100 hover:bg-[#F3E5AB]/40 text-[10px] text-[#2C2A29] border border-stone-200"
-                >
-                  Romantic Piano
-                </button>
-                <button
-                  type="button"
-                  onClick={() =>
-                    setFormData({
-                      ...formData,
-                      musicUrl:
-                        "https://cdn.pixabay.com/download/audio/2022/01/18/audio_d0a13f69d2.mp3?filename=wedding-piano-10339.mp3",
-                    })
-                  }
-                  className="px-2 py-0.5 rounded-lg bg-stone-100 hover:bg-[#F3E5AB]/40 text-[10px] text-[#2C2A29] border border-stone-200"
-                >
-                  Canon in D (Acoustic)
-                </button>
+                {formData.musicUrl && (
+                  <button
+                    type="button"
+                    onClick={togglePreview}
+                    className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all shadow-xs ${
+                      previewPlaying
+                        ? "bg-red-50 text-red-700 border border-red-200 hover:bg-red-100"
+                        : "bg-emerald-50 text-emerald-800 border border-emerald-200 hover:bg-emerald-100"
+                    }`}
+                  >
+                    {previewPlaying ? (
+                      <>
+                        <Square className="w-3.5 h-3.5 fill-red-600" />
+                        <span>ផ្អាកសាកល្បង (Pause)</span>
+                      </>
+                    ) : (
+                      <>
+                        <Play className="w-3.5 h-3.5 fill-emerald-600" />
+                        <span>ចាក់សាកល្បង (Test Play)</span>
+                      </>
+                    )}
+                  </button>
+                )}
               </div>
 
-              <p className="text-[11px] text-stone-500 leading-relaxed">
-                Supports: Uploaded audio files (MP3, WAV, M4A, OGG), Google Drive links, Dropbox, direct audio links, or YouTube background playback.
-              </p>
+              {/* SONG LIBRARY PRESET SELECTOR */}
+              <div className="space-y-3 pt-2">
+                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#D4AF37]/20 pb-2.5">
+                  <span className="text-xs font-bold text-[#2C2A29] flex items-center gap-1.5">
+                    <Sparkles className="w-3.5 h-3.5 text-[#AA7C11]" />
+                    <span>បណ្ណាល័យចម្រៀងមង្គលការ (Wedding Music Library)</span>
+                  </span>
+
+                  {/* Category Filter Chips */}
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    {[
+                      { id: "all", label: "ទាំងអស់ (All)" },
+                      { id: "khmer_traditional", label: "🇰🇭 ភ្លេងការខ្មែរ" },
+                      { id: "piano_violin", label: "🎻 ព្យាណូ & វីយូឡុង" },
+                      { id: "romantic_acoustic", label: "✨ រ៉ូមែនទិក" },
+                    ].map((cat) => (
+                      <button
+                        key={cat.id}
+                        type="button"
+                        onClick={() => setActiveMusicFilter(cat.id)}
+                        className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-all ${
+                          activeMusicFilter === cat.id
+                            ? "bg-[#AA7C11] text-white shadow-xs"
+                            : "bg-white border border-stone-200 text-[#3E444A] hover:bg-stone-50"
+                        }`}
+                      >
+                        {cat.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Grid of Songs */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 max-h-[380px] overflow-y-auto pr-1">
+                  {WEDDING_SONG_LIBRARY.filter(
+                    (s) => activeMusicFilter === "all" || s.category === activeMusicFilter
+                  ).map((song) => {
+                    const isSelected = formData.musicUrl === song.url;
+                    const isPlaying = playingSongId === song.id;
+
+                    return (
+                      <div
+                        key={song.id}
+                        className={`p-3 rounded-xl border transition-all flex items-center justify-between gap-3 ${
+                          isSelected
+                            ? "bg-amber-500/10 border-[#AA7C11] shadow-xs"
+                            : "bg-white border-stone-200/80 hover:border-amber-300 hover:bg-[#FAF8F5]"
+                        }`}
+                      >
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <button
+                            type="button"
+                            onClick={() => handlePlaySongPreview(song)}
+                            title={isPlaying ? "ផ្អាក" : "ចាក់ស្តាប់សាកល្បង"}
+                            className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-transform active:scale-95 ${
+                              isPlaying
+                                ? "bg-red-500 text-white animate-pulse"
+                                : "bg-amber-100/80 text-[#AA7C11] hover:bg-amber-200/80"
+                            }`}
+                          >
+                            {isPlaying ? (
+                              <Square className="w-4 h-4 fill-white" />
+                            ) : (
+                              <Play className="w-4 h-4 fill-[#AA7C11] ml-0.5" />
+                            )}
+                          </button>
+
+                          <div className="min-w-0">
+                            <p className="text-xs font-bold text-[#2C2A29] truncate flex items-center gap-1.5">
+                              <span>{song.icon}</span>
+                              <span className="truncate">{song.titleKm}</span>
+                            </p>
+                            <div className="flex items-center gap-2 text-[10px] text-[#3E444A]/70 mt-0.5">
+                              <span className="font-medium text-[#AA7C11]">{song.categoryKm}</span>
+                              <span>·</span>
+                              <span className="truncate">{song.vibe}</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() => handleSelectSong(song)}
+                          className={`px-3 py-1.5 rounded-lg text-xs font-bold shrink-0 flex items-center gap-1 transition-all ${
+                            isSelected
+                              ? "bg-emerald-600 text-white shadow-xs"
+                              : "bg-[#FAF8F5] border border-[#D4AF37]/50 text-[#AA7C11] hover:bg-[#AA7C11] hover:text-white"
+                          }`}
+                        >
+                          {isSelected ? (
+                            <>
+                              <Check className="w-3.5 h-3.5 stroke-[3]" />
+                              <span>កំពុងប្រើ</span>
+                            </>
+                          ) : (
+                            <span>ជ្រើសរើស</span>
+                          )}
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Direct Custom Audio URL Input */}
+              <div className="pt-2 border-t border-[#D4AF37]/20">
+                <label className="block text-[11px] font-bold text-[#3E444A] mb-1.5">
+                  🔗 ឬបញ្ចូលតំណភ្ជាប់ផ្ទាល់ខ្លួន (Custom URL / YouTube / MP3 link)៖
+                </label>
+                <input
+                  type="text"
+                  value={formData.musicUrl}
+                  onChange={(e) => {
+                    setFormData({ ...formData, musicUrl: e.target.value });
+                    setPreviewError(null);
+                  }}
+                  placeholder="https://...mp3 ឬ /uploads/... ឬ YouTube link"
+                  className="w-full px-4 py-2 bg-white border border-[#D4AF37]/30 rounded-xl text-xs text-[#2C2A29] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
+                />
+
+                {previewError && (
+                  <p className="text-[11px] text-red-600 flex items-center gap-1 mt-1.5">
+                    <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                    <span>{previewError}</span>
+                  </p>
+                )}
+
+                <p className="text-[10px] text-stone-400 mt-1 leading-relaxed">
+                  គាំទ្រ៖ ឯកសារសំឡេង (MP3, WAV, M4A, OGG), Google Drive links, Dropbox, direct audio links, ឬ YouTube background playback។
+                </p>
+              </div>
             </div>
 
             <div>

@@ -106,45 +106,19 @@ export async function GET(
 
       // Case B: External HTTP / HTTPS URL
       if (rawImage.startsWith("http://") || rawImage.startsWith("https://")) {
-        return NextResponse.redirect(rawImage, 307);
+        return NextResponse.redirect(rawImage, 302);
       }
 
-      // Case C: Local file in /public/
-      const cleanPath = rawImage.startsWith("/") ? rawImage.slice(1) : rawImage;
-      const fullPath = path.join(process.cwd(), "public", cleanPath);
-      try {
-        const fileBuffer = await fs.readFile(fullPath);
-        const ext = path.extname(fullPath).toLowerCase();
-        let mime = "image/jpeg";
-        if (ext === ".png") mime = "image/png";
-        if (ext === ".webp") mime = "image/webp";
-        if (ext === ".gif") mime = "image/gif";
-        return new Response(fileBuffer, {
-          status: 200,
-          headers: {
-            "Content-Type": mime,
-            "Cache-Control": "public, max-age=86400, stale-while-revalidate=43200",
-          },
-        });
-      } catch (err) {
-        console.warn("Could not read local image file:", fullPath, err);
+      // Case C: Local file or uploaded asset (redirect directly to CDN asset for high speed & reliability)
+      const origin = req.nextUrl.origin || "https://e-invitation-bice.vercel.app";
+      if (rawImage.startsWith("/")) {
+        return NextResponse.redirect(`${origin}${rawImage}`, 302);
       }
     }
 
     // Fallback: User's default wedding portrait
-    const fallbackPath = path.join(process.cwd(), "public", "og.jpg");
-    try {
-      const fallbackBuffer = await fs.readFile(fallbackPath);
-      return new Response(fallbackBuffer, {
-        status: 200,
-        headers: {
-          "Content-Type": "image/jpeg",
-          "Cache-Control": "public, max-age=86400",
-        },
-      });
-    } catch {
-      return new Response("Image Not Found", { status: 404 });
-    }
+    const origin = req.nextUrl.origin || "https://e-invitation-bice.vercel.app";
+    return NextResponse.redirect(`${origin}/og.jpg`, 302);
   } catch (error) {
     console.error("OG Image route error:", error);
     return new Response("Internal Server Error", { status: 500 });

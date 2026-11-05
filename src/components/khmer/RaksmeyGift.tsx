@@ -63,7 +63,7 @@ export default function RaksmeyGift({ lang }: RaksmeyGiftProps) {
             </div>
 
             <div className="font-moul text-sm text-[#ffffff] mb-1">
-              {isKm ? "មាស ភក្ដី" : "MEAS PHEAKDEY"}
+              {isKm ? "គណនីមង្គលការ" : "Wedding Account"}
             </div>
             <p className="text-xs text-[#d9b15a] font-mono mb-4">096 7 717 278</p>
 
