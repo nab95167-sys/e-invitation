@@ -591,7 +591,7 @@ export default function UsersClient({
           className="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-[#D4AF37] to-[#AA7C11] text-white text-xs sm:text-sm font-bold flex items-center gap-2 shadow-md hover:brightness-110 active:scale-95 transition-all self-start sm:self-auto cursor-pointer"
         >
           <UserPlus className="w-4 h-4" />
-          <span>+ បង្កើតអ្នកប្រើប្រាស់ (Create User)</span>
+          <span>បង្កើតអ្នកប្រើប្រាស់ (Create User)</span>
         </button>
       </div>
 

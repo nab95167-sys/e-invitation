@@ -40,13 +40,17 @@ export async function GET(
 
     // 2. Resolve guest name if available
     let guestName = to ? decodeURIComponent(to).trim() : "";
-    if (!guestName && code) {
+    let guestTable = "";
+    let guestCategory = "";
+    if (code) {
       try {
         const guest = await prisma.guest.findUnique({
           where: { invitationCode: code },
-          select: { name: true },
+          select: { name: true, tableNumber: true, category: true },
         });
-        if (guest?.name) guestName = guest.name;
+        if (guest?.name && !guestName) guestName = guest.name;
+        if (guest?.tableNumber) guestTable = guest.tableNumber;
+        if (guest?.category) guestCategory = guest.category;
       } catch (e) {
         console.warn("Guest lookup notice:", e);
       }
@@ -127,6 +131,8 @@ export async function GET(
       window.__SSR_SLUG__ = ${JSON.stringify(slug || "")};
       window.__SSR_EVENT__ = ${JSON.stringify(event || null)};
       window.__SSR_GUEST_NAME__ = ${JSON.stringify(guestName || "")};
+      window.__SSR_GUEST_TABLE__ = ${JSON.stringify(guestTable || "")};
+      window.__SSR_GUEST_CATEGORY__ = ${JSON.stringify(guestCategory || "")};
       window.__SSR_CODE__ = ${JSON.stringify(code || "")};
     </script>`;
     html = html.replace("</head>", `${ssrData}\n</head>`);

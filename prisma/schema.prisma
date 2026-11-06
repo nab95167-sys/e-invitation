@@ -59,6 +59,7 @@ model Event {
   guests          Guest[]
   wishes          Wish[]
   media           MediaItem[]
+  gifts           Gift[]
 }
 
 model Guest {
@@ -81,6 +82,7 @@ model Guest {
   viewsCount          Int       @default(0)
   createdAt           DateTime  @default(now())
   updatedAt           DateTime  @updatedAt
+  gifts               Gift[]
 }
 
 model Wish {
@@ -105,4 +107,24 @@ model MediaItem {
   category     String    @default("GALLERY") // STORY, GALLERY, HIGHLIGHT
   sortOrder    Int       @default(0)
   createdAt    DateTime  @default(now())
+}
+
+model Gift {
+  id            String    @id @default(cuid())
+  eventId       String
+  event         Event     @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  guestId       String?
+  guest         Guest?    @relation(fields: [guestId], references: [id], onDelete: SetNull)
+  guestName     String
+  side          String    @default("BOTH") // GROOM, BRIDE, BOTH
+  currency      String    @default("USD") // USD, KHR
+  amount        Float
+  paymentMethod String    @default("CASH") // CASH, TRANSFER, OTHER
+  notes         String?
+  recordedBy    String?   // Name or email of recorder
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([eventId])
+  @@index([guestName])
 }

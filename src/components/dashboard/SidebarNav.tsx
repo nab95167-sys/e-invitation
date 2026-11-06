@@ -12,6 +12,8 @@ import {
   ShieldAlert,
   ChevronRight,
   Lock,
+  Gift,
+  Tv,
 } from "lucide-react";
 
 interface SidebarNavProps {
@@ -40,6 +42,12 @@ const NAV_ITEMS: NavItem[] = [
     icon: Users,
   },
   {
+    name: "Wedding Gifts",
+    nameKm: "កត់ចំណងដៃ",
+    href: "/dashboard/gifts",
+    icon: Gift,
+  },
+  {
     name: "Event Details & Theme",
     nameKm: "ព័ត៌មាន & ម៉ូដកម្មវិធី",
     href: "/dashboard/event",
@@ -56,6 +64,12 @@ const NAV_ITEMS: NavItem[] = [
     nameKm: "សៀវភៅជូនពរ",
     href: "/dashboard/wishes",
     icon: MessageSquare,
+  },
+  {
+    name: "Live Projector Wall",
+    nameKm: "បញ្ចាំងស្លាយមង្គលការ",
+    href: "/live-wall",
+    icon: Tv,
   },
   {
     name: "Manage User Roles",

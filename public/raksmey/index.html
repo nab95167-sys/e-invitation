@@ -1477,8 +1477,8 @@
       // 1. Resolve VIP Guest Personalization
       let activeGuestInfo = {
         name: decodeEntities(guestParam || window.__initialGuestName || ''),
-        category: 'VIP GUEST',
-        tableNumber: '',
+        category: decodeEntities(window.__SSR_GUEST_CATEGORY__ || 'VIP GUEST'),
+        tableNumber: decodeEntities(window.__SSR_GUEST_TABLE__ || ''),
         maxGuests: 2,
         attendeesCount: 2
       };
@@ -2735,6 +2735,47 @@
               updateCount();
               countdownTimerInterval = setInterval(updateCount, 1000);
             }
+
+            // 4b. Add to Calendar (Google Calendar & Apple .ics)
+            const icsBtn = document.getElementById('ics-btn');
+            if (icsBtn) {
+              icsBtn.onclick = function() {
+                const targetD = ev.eventDate ? new Date(ev.eventDate) : new Date();
+                const calTitle = `សិរីសួស្តីអាពាហ៍ពិពាហ៍ ${ev.groomName || 'កូនកំលោះ'} & ${ev.brideName || 'កូនក្រមុំ'}`;
+                const calLoc = ev.venueAddress || ev.venueName || '';
+                const calDesc = `សូមគោរពអញ្ជើញចូលរួមពិធីសិរីសួស្តីអាពាហ៍ពិពាហ៍រវាង ${ev.groomName || ''} & ${ev.brideName || ''} នៅ ${ev.venueName || ''}`;
+                const startISO = targetD.toISOString().replace(/-|:|\.\d\d\d/g, "");
+                const endD = new Date(targetD.getTime() + 4 * 60 * 60 * 1000);
+                const endISO = endD.toISOString().replace(/-|:|\.\d\d\d/g, "");
+                
+                const isApple = /iPhone|iPad|iPod|Macintosh/i.test(navigator.userAgent);
+                if (isApple) {
+                  const icsContent = [
+                    'BEGIN:VCALENDAR',
+                    'VERSION:2.0',
+                    'PRODID:-//RoyalInvite//Wedding//KM',
+                    'BEGIN:VEVENT',
+                    `SUMMARY:${calTitle}`,
+                    `DESCRIPTION:${calDesc}`,
+                    `LOCATION:${calLoc}`,
+                    `DTSTART:${startISO}`,
+                    `DTEND:${endISO}`,
+                    'END:VEVENT',
+                    'END:VCALENDAR'
+                  ].join('\r\n');
+                  const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+                  const link = document.createElement('a');
+                  link.href = window.URL.createObjectURL(blob);
+                  link.setAttribute('download', 'wedding_invitation.ics');
+                  document.body.appendChild(link);
+                  link.click();
+                  document.body.removeChild(link);
+                } else {
+                  const gUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(calTitle)}&dates=${startISO}/${endISO}&details=${encodeURIComponent(calDesc)}&location=${encodeURIComponent(calLoc)}`;
+                  window.open(gUrl, '_blank');
+                }
+              };
+            }
           }
         }
 
@@ -3045,9 +3086,16 @@
                   <div style="color:#d9b15a;font-weight:bold;font-size:1.15rem;letter-spacing:1px;font-family:monospace;margin:0.2rem 0">${accNum}</div>
                   ${accName ? `<div style="color:#ffffffcc;font-size:0.85rem;font-weight:600;margin-top:0.3rem">${accName}</div>` : ''}
                 </div>
-                <button type="button" class="btn" style="margin:0 auto;display:inline-flex;padding:0.6rem 1.6rem;font-size:0.85rem" id="copy-bank-btn">
-                  <span>ចម្លងលេខកុង (Copy Info)</span>
-                </button>
+                <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:0.6rem;margin-top:0.8rem">
+                  <button type="button" class="btn" style="padding:0.6rem 1.4rem;font-size:0.85rem" id="copy-bank-btn">
+                    <span>ចម្លងលេខកុង (Copy Info)</span>
+                  </button>
+                  ${qrImg ? `
+                    <a href="${qrImg}" download="Wedding_KHQR.jpg" class="btn btn-secondary" style="padding:0.6rem 1.4rem;font-size:0.85rem;text-decoration:none;display:inline-flex;align-items:center;gap:0.4rem;border:1px solid #d9b15a;background:rgba(217,177,90,0.15);color:#fbefc0;border-radius:999px" target="_blank">
+                      <span>📥 ទាញយក QR (Save QR)</span>
+                    </a>
+                  ` : ''}
+                </div>
               </div>
             `;
             const copyBtn = document.getElementById('copy-bank-btn');
