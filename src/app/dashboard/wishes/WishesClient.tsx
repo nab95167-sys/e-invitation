@@ -41,7 +41,7 @@ interface WishesClientProps {
 export default function WishesClient({
   initialWishes,
   eventId,
-  eventSlug = "so-vith-and-ma-na",
+  eventSlug = "hoeurn-phanith-and-seourr-sreynith",
 }: WishesClientProps) {
   const [wishes, setWishes] = useState<Wish[]>(initialWishes);
   const [search, setSearch] = useState("");

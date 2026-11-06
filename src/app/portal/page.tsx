@@ -17,9 +17,17 @@ import {
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  let eventSlug = "so-vith-and-ma-na";
+  let eventSlug = "hoeurn-phanith-and-seourr-sreynith";
   try {
-    const event = await prisma.event.findFirst({ select: { slug: true } });
+    const event = await prisma.event.findFirst({
+      where: {
+        OR: [
+          { slug: "hoeurn-phanith-and-seourr-sreynith" },
+          { groomName: { contains: "ផានិត" } },
+        ],
+      },
+      select: { slug: true },
+    });
     if (event?.slug) {
       eventSlug = event.slug;
     }
@@ -47,7 +55,7 @@ export default async function HomePage() {
 
           <div className="flex items-center space-x-4">
             <Link
-              href={`/invite/${eventSlug}?code=vip-guest-01`}
+              href={`/invite/${eventSlug}`}
               className="text-sm font-medium text-[#2C2A29] hover:text-[#AA7C11] transition-colors hidden md:inline-flex items-center gap-1"
             >
               <span>Live Invitation Preview</span>
@@ -89,7 +97,7 @@ export default async function HomePage() {
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
-              href={`/invite/${eventSlug}?code=vip-guest-01`}
+              href={`/invite/${eventSlug}`}
               className="w-full sm:w-auto px-8 py-4 rounded-full bg-gradient-to-r from-[#D4AF37] via-[#C59B27] to-[#AA7C11] text-white font-medium text-base shadow-luxury-lg hover:brightness-105 hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2"
             >
               <span>Experience Guest Invitation</span>
@@ -103,16 +111,6 @@ export default async function HomePage() {
               <Users className="w-4 h-4 text-[#AA7C11]" />
               <span>Sign In to Dashboard</span>
             </Link>
-          </div>
-
-          {/* Quick Demo Credentials pill */}
-          <div className="mt-8 inline-flex items-center gap-2 text-xs text-[#3E444A]/70 bg-white/70 backdrop-blur-sm border border-[#D4AF37]/20 px-4 py-2 rounded-xl">
-            <span className="font-semibold text-[#AA7C11]">Demo Accounts:</span>
-            <span>Admin: <code>admin@wedding.com</code></span>
-            <span>•</span>
-            <span>Couple: <code>alex.sophia@wedding.com</code></span>
-            <span>•</span>
-            <span>Pass: <code>Wedding@2026</code></span>
           </div>
         </div>
       </section>
@@ -247,7 +245,7 @@ export default async function HomePage() {
           </p>
           <div className="flex items-center space-x-6 text-xs text-[#AA7C11]">
             <Link href="/login" className="hover:underline">Dashboard Login</Link>
-            <Link href={`/invite/${eventSlug}?code=vip-guest-01`} className="hover:underline">Sample Invitation</Link>
+            <Link href={`/invite/${eventSlug}`} className="hover:underline">Live Invitation</Link>
           </div>
         </div>
       </footer>

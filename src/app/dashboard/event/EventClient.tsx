@@ -1536,7 +1536,7 @@ export default function EventClient({ initialEvent, initialMedia, initialGuests 
         </div>
 
         <a
-          href={`/invite/${formData.slug || initialEvent.slug}?code=vip-guest-01`}
+          href={`/invite/${formData.slug || initialEvent.slug}`}
           target="_blank"
           className="px-5 py-2.5 rounded-2xl bg-white border border-[#D4AF37]/30 text-xs font-semibold text-[#2C2A29] flex items-center gap-2 hover:bg-[#FAF8F5] transition-all shadow-sm w-fit"
         >

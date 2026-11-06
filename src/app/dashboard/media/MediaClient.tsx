@@ -331,7 +331,7 @@ export default function MediaClient({ initialMedia, eventId, eventSlug }: MediaC
           )}
 
           <a
-            href={`/invite/${eventSlug || 'davita-and-meassa'}?code=vip-guest-01#gallery`}
+            href={`/invite/${eventSlug || 'hoeurn-phanith-and-seourr-sreynith'}#gallery`}
             target="_blank"
             className="px-4 py-2.5 rounded-2xl bg-white border border-[#D4AF37]/30 text-xs font-semibold text-[#2C2A29] flex items-center gap-2 hover:bg-[#FAF8F5] transition-all shadow-sm"
           >

@@ -79,7 +79,7 @@ export default async function DashboardLayout({
         {/* Bottom Actions */}
         <div className="p-4 border-t border-stone-100 space-y-2">
           <Link
-            href={`/invite/${eventSlug}?code=vip-guest-01`}
+            href={`/invite/${eventSlug}`}
             target="_blank"
             className="w-full flex items-center justify-between px-4 py-2.5 rounded-2xl bg-[#D4AF37]/15 text-[#AA7C11] text-xs font-semibold hover:bg-[#D4AF37]/25 transition-all shadow-xs"
           >
