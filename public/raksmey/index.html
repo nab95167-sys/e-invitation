@@ -336,13 +336,12 @@
             --w: min(80vw, 46svh, 380px) !important;
           }
           .e2__flap-logo {
-            left: 15% !important;
-            right: 15% !important;
-            top: 6% !important;
+            left: 5% !important;
+            right: 5% !important;
+            top: 5% !important;
           }
           .e2__flap-logo .lk-name {
-            font-size: clamp(8.5px, 3.9cqw, 11.5px) !important;
-            max-width: 80% !important;
+            font-size: clamp(18px, 21cqw, 28px) !important;
           }
           .hero.cover {
             padding-left: 0.75rem !important;
@@ -440,14 +439,14 @@
         .e2__flap-logo {
           position: absolute !important;
           top: 6% !important;
-          left: 14% !important;
-          right: 14% !important;
+          left: 5% !important;
+          right: 5% !important;
           pointer-events: none !important;
           z-index: 4 !important;
         }
 
         .e2__flap-logo .lockup {
-          aspect-ratio: 600 / 320 !important;
+          aspect-ratio: 600 / 470 !important;
           width: 100% !important;
           position: relative !important;
           container-type: inline-size !important;
@@ -456,44 +455,44 @@
         .e2__flap-logo .lk-name {
           font-family: "Moulpali", var(--f-moul), serif !important;
           white-space: nowrap !important;
-          letter-spacing: 0.2px !important;
+          letter-spacing: 0 !important;
           background: var(--foil-grad) !important;
           color: #0000 !important;
           background-position: 30% !important;
           background-size: 220% 100% !important;
           -webkit-background-clip: text !important;
           background-clip: text !important;
-          padding: .06em .15em .15em !important;
-          font-size: clamp(9px, 4.4cqw, 13px) !important;
+          padding: .2em .1em .35em !important;
+          font-size: clamp(19px, 21.5cqw, 32px) !important;
           font-weight: 400 !important;
-          line-height: 1.15 !important;
+          line-height: 1 !important;
           position: absolute !important;
-          left: 50% !important;
-          transform: translateX(-50%) !important;
-          text-align: center !important;
-          max-width: 82% !important;
-          filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.6)) drop-shadow(0 0 5px rgba(229,193,124,0.35)) !important;
+          transform: none !important;
+          max-width: none !important;
+          filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.55)) drop-shadow(0 0 6px rgba(229,193,124,0.3)) !important;
         }
 
         .e2__flap-logo .lk-groom {
-          top: 8% !important;
-          left: 50% !important;
+          top: 9% !important;
+          left: 3% !important;
           right: auto !important;
-          transform: translateX(-50%) !important;
+          text-align: left !important;
         }
 
         .e2__flap-logo .lk-bride {
-          top: 26% !important;
-          left: 50% !important;
-          right: auto !important;
-          transform: translateX(-50%) !important;
+          top: 41% !important;
+          right: 2% !important;
+          left: auto !important;
+          text-align: right !important;
         }
 
-        /* Clean flap presentation: hide asymmetric stray side-swashes on flap */
+        /* Show full royal lockup ornamentals: butterfly, flourish swashes, and crest on flap */
         .e2__flap-logo .lk-swash,
         .e2__flap-logo .lk-swash2,
-        .e2__flap-logo .lk-butterfly {
-          display: none !important;
+        .e2__flap-logo .lk-butterfly,
+        .e2__flap-logo .lk-heart,
+        .e2__flap-logo .lk-orn {
+          display: block !important;
         }
 
         /* 3. Inside card folding doors vs inner content stacking */
@@ -2011,13 +2010,12 @@
               --w: min(80vw, 46svh, 380px) !important;
             }
             .e2__flap-logo {
-              left: 15% !important;
-              right: 15% !important;
-              top: 6% !important;
+              left: 5% !important;
+              right: 5% !important;
+              top: 5% !important;
             }
             .e2__flap-logo .lk-name {
-              font-size: clamp(8.5px, 3.9cqw, 11.5px) !important;
-              max-width: 80% !important;
+              font-size: clamp(18px, 21cqw, 28px) !important;
             }
             .hero.cover {
               padding-left: 0.75rem !important;
@@ -2060,14 +2058,14 @@
           .e2__flap-logo {
             position: absolute !important;
             top: 6% !important;
-            left: 14% !important;
-            right: 14% !important;
+            left: 5% !important;
+            right: 5% !important;
             pointer-events: none !important;
             z-index: 4 !important;
           }
 
           .e2__flap-logo .lockup {
-            aspect-ratio: 600 / 320 !important;
+            aspect-ratio: 600 / 470 !important;
             width: 100% !important;
             position: relative !important;
             container-type: inline-size !important;
@@ -2076,37 +2074,44 @@
           .e2__flap-logo .lk-name {
             font-family: "Moulpali", var(--f-moul), serif !important;
             white-space: nowrap !important;
-            letter-spacing: 0.2px !important;
+            letter-spacing: 0 !important;
             background: var(--foil-grad) !important;
             color: #0000 !important;
             background-position: 30% !important;
             background-size: 220% 100% !important;
             -webkit-background-clip: text !important;
             background-clip: text !important;
-            padding: .06em .15em .15em !important;
-            font-size: clamp(9px, 4.4cqw, 13px) !important;
+            padding: .2em .1em .35em !important;
+            font-size: clamp(19px, 21.5cqw, 32px) !important;
             font-weight: 400 !important;
-            line-height: 1.15 !important;
+            line-height: 1 !important;
             position: absolute !important;
-            left: 50% !important;
-            transform: translateX(-50%) !important;
-            text-align: center !important;
-            max-width: 82% !important;
-            filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.6)) drop-shadow(0 0 5px rgba(229,193,124,0.35)) !important;
+            transform: none !important;
+            max-width: none !important;
+            filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.55)) drop-shadow(0 0 6px rgba(229,193,124,0.3)) !important;
           }
 
           .e2__flap-logo .lk-groom {
-            top: 8% !important;
-            left: 50% !important;
+            top: 9% !important;
+            left: 3% !important;
             right: auto !important;
-            transform: translateX(-50%) !important;
+            text-align: left !important;
           }
 
           .e2__flap-logo .lk-bride {
-            top: 26% !important;
-            left: 50% !important;
-            right: auto !important;
-            transform: translateX(-50%) !important;
+            top: 41% !important;
+            right: 2% !important;
+            left: auto !important;
+            text-align: right !important;
+          }
+
+          /* Show full royal lockup ornamentals: butterfly, flourish swashes, and crest on flap */
+          .e2__flap-logo .lk-swash,
+          .e2__flap-logo .lk-swash2,
+          .e2__flap-logo .lk-butterfly,
+          .e2__flap-logo .lk-heart,
+          .e2__flap-logo .lk-orn {
+            display: block !important;
           }
 
           /* Clean flap presentation: hide asymmetric stray side-swashes on flap */
@@ -2507,14 +2512,17 @@
           }
         } catch (e) {}
 
-        // Custom Envelope Flap Calligraphy Names (Single given names default for royal 3D flap lockup matching benchmark Photo 2)
+        // Flap Calligraphy Names (Single given names for authentic royal 3D flap lockup matching user reference)
         const customEnvGroom = decodeEntities(themeObj.envelopeGroom || ev.envelopeGroom || '');
         const customEnvBride = decodeEntities(themeObj.envelopeBride || ev.envelopeBride || '');
+        const flapGroom = (customEnvGroom.includes(' ') ? customEnvGroom.split(' ').pop() : customEnvGroom) || groomShort || groom || 'ផានិត';
+        const flapBride = (customEnvBride.includes(' ') ? customEnvBride.split(' ').pop() : customEnvBride) || brideShort || bride || 'ស្រីនិត';
+
         const envGroom = customEnvGroom || groomShort || groom;
         const envBride = customEnvBride || brideShort || bride;
 
-        window.__customGroomInit = envGroom.charAt(0) || groom.charAt(0) || 'ដ';
-        window.__customBrideInit = envBride.charAt(0) || bride.charAt(0) || 'ម';
+        window.__customGroomInit = flapGroom.charAt(0) || groom.charAt(0) || 'ផ';
+        window.__customBrideInit = flapBride.charAt(0) || bride.charAt(0) || 'ស';
 
         // Custom Envelope Gate Headings & Greetings
         const envTitle = decodeEntities(themeObj.envelopeTitle || ev.envelopeTitle || ev.title || 'សិរីសួស្តីអាពាហ៍ពិពាហ៍');
@@ -2536,7 +2544,10 @@
           document.querySelectorAll('[data-name="groom-short"]').forEach(el => {
             if (el.textContent !== groomShort) el.textContent = groomShort;
           });
-          document.querySelectorAll('.lk-groom').forEach(el => {
+          document.querySelectorAll('.e2__flap-logo .lk-groom').forEach(el => {
+            if (el.textContent !== flapGroom) el.textContent = flapGroom;
+          });
+          document.querySelectorAll('.e2__card .lk-groom').forEach(el => {
             if (el.textContent !== envGroom) el.textContent = envGroom;
           });
         }
@@ -2548,28 +2559,22 @@
           document.querySelectorAll('[data-name="bride-short"]').forEach(el => {
             if (el.textContent !== brideShort) el.textContent = brideShort;
           });
-          document.querySelectorAll('.lk-bride').forEach(el => {
+          document.querySelectorAll('.e2__flap-logo .lk-bride').forEach(el => {
+            if (el.textContent !== flapBride) el.textContent = flapBride;
+          });
+          document.querySelectorAll('.e2__card .lk-bride').forEach(el => {
             if (el.textContent !== envBride) el.textContent = envBride;
           });
         }
 
-        // Refined auto-scaling: comfortable luxury proportions avoiding overflow on full Khmer names
-        const maxFlapLen = Math.max(envGroom.length, envBride.length);
         const isMobileScreen = window.innerWidth <= 640;
-        let flapFontSize = isMobileScreen ? 'clamp(8.5px, 3.9cqw, 11.5px)' : 'clamp(9px, 4.4cqw, 13px)';
-        let cardFontSize = '9.5cqw';
-        if (maxFlapLen > 10) {
-          flapFontSize = isMobileScreen ? 'clamp(8px, 3.6cqw, 10.5px)' : 'clamp(8.5px, 3.9cqw, 11.5px)';
-          cardFontSize = '7.5cqw';
-        } else if (maxFlapLen > 6) {
-          flapFontSize = isMobileScreen ? 'clamp(8.5px, 3.9cqw, 11.2px)' : 'clamp(9px, 4.2cqw, 12.5px)';
-          cardFontSize = '8.5cqw';
-        } else {
-          flapFontSize = isMobileScreen ? 'clamp(9px, 4.2cqw, 12px)' : 'clamp(9.5px, 4.6cqw, 13.5px)';
-          cardFontSize = '10cqw';
-        }
+        const flapFontSize = isMobileScreen ? 'clamp(18px, 21cqw, 28px)' : 'clamp(19px, 21.5cqw, 32px)';
+        const cardFontSize = '9.5cqw';
         document.querySelectorAll('.e2__flap-logo .lk-name').forEach(el => {
           el.style.setProperty('font-size', flapFontSize, 'important');
+        });
+        document.querySelectorAll('.e2__card .lk-name').forEach(el => {
+          el.style.setProperty('font-size', cardFontSize, 'important');
         });
         document.querySelectorAll('.e2__card .lk-name').forEach(el => {
           el.style.setProperty('font-size', cardFontSize, 'important');
