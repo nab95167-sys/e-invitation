@@ -126,6 +126,16 @@ export async function GET(
     html = html.replace(/<meta name="twitter:description" content=".*?" \/>/i, `<meta name="twitter:description" content="${description}" />`);
     html = html.replace(/<meta name="twitter:image" content=".*?" \/>/i, `<meta name="twitter:image" content="${ogImage}" />`);
 
+    // SSR Replacement for Footer Year from Dashboard Event Date
+    if (event?.eventDate) {
+      try {
+        const d = new Date(event.eventDate);
+        const kmDigits = ["០", "១", "២", "៣", "៤", "៥", "៦", "៧", "៨", "៩"];
+        const yearKm = String(d.getFullYear()).replace(/[0-9]/g, (digit) => kmDigits[Number(digit)]);
+        html = html.replace(/<span id="year"[^>]*>.*?<\/span>/gi, `<span id="year" data-date="year">${yearKm}</span>`);
+      } catch (e) {}
+    }
+
     // 6. Preload SSR data into window.__SSR_EVENT__ and window.__SSR_GUEST_NAME__
     const ssrData = `<script>
       window.__SSR_SLUG__ = ${JSON.stringify(slug || "")};

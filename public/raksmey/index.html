@@ -1432,7 +1432,7 @@
           <div class="rf__cr-line"></div>
           <p class="rf__cr-title">ROYAL E-INVITATION · DIGITAL WEDDING EXPERIENCE</p>
           <p class="rf__cr-names">
-            <span data-name="groom-km">ផៃ រស្មី</span> &amp; <span data-name="bride-km">មាស ភក្ដី</span> · <span id="year">២០២៦</span>
+            <span data-name="groom-km">ផៃ រស្មី</span> &amp; <span data-name="bride-km">មាស ភក្ដី</span> · <span id="year" data-date="year">២០២៦</span>
           </p>
           <p class="rf__cr-sub">រៀបចំឡើងដោយក្ដីស្រឡាញ់ &amp; ការគោរពដ៏ខ្ពង់ខ្ពស់ · All Rights Reserved</p>
         </div>
@@ -2702,6 +2702,8 @@
             document.querySelectorAll('[data-date="day"]').forEach(el => el.textContent = dayStr);
             document.querySelectorAll('[data-date="month"]').forEach(el => el.textContent = monthStr);
             document.querySelectorAll('[data-date="year"]').forEach(el => el.textContent = yearStr);
+            const rfYear = document.getElementById('year');
+            if (rfYear) rfYear.textContent = yearStr;
             document.querySelectorAll('[data-date="weekdayShort"]').forEach(el => el.textContent = weekdayShortStr);
             document.querySelectorAll('[data-date="weekday"]').forEach(el => el.textContent = weekdayStr);
             document.querySelectorAll('[data-date="date"]').forEach(el => el.textContent = `ទី${dayStr} ខែ${monthStr} ឆ្នាំ${yearStr}`);
