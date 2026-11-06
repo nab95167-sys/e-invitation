@@ -162,6 +162,73 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
+
+    // 1. Check if this is a MERGE action for duplicates
+    if (body.action === "merge") {
+      const { primaryId, duplicateIds } = body;
+      if (!primaryId || !Array.isArray(duplicateIds) || duplicateIds.length === 0) {
+        return NextResponse.json({ error: "primaryId and duplicateIds array are required" }, { status: 400 });
+      }
+
+      const primary = await prisma.gift.findUnique({
+        where: { id: primaryId },
+        include: { guest: true },
+      });
+      if (!primary) {
+        return NextResponse.json({ error: "Primary gift not found" }, { status: 404 });
+      }
+
+      const duplicates = await prisma.gift.findMany({
+        where: { id: { in: duplicateIds } },
+      });
+
+      let addedAmount = 0;
+      const combinedNotes: string[] = primary.notes ? [primary.notes] : [];
+
+      for (const d of duplicates) {
+        if (d.currency === primary.currency) {
+          addedAmount += Number(d.amount) || 0;
+        }
+        if (d.notes && !combinedNotes.includes(d.notes)) {
+          combinedNotes.push(d.notes);
+        }
+      }
+
+      const newTotalAmount = Number(primary.amount) + addedAmount;
+      const mergedNote = combinedNotes.join(" | ") || null;
+
+      const updated = await prisma.gift.update({
+        where: { id: primaryId },
+        data: {
+          amount: newTotalAmount,
+          notes: mergedNote,
+        },
+        include: {
+          guest: {
+            select: {
+              id: true,
+              name: true,
+              category: true,
+              tableNumber: true,
+            },
+          },
+        },
+      });
+
+      // Delete the duplicate rows
+      await prisma.gift.deleteMany({
+        where: { id: { in: duplicateIds } },
+      });
+
+      return NextResponse.json({
+        success: true,
+        message: "Successfully merged duplicate gifts",
+        gift: updated,
+        deletedIds: duplicateIds,
+      });
+    }
+
+    // 2. Normal Create Gift OR Add to existing
     const {
       eventId: rawEventId,
       guestId,
@@ -171,15 +238,43 @@ export async function POST(req: NextRequest) {
       amount,
       paymentMethod = "CASH",
       notes,
+      addToExistingId, // If user explicitly wants to merge into existing
     } = body;
-
-    if (!guestName || !guestName.trim()) {
-      return NextResponse.json({ error: "សូមបញ្ចូលឈ្មោះអ្នកចងដៃ (Guest name is required)" }, { status: 400 });
-    }
 
     const numAmount = parseFloat(amount);
     if (isNaN(numAmount) || numAmount <= 0) {
       return NextResponse.json({ error: "ចំនួនទឹកប្រាក់ត្រូវតែធំជាង ០ (Valid amount is required)" }, { status: 400 });
+    }
+
+    // If adding to existing gift record
+    if (addToExistingId) {
+      const existing = await prisma.gift.findUnique({ where: { id: addToExistingId } });
+      if (existing) {
+        const addedTotal = Number(existing.amount) + numAmount;
+        const noteExtra = notes ? ` | ${notes}` : "";
+        const updated = await prisma.gift.update({
+          where: { id: addToExistingId },
+          data: {
+            amount: addedTotal,
+            notes: (existing.notes || "") + noteExtra,
+          },
+          include: {
+            guest: {
+              select: {
+                id: true,
+                name: true,
+                category: true,
+                tableNumber: true,
+              },
+            },
+          },
+        });
+        return NextResponse.json({ success: true, gift: updated, isMerged: true });
+      }
+    }
+
+    if (!guestName || !guestName.trim()) {
+      return NextResponse.json({ error: "សូមបញ្ចូលឈ្មោះអ្នកចងដៃ (Guest name is required)" }, { status: 400 });
     }
 
     const eventId = await resolveEventId(session, rawEventId);

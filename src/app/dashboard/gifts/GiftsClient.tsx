@@ -20,6 +20,10 @@ import {
   Calendar,
   AlertCircle,
   FileSpreadsheet,
+  GitMerge,
+  ShieldAlert,
+  Copy,
+  Sparkles,
 } from "lucide-react";
 
 export interface GiftItem {
@@ -83,6 +87,7 @@ export default function GiftsClient({
     paymentMethod: "CASH",
     notes: "",
   });
+  const [addToExisting, setAddToExisting] = useState(true);
 
   // Edit Modal State
   const [editGift, setEditGift] = useState<GiftItem | null>(null);
@@ -106,6 +111,111 @@ export default function GiftsClient({
   // Quick Amount Presets
   const usdPresets = [20, 30, 50, 100, 200];
   const khrPresets = [50000, 100000, 200000, 400000, 500000];
+
+  // Duplicates calculation
+  const duplicatesMap = useMemo(() => {
+    const map = new Map<string, GiftItem[]>();
+    gifts.forEach((g) => {
+      const key = (g.guestName || "").trim().toLowerCase();
+      if (!map.has(key)) map.set(key, []);
+      map.get(key)!.push(g);
+    });
+    return map;
+  }, [gifts]);
+
+  const duplicateGroups = useMemo(() => {
+    const groups: { name: string; items: GiftItem[] }[] = [];
+    duplicatesMap.forEach((items) => {
+      if (items.length > 1) {
+        groups.push({ name: items[0].guestName, items });
+      }
+    });
+    return groups;
+  }, [duplicatesMap]);
+
+  // Check if current add form matches an existing gift
+  const duplicateExistingGift = useMemo(() => {
+    const qName = formData.guestName.trim().toLowerCase();
+    if (!qName) return null;
+    return gifts.find(
+      (g) =>
+        (formData.guestId && g.guestId === formData.guestId) ||
+        g.guestName.trim().toLowerCase() === qName
+    );
+  }, [formData.guestName, formData.guestId, gifts]);
+
+  // Merge a single duplicate group into 1 record
+  const handleMergeGroup = async (items: GiftItem[]) => {
+    if (items.length <= 1) return;
+    setLoading(true);
+    setError(null);
+    try {
+      const primary = items[0];
+      const duplicateIds = items.slice(1).map((i) => i.id);
+
+      const res = await fetch("/api/gifts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "merge",
+          primaryId: primary.id,
+          duplicateIds,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to merge gifts");
+
+      setGifts(
+        gifts
+          .filter((g) => !duplicateIds.includes(g.id))
+          .map((g) => (g.id === primary.id ? data.gift : g))
+      );
+      setSuccess(`✓ បានច្របាច់ចំណងដៃស្ទួនរបស់ "${primary.guestName}" ចូលគ្នារួចរាល់ (សរុបថ្មី: ${data.gift.currency === "USD" ? `$${data.gift.amount}` : `${data.gift.amount.toLocaleString()} ៛`})!`);
+      setTimeout(() => setSuccess(null), 3500);
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Merge all duplicate groups
+  const handleMergeAllDuplicates = async () => {
+    if (duplicateGroups.length === 0) return;
+    setLoading(true);
+    setError(null);
+    try {
+      for (const group of duplicateGroups) {
+        const primary = group.items[0];
+        const duplicateIds = group.items.slice(1).map((i) => i.id);
+        const res = await fetch("/api/gifts", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            action: "merge",
+            primaryId: primary.id,
+            duplicateIds,
+          }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Failed to merge duplicates");
+      }
+
+      // Re-fetch fresh gifts list
+      const freshRes = await fetch(`/api/gifts?eventId=${eventId}`);
+      const freshData = await freshRes.json();
+      if (freshData.success && freshData.gifts) {
+        setGifts(freshData.gifts);
+      }
+      setSuccess(`✓ បានច្របាច់ចំណងដៃស្ទួនទាំងអស់ចូលគ្នាដោយជោគជ័យ!`);
+      setTimeout(() => setSuccess(null), 4000);
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Global Metrics
   const metrics = useMemo(() => {
@@ -188,25 +298,39 @@ export default function GiftsClient({
 
     setLoading(true);
     try {
+      const payload: any = {
+        eventId,
+        guestId: formData.guestId || null,
+        guestName: formData.guestName,
+        side: formData.side,
+        currency: formData.currency,
+        amount: amt,
+        paymentMethod: formData.paymentMethod,
+        notes: formData.notes,
+      };
+
+      // If duplicate detected and user chose to add to existing
+      if (duplicateExistingGift && addToExisting) {
+        payload.addToExistingId = duplicateExistingGift.id;
+      }
+
       const res = await fetch("/api/gifts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          eventId,
-          guestId: formData.guestId || null,
-          guestName: formData.guestName,
-          side: formData.side,
-          currency: formData.currency,
-          amount: amt,
-          paymentMethod: formData.paymentMethod,
-          notes: formData.notes,
-        }),
+        body: JSON.stringify(payload),
       });
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to add gift");
 
-      setGifts([data.gift, ...gifts]);
+      if (data.isMerged) {
+        setGifts(gifts.map((g) => (g.id === data.gift.id ? data.gift : g)));
+        setSuccess(`✓ បានបូកបន្ថែមលើចំណងដៃរបស់ ${data.gift.guestName} ដោយជោគជ័យ (សរុបថ្មី: ${data.gift.currency === "USD" ? `$${data.gift.amount}` : `${data.gift.amount.toLocaleString()} ៛`})!`);
+      } else {
+        setGifts([data.gift, ...gifts]);
+        setSuccess(`✓ បានកត់ត្រាចំណងដៃ ${data.gift.guestName} (${data.gift.currency === "USD" ? `$${data.gift.amount}` : `${data.gift.amount.toLocaleString()} ៛`}) ដោយជោគជ័យ!`);
+      }
+
       setIsAddOpen(false);
       setFormData({
         guestId: "",
@@ -217,7 +341,7 @@ export default function GiftsClient({
         paymentMethod: "CASH",
         notes: "",
       });
-      setSuccess(`✓ បានកត់ត្រាចំណងដៃ ${data.gift.guestName} (${data.gift.currency === "USD" ? `$${data.gift.amount}` : `${data.gift.amount.toLocaleString()} ៛`}) ដោយជោគជ័យ!`);
+      setAddToExisting(true);
       setTimeout(() => setSuccess(null), 3500);
     } catch (err: any) {
       setError(err.message);
@@ -388,6 +512,44 @@ export default function GiftsClient({
       )}
 
       {/* ============================================================ */}
+      {/* DUPLICATE DETECTION BANNER                                   */}
+      {/* ============================================================ */}
+      {duplicateGroups.length > 0 && (
+        <div className="p-4 sm:p-5 rounded-3xl bg-amber-50 border-2 border-amber-300 text-amber-950 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-sm animate-in fade-in">
+          <div className="flex items-start sm:items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-amber-500/20 text-amber-800 flex items-center justify-center shrink-0">
+              <GitMerge className="w-5 h-5 text-amber-700" />
+            </div>
+            <div>
+              <h4 className="font-bold text-sm text-amber-900 font-khmer flex items-center gap-2">
+                <span>⚠️ រកឃើញកំណត់ត្រាចំណងដៃស្ទួនឈ្មោះដូចគ្នា (Duplicate Gifts Detected)</span>
+                <span className="px-2 py-0.5 rounded-full bg-amber-200 text-amber-900 text-[10px] font-bold">
+                  {duplicateGroups.length} ឈ្មោះ
+                </span>
+              </h4>
+              <p className="text-xs text-amber-800/90 font-khmer mt-0.5">
+                មានឈ្មោះដែលត្រូវបានកត់ត្រាស្ទួនច្រើនដង៖{" "}
+                <strong className="text-amber-950 font-bold">
+                  {duplicateGroups.map((g) => `«${g.name}» (${g.items.length} ដង)`).join(", ")}
+                </strong>
+                ។ លោកអ្នកអាចចុចប៊ូតុងដើម្បីច្របាច់បញ្ចូលគ្នាជាកំណត់ត្រាតែមួយភ្លាមៗ។
+              </p>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            disabled={loading}
+            onClick={handleMergeAllDuplicates}
+            className="px-4 py-2.5 rounded-2xl bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white text-xs font-bold shadow-md hover:brightness-110 active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer shrink-0"
+          >
+            <GitMerge className="w-4 h-4" />
+            <span>ច្របាច់ចំណងដៃស្ទួនចូលគ្នា (Merge Duplicates)</span>
+          </button>
+        </div>
+      )}
+
+      {/* ============================================================ */}
       {/* SUMMARY STATS CARDS (REAL-TIME TOTALS)                       */}
       {/* ============================================================ */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -537,17 +699,35 @@ export default function GiftsClient({
             <tbody className="divide-y divide-stone-100 text-xs text-[#2C2A29]">
               {filteredGifts.map((gift, idx) => {
                 const isUSD = gift.currency === "USD";
+                const dupItems = duplicatesMap.get(gift.guestName.trim().toLowerCase()) || [];
+                const isDuplicate = dupItems.length > 1;
+
                 return (
-                  <tr key={gift.id} className="hover:bg-amber-50/30 transition-colors">
+                  <tr
+                    key={gift.id}
+                    className={`transition-colors ${
+                      isDuplicate
+                        ? "bg-amber-50/50 hover:bg-amber-100/50 border-l-4 border-l-amber-500"
+                        : "hover:bg-amber-50/30"
+                    }`}
+                  >
                     {/* Index */}
                     <td className="py-3.5 px-4 text-center text-stone-400 font-medium">
                       {idx + 1}
                     </td>
 
-                    {/* Guest Name & Table Number */}
+                    {/* Guest Name & Table Number & Duplicate Badge */}
                     <td className="py-3.5 px-4 font-medium">
-                      <div className="flex items-center gap-2">
+                      <div className="flex flex-wrap items-center gap-1.5">
                         <span className="font-bold text-stone-900 text-sm font-khmer">{gift.guestName}</span>
+                        {isDuplicate && (
+                          <span
+                            className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-200 text-amber-950 border border-amber-400 flex items-center gap-1 shrink-0 animate-pulse"
+                            title={`ឈ្មោះនេះមាន ${dupItems.length} កំណត់ត្រាក្នុងបញ្ជី`}
+                          >
+                            <span>⚠️ ស្ទួន ({dupItems.length})</span>
+                          </span>
+                        )}
                         {gift.guest?.tableNumber && (
                           <span className="px-2 py-0.5 rounded-md bg-stone-100 text-[10px] text-stone-600 font-bold border border-stone-200">
                             តុ #{gift.guest.tableNumber}
@@ -626,6 +806,20 @@ export default function GiftsClient({
                     {/* Actions */}
                     <td className="py-3.5 px-4 text-right">
                       <div className="flex items-center justify-end gap-1.5">
+                        {/* Merge Button if duplicate */}
+                        {isDuplicate && (
+                          <button
+                            type="button"
+                            disabled={loading}
+                            onClick={() => handleMergeGroup(dupItems)}
+                            className="px-2.5 py-1.5 rounded-xl border border-amber-400 bg-amber-100 hover:bg-amber-200 text-amber-950 font-bold text-xs flex items-center gap-1 transition-all shadow-2xs active:scale-95 cursor-pointer"
+                            title="ច្របាច់ចំណងដៃស្ទួនរបស់អ្នកនេះចូលគ្នាជាកំណត់ត្រាតែមួយ"
+                          >
+                            <GitMerge className="w-3.5 h-3.5 text-amber-800" />
+                            <span>ច្របាច់ (Merge)</span>
+                          </button>
+                        )}
+
                         <button
                           type="button"
                           onClick={() => openEditModal(gift)}
@@ -737,6 +931,50 @@ export default function GiftsClient({
                     placeholder="វាយបញ្ចូលឈ្មោះអ្នកចងដៃនៅទីនេះ..."
                     className="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl border border-stone-300 focus:outline-none focus:border-[#D4AF37] font-khmer"
                   />
+
+                  {/* DUPLICATE WARNING IN MODAL */}
+                  {duplicateExistingGift && (
+                    <div className="p-3.5 rounded-2xl bg-amber-50/95 border-2 border-amber-300 text-amber-950 space-y-2 animate-in fade-in">
+                      <div className="flex items-center gap-2">
+                        <AlertCircle className="w-4 h-4 text-amber-700 shrink-0" />
+                        <span className="font-bold text-xs font-khmer text-amber-900">
+                          ⚠️ ភ្ញៀវម្នាក់នេះធ្លាប់បានកត់ចំណងដៃរួចហើយ!
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-amber-900 font-khmer leading-relaxed">
+                        ភ្ញៀវឈ្មោះ <strong className="text-stone-900 font-bold">{duplicateExistingGift.guestName}</strong> ធ្លាប់បានកត់ចំនួន{" "}
+                        <strong className="text-amber-950 font-bold">
+                          {duplicateExistingGift.currency === "USD" ? `$${duplicateExistingGift.amount}` : `${duplicateExistingGift.amount.toLocaleString()} ៛`}
+                        </strong>{" "}
+                        ({duplicateExistingGift.paymentMethod === "TRANSFER" ? "វេរធនាគារ" : "សាច់ប្រាក់"}) រួចហើយ។
+                      </p>
+                      <div className="pt-1 flex flex-wrap items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setAddToExisting(true)}
+                          className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all flex items-center gap-1.5 cursor-pointer ${
+                            addToExisting
+                              ? "bg-amber-600 text-white border-amber-700 shadow-2xs"
+                              : "bg-white text-amber-900 border-amber-300 hover:bg-amber-100"
+                          }`}
+                        >
+                          <Check className="w-3.5 h-3.5" />
+                          <span>បូកបន្ថែមលើចំនួនចាស់ (Add to Existing)</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setAddToExisting(false)}
+                          className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all flex items-center gap-1.5 cursor-pointer ${
+                            !addToExisting
+                              ? "bg-stone-800 text-white border-stone-900 shadow-2xs"
+                              : "bg-white text-stone-600 border-stone-300 hover:bg-stone-100"
+                          }`}
+                        >
+                          <span>កត់ត្រាថ្មីដាច់ដោយឡែក (Keep Separate)</span>
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
 
