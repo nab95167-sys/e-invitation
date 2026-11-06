@@ -204,7 +204,7 @@ export default function MediaClient({ initialMedia, eventId, eventSlug }: MediaC
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             eventId,
-            title: file.name.replace(/\.[^/.]+$/, ""),
+            title: "",
             mediaType,
             url,
             caption: "",

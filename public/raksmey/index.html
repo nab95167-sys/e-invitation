@@ -3041,11 +3041,8 @@
             fig.style.cssText = '--ar:3/2;--h:54svh;min-width:320px;flex-shrink:0;margin:0 1.2rem;';
             fig.innerHTML = `
               <div class="shot__img" style="border-radius:18px;overflow:hidden;border:1.5px solid rgba(179,135,237,0.45);box-shadow:0 12px 30px rgba(0,0,0,0.6),0 0 15px rgba(124,58,237,0.2);height:100%">
-                <img src="${item.url}" alt="${item.title || ''}" loading="lazy" style="width:100%;height:100%;object-fit:cover" />
+                <img src="${item.url}" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover" />
               </div>
-              <figcaption class="caps" style="text-align:center;margin-top:0.6rem;color:#fbefc0;font-size:0.82rem">
-                <span>${item.title || item.caption || (groomShort + ' & ' + brideShort)}</span>
-              </figcaption>
             `;
             storyTrack.appendChild(fig);
           });
@@ -3240,8 +3237,8 @@
             if (item.mediaType === 'VIDEO') {
               card.innerHTML = `
                 <video src="${item.url}" muted loop playsinline style="width:100%;height:100%;object-fit:cover"></video>
-                <div style="position:absolute;inset:0;background:linear-gradient(to top, rgba(0,0,0,0.7), transparent 60%);display:flex;align-items:flex-end;padding:1.2rem">
-                  <span style="color:#fbefc0;font-size:0.85rem;font-weight:600">${item.title || item.caption || 'វីដេអូអនុស្សាវរីយ៍'}</span>
+                <div style="position:absolute;top:10px;right:10px;background:rgba(0,0,0,0.6);border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;color:#fbefc0;pointer-events:none">
+                  <svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:currentColor"><path d="M8 5v14l11-7z"/></svg>
                 </div>
               `;
               card.onclick = () => {
@@ -3251,10 +3248,7 @@
             } else {
               const photoIndex = photoList.indexOf(item);
               card.innerHTML = `
-                <img src="${item.url}" alt="${item.title || ''}" loading="lazy" style="width:100%;height:100%;object-fit:cover" />
-                <div style="position:absolute;inset:0;background:linear-gradient(to top, rgba(19,6,36,0.9), transparent 50%);display:flex;align-items:flex-end;padding:1.2rem">
-                  <span style="color:#fbefc0;font-size:0.88rem;font-family:var(--f-moul, serif);letter-spacing:0.3px">${item.title || item.caption || 'រូបភាពអនុស្សាវរីយ៍'}</span>
-                </div>
+                <img src="${item.url}" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover" />
               `;
               card.onclick = () => {
                 openLb(photoIndex !== -1 ? photoIndex : 0);
