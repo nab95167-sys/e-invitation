@@ -123,7 +123,7 @@ export async function PUT(req: NextRequest) {
       return NextResponse.json({ error: "Access denied." }, { status: 403 });
     }
 
-    const { id, role, name, permissions } = await req.json();
+    const { id, role, name, email, password, permissions } = await req.json();
 
     if (!id) {
       return NextResponse.json({ error: "User ID required" }, { status: 400 });
@@ -152,6 +152,25 @@ export async function PUT(req: NextRequest) {
       }
     }
 
+    // Email update & conflict check
+    let cleanEmail: string | undefined = undefined;
+    if (email && email.toLowerCase().trim() !== targetUser.email.toLowerCase()) {
+      cleanEmail = email.toLowerCase().trim();
+      const existing = await prisma.user.findUnique({ where: { email: cleanEmail } });
+      if (existing && existing.id !== id) {
+        return NextResponse.json({ error: "A user with this email already exists." }, { status: 400 });
+      }
+    }
+
+    // Password reset if provided
+    let passwordHash: string | undefined = undefined;
+    if (password && typeof password === "string" && password.trim().length > 0) {
+      if (password.length < 6) {
+        return NextResponse.json({ error: "Password must be at least 6 characters." }, { status: 400 });
+      }
+      passwordHash = await hashPassword(password);
+    }
+
     const permissionsJson = permissions !== undefined
       ? (typeof permissions === "string" ? permissions : JSON.stringify(permissions))
       : undefined;
@@ -161,6 +180,8 @@ export async function PUT(req: NextRequest) {
       data: {
         ...(role && { role }),
         ...(name && { name: sanitizeString(name) }),
+        ...(cleanEmail && { email: cleanEmail }),
+        ...(passwordHash && { passwordHash }),
         ...(permissionsJson !== undefined && { permissions: permissionsJson }),
       },
       select: {

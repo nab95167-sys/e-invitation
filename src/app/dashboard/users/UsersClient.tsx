@@ -34,6 +34,7 @@ import {
   RotateCcw,
   CheckSquare,
   Square,
+  Pencil,
 } from "lucide-react";
 
 export interface SystemUser {
@@ -249,6 +250,17 @@ export default function UsersClient({
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<SystemUser | null>(null);
 
+  // Edit / Update User Modal State
+  const [editUser, setEditUser] = useState<SystemUser | null>(null);
+  const [editFormData, setEditFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    role: "GUEST",
+  });
+  const [editPermissions, setEditPermissions] = useState<string[]>([]);
+  const [showEditPassword, setShowEditPassword] = useState(false);
+
   // Inspector / Quick Edit Modal
   const [inspectUser, setInspectUser] = useState<SystemUser | null>(null);
   const [inspectSelectedRole, setInspectSelectedRole] = useState<string>("GUEST");
@@ -330,6 +342,94 @@ export default function UsersClient({
       setFormPermissions([...ROLE_DEFINITIONS.GUEST.allowedPermissions]);
       setSuccess(`✓ បានបង្កើតគណនី ${data.user.name} (${data.user.role}) ដោយជោគជ័យ!`);
       setTimeout(() => setSuccess(null), 4000);
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Edit / Update User Handlers
+  const openEditModal = (user: SystemUser) => {
+    setEditUser(user);
+    setEditFormData({
+      name: user.name,
+      email: user.email,
+      password: "",
+      role: user.role,
+    });
+    setEditPermissions(parseUserPermissions(user));
+    setShowEditPassword(false);
+    setError(null);
+  };
+
+  const handleSelectRoleInEdit = (newRole: string) => {
+    setEditFormData((prev) => ({ ...prev, role: newRole }));
+    setEditPermissions([...(ROLE_DEFINITIONS[newRole]?.allowedPermissions || [])]);
+  };
+
+  const toggleEditPermission = (permId: string) => {
+    setEditPermissions((prev) =>
+      prev.includes(permId) ? prev.filter((p) => p !== permId) : [...prev, permId]
+    );
+  };
+
+  const checkAllEditPermissions = () => {
+    setEditPermissions(PERMISSION_ITEMS.map((p) => p.id));
+  };
+  const uncheckAllEditPermissions = () => {
+    setEditPermissions([]);
+  };
+  const resetEditPermissionsToRole = () => {
+    setEditPermissions([...(ROLE_DEFINITIONS[editFormData.role]?.allowedPermissions || [])]);
+  };
+
+  const handleEditSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editUser) return;
+    setError(null);
+    setSuccess(null);
+
+    if (editFormData.password && editFormData.password.length < 6) {
+      setError("លេខសម្ងាត់ថ្មីត្រូវមានយ៉ាងហោចណាស់ ៦ តួអក្សរ / Password must be at least 6 characters.");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const res = await fetch("/api/users", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: editUser.id,
+          name: editFormData.name,
+          email: editFormData.email,
+          role: editFormData.role,
+          password: editFormData.password || undefined,
+          permissions: editPermissions,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to update user");
+
+      setUsers(
+        users.map((u) =>
+          u.id === editUser.id
+            ? {
+                ...u,
+                name: data.user.name,
+                email: data.user.email,
+                role: data.user.role,
+                permissions: data.user.permissions,
+              }
+            : u
+        )
+      );
+      setEditUser(null);
+      setSuccess(`✓ បានកែប្រែព័ត៌មានអ្នកប្រើប្រាស់ ${data.user.name} (${data.user.role}) ដោយជោគជ័យ!`);
+      setTimeout(() => setSuccess(null), 3500);
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -791,6 +891,20 @@ export default function UsersClient({
                     {/* Actions */}
                     <td className="py-3.5 px-4 text-right">
                       <div className="flex items-center justify-end gap-1.5">
+                        {/* 1. Update / Edit User Button */}
+                        {(!isTargetSuper || isSuperadmin) && (
+                          <button
+                            type="button"
+                            onClick={() => openEditModal(u)}
+                            className="px-2.5 py-1.5 rounded-xl border border-amber-300 bg-amber-50 hover:bg-amber-100 text-amber-900 font-bold text-xs flex items-center gap-1.5 transition-all shadow-2xs active:scale-95 cursor-pointer"
+                            title="កែប្រែព័ត៌មានអ្នកប្រើប្រាស់ (Edit / Update User Details & Password)"
+                          >
+                            <Pencil className="w-3.5 h-3.5 text-amber-700" />
+                            <span>កែប្រែ (Edit)</span>
+                          </button>
+                        )}
+
+                        {/* 2. Check / Permissions Button */}
                         <button
                           type="button"
                           onClick={() => openInspector(u)}
@@ -798,18 +912,25 @@ export default function UsersClient({
                           title="ពិនិត្យ និងធីក/ដកធីកសិទ្ធិ (Inspect & Check/Uncheck Permissions)"
                         >
                           <CheckSquare className="w-3.5 h-3.5" />
-                          <span className="hidden sm:inline">ធីក / កែសិទ្ធិ</span>
+                          <span className="hidden sm:inline">សិទ្ធិ (Perms)</span>
                         </button>
 
-                        {!isMe && (!isTargetSuper || isSuperadmin) && (
+                        {/* 3. Delete User Button */}
+                        {!isMe && (!isTargetSuper || isSuperadmin) ? (
                           <button
+                            type="button"
                             onClick={() => setDeleteTarget(u)}
-                            className="p-1.5 rounded-xl text-stone-400 hover:text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
-                            title="Delete User"
+                            className="px-2.5 py-1.5 rounded-xl border border-red-200 bg-red-50 hover:bg-red-100 text-red-700 font-bold text-xs flex items-center gap-1.5 transition-all shadow-2xs active:scale-95 cursor-pointer"
+                            title="លុបអ្នកប្រើប្រាស់ម្នាក់នេះ (Delete User)"
                           >
-                            <Trash2 className="w-4 h-4" />
+                            <Trash2 className="w-3.5 h-3.5 text-red-600" />
+                            <span>លុប (Delete)</span>
                           </button>
-                        )}
+                        ) : isMe ? (
+                          <span className="text-[10px] text-stone-400 italic px-2 py-1 bg-stone-50 rounded-lg border border-stone-200">
+                            គណនីអ្នក
+                          </span>
+                        ) : null}
                       </div>
                     </td>
                   </tr>
@@ -1487,6 +1608,302 @@ export default function UsersClient({
                 {loading ? "កំពុងលុប..." : "យល់ព្រមលុប (Delete)"}
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* ============================================================ */}
+      {/* MODAL 4: EDIT USER & RESET PASSWORD (UPDATE ONE BY ONE)      */}
+      {/* ============================================================ */}
+      {editUser && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="relative max-w-2xl w-full bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-amber-300/60 max-h-[90vh] overflow-y-auto">
+            {/* Header */}
+            <div className="flex items-center justify-between pb-4 border-b border-stone-100">
+              <div className="flex items-center gap-2.5">
+                <div className="w-10 h-10 rounded-2xl bg-amber-100 border border-amber-300 flex items-center justify-center text-amber-800">
+                  <Pencil className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-serif text-xl font-bold text-[#2C2A29]">
+                    កែប្រែព័ត៌មានអ្នកប្រើប្រាស់ (Edit User Profile)
+                  </h3>
+                  <p className="text-[11px] text-[#3E444A]/70 font-khmer">
+                    កែប្រែឈ្មោះ អ៊ីមែល លេខសម្ងាត់ថ្មី តួនាទី និងសិទ្ធិរបស់ <strong className="text-amber-800">{editUser.name}</strong>
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setEditUser(null)}
+                className="text-stone-400 hover:text-stone-600 p-1.5 rounded-full hover:bg-stone-100 transition-colors cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleEditSubmit} className="space-y-5 pt-4">
+              {/* Basic Fields Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* Full Name */}
+                <div>
+                  <label className="block text-xs font-bold text-[#2C2A29] mb-1.5 font-khmer">
+                    ឈ្មោះពេញ (Full Name) <span className="text-red-500">*</span>
+                  </label>
+                  <div className="relative">
+                    <User className="w-4 h-4 text-stone-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                    <input
+                      type="text"
+                      required
+                      value={editFormData.name}
+                      onChange={(e) => setEditFormData({ ...editFormData, name: e.target.value })}
+                      placeholder="ឈ្មោះអ្នកប្រើប្រាស់"
+                      className="w-full pl-9 pr-3 py-2.5 text-xs sm:text-sm rounded-xl border border-stone-300 focus:outline-none focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                    />
+                  </div>
+                </div>
+
+                {/* Email Address */}
+                <div>
+                  <label className="block text-xs font-bold text-[#2C2A29] mb-1.5 font-khmer">
+                    អ៊ីមែលចូលប្រើ (Login Email) <span className="text-red-500">*</span>
+                  </label>
+                  <div className="relative">
+                    <Mail className="w-4 h-4 text-stone-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                    <input
+                      type="email"
+                      required
+                      value={editFormData.email}
+                      onChange={(e) => setEditFormData({ ...editFormData, email: e.target.value })}
+                      placeholder="user@wedding.com"
+                      className="w-full pl-9 pr-3 py-2.5 text-xs sm:text-sm rounded-xl border border-stone-300 focus:outline-none focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Optional Password Reset */}
+              <div className="p-3.5 bg-amber-50/60 rounded-2xl border border-amber-200/80 space-y-2">
+                <label className="block text-xs font-bold text-[#2C2A29] font-khmer flex items-center justify-between">
+                  <span className="flex items-center gap-1.5">
+                    <Key className="w-4 h-4 text-amber-700" />
+                    <span>ប្តូរលេខសម្ងាត់ថ្មី (Reset Password - ទុកទទេបើមិនចង់ប្តូរ)</span>
+                  </span>
+                  <span className="text-[10px] text-amber-700 font-normal">Optional</span>
+                </label>
+                <div className="relative">
+                  <Lock className="w-4 h-4 text-stone-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                  <input
+                    type={showEditPassword ? "text" : "password"}
+                    minLength={6}
+                    value={editFormData.password}
+                    onChange={(e) => setEditFormData({ ...editFormData, password: e.target.value })}
+                    placeholder="បញ្ចូលលេខសម្ងាត់ថ្មី (យ៉ាងហោច ៦ តួអក្សរ)..."
+                    className="w-full pl-9 pr-10 py-2.5 text-xs sm:text-sm bg-white rounded-xl border border-stone-300 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowEditPassword(!showEditPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600 cursor-pointer"
+                  >
+                    {showEditPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
+                <p className="text-[10px] text-stone-500 font-khmer">
+                  * បើអ្នកមិនចង់ប្តូរលេខសម្ងាត់របស់គាត់ទេ សូមទុកប្រអប់នេះទទេ គណនីនឹងបន្តប្រើលេខសម្ងាត់ដដែល។
+                </p>
+              </div>
+
+              {/* ROLE SELECTION CARDS */}
+              <div>
+                <label className="block text-xs font-bold text-[#2C2A29] mb-2 font-khmer flex items-center justify-between">
+                  <span className="flex items-center gap-1.5">
+                    <Shield className="w-4 h-4 text-[#AA7C11]" />
+                    <span>ជ្រើសរើសតួនាទី (Select Role)</span>
+                  </span>
+                  <span className="text-[11px] font-normal text-stone-500">
+                    តួនាទីដែលបានរើស: <strong className="text-amber-800">{editFormData.role}</strong>
+                  </span>
+                </label>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  {availableRolesForCreation.map((roleKey) => {
+                    const r = ROLE_DEFINITIONS[roleKey];
+                    const isSelected = editFormData.role === roleKey;
+
+                    return (
+                      <div
+                        key={roleKey}
+                        onClick={() => handleSelectRoleInEdit(roleKey)}
+                        className={`p-3.5 rounded-2xl border-2 cursor-pointer transition-all flex flex-col justify-between gap-2 text-left ${
+                          isSelected
+                            ? `${r.activeBorder} ${r.activeBg} shadow-sm`
+                            : "border-stone-200 bg-white hover:border-[#D4AF37]/50 hover:bg-[#FAF8F5]/50"
+                        }`}
+                      >
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="flex items-center gap-2">
+                            <span className="text-xl p-1.5 rounded-xl bg-white shadow-2xs border border-stone-100">
+                              {r.symbol}
+                            </span>
+                            <div>
+                              <div className="font-bold text-xs sm:text-sm text-[#2C2A29] flex items-center gap-1.5">
+                                <span>{r.role}</span>
+                              </div>
+                              <span className="text-[11px] text-stone-600 block font-khmer">
+                                {r.titleKh}
+                              </span>
+                            </div>
+                          </div>
+
+                          <div
+                            className={`w-5 h-5 rounded-full flex items-center justify-center border text-xs shrink-0 transition-all ${
+                              isSelected
+                                ? "bg-[#D4AF37] text-white border-[#AA7C11]"
+                                : "border-stone-300 bg-white"
+                            }`}
+                          >
+                            {isSelected && <Check className="w-3 h-3 stroke-[3]" />}
+                          </div>
+                        </div>
+
+                        <p className="text-[11px] text-stone-500 font-khmer leading-snug">
+                          {r.descKh}
+                        </p>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* GRANULAR PERMISSIONS WITH CHECKBOXES */}
+              <div className="bg-[#FAF8F5] p-4 sm:p-5 rounded-3xl border border-[#D4AF37]/35 space-y-3.5">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-[#D4AF37]/20">
+                  <div className="flex items-center gap-2">
+                    <CheckSquare className="w-4 h-4 text-[#AA7C11]" />
+                    <div>
+                      <h4 className="text-xs sm:text-sm font-bold text-[#2C2A29]">
+                        សិទ្ធិអនុញ្ញាត (Checkboxes)
+                      </h4>
+                      <p className="text-[10px] text-stone-500 font-khmer">
+                        ធីក (Check) ឬដកធីក (Uncheck) ដើម្បីផ្ដល់ ឬដកហូតសិទ្ធិនីមួយៗ
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Quick Action Tools */}
+                  <div className="flex items-center gap-1.5 self-start sm:self-auto">
+                    <button
+                      type="button"
+                      onClick={checkAllEditPermissions}
+                      className="px-2 py-1 bg-white hover:bg-stone-50 border border-stone-200 rounded-lg text-[10px] font-semibold text-stone-700 flex items-center gap-1 cursor-pointer transition-all shadow-2xs"
+                    >
+                      <CheckSquare className="w-3 h-3 text-emerald-600" />
+                      <span>ធីកទាំងអស់</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={uncheckAllEditPermissions}
+                      className="px-2 py-1 bg-white hover:bg-stone-50 border border-stone-200 rounded-lg text-[10px] font-semibold text-stone-700 flex items-center gap-1 cursor-pointer transition-all shadow-2xs"
+                    >
+                      <Square className="w-3 h-3 text-stone-400" />
+                      <span>ដកធីក</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={resetEditPermissionsToRole}
+                      className="px-2 py-1 bg-white hover:bg-stone-50 border border-stone-200 rounded-lg text-[10px] font-semibold text-stone-700 flex items-center gap-1 cursor-pointer transition-all shadow-2xs"
+                    >
+                      <RotateCcw className="w-3 h-3 text-amber-600" />
+                      <span>តាម Role ដើម</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* 2-Column Checkbox Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  {PERMISSION_ITEMS.map((perm) => {
+                    const isChecked = editPermissions.includes(perm.id);
+
+                    return (
+                      <div
+                        key={perm.id}
+                        onClick={() => toggleEditPermission(perm.id)}
+                        className={`p-3 rounded-2xl border transition-all text-xs flex items-center justify-between gap-2.5 cursor-pointer ${
+                          isChecked
+                            ? "bg-white border-emerald-400 shadow-xs ring-1 ring-emerald-400/20"
+                            : "bg-white/60 border-stone-200 hover:border-stone-300 opacity-80"
+                        }`}
+                      >
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <div
+                            className={`w-5 h-5 rounded-lg flex items-center justify-center border transition-all shrink-0 ${
+                              isChecked
+                                ? "bg-emerald-600 border-emerald-700 text-white shadow-2xs"
+                                : "border-stone-300 bg-white"
+                            }`}
+                          >
+                            {isChecked && <Check className="w-3.5 h-3.5 stroke-[3]" />}
+                          </div>
+
+                          <span className="text-base p-1 rounded-lg bg-[#FAF8F5] border border-stone-200/80 shrink-0">
+                            {perm.symbol}
+                          </span>
+
+                          <div className="min-w-0">
+                            <span
+                              className={`font-bold text-[11px] block truncate font-khmer ${
+                                isChecked ? "text-[#2C2A29]" : "text-stone-500"
+                              }`}
+                            >
+                              {perm.nameKh}
+                            </span>
+                            <span className="text-[10px] text-stone-400 truncate block">
+                              {perm.nameEn}
+                            </span>
+                          </div>
+                        </div>
+
+                        <span
+                          className={`px-2 py-0.5 rounded-md text-[10px] font-bold select-none border shrink-0 ${
+                            isChecked
+                              ? "bg-emerald-50 text-emerald-800 border-emerald-300"
+                              : "bg-stone-100 text-stone-500 border-stone-200"
+                          }`}
+                        >
+                          {isChecked ? "✓ បានធីក" : "☐ មិនបានធីក"}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Submit Buttons */}
+              <div className="pt-2 flex items-center justify-end gap-3 border-t border-stone-100">
+                <button
+                  type="button"
+                  onClick={() => setEditUser(null)}
+                  className="px-4 py-2.5 text-xs font-semibold rounded-xl text-stone-600 hover:bg-stone-100 transition-all cursor-pointer"
+                >
+                  បោះបង់ (Cancel)
+                </button>
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-600 to-amber-700 text-white text-xs font-bold shadow-md hover:brightness-110 active:scale-95 disabled:opacity-50 transition-all flex items-center gap-1.5 cursor-pointer"
+                >
+                  {loading ? (
+                    <span>កំពុងរក្សាទុក...</span>
+                  ) : (
+                    <>
+                      <Check className="w-4 h-4" />
+                      <span>រក្សាទុកការកែប្រែ (Save Changes)</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
