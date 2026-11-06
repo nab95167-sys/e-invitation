@@ -336,12 +336,12 @@
             --w: min(80vw, 46svh, 380px) !important;
           }
           .e2__flap-logo {
-            left: 5% !important;
-            right: 5% !important;
-            top: 5% !important;
+            left: 26% !important;
+            right: 26% !important;
+            top: 7% !important;
           }
           .e2__flap-logo .lk-name {
-            font-size: clamp(18px, 21cqw, 28px) !important;
+            font-size: 23cqw !important;
           }
           .hero.cover {
             padding-left: 0.75rem !important;
@@ -438,9 +438,9 @@
         }
         .e2__flap-logo {
           position: absolute !important;
-          top: 6% !important;
-          left: 5% !important;
-          right: 5% !important;
+          top: 7% !important;
+          left: 26% !important;
+          right: 26% !important;
           pointer-events: none !important;
           z-index: 4 !important;
         }
@@ -462,26 +462,26 @@
           background-size: 220% 100% !important;
           -webkit-background-clip: text !important;
           background-clip: text !important;
-          padding: .2em .1em .35em !important;
-          font-size: clamp(19px, 21.5cqw, 32px) !important;
+          padding: .3em .1em .45em !important;
+          font-size: 23cqw !important;
           font-weight: 400 !important;
           line-height: 1 !important;
           position: absolute !important;
           transform: none !important;
           max-width: none !important;
-          filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.55)) drop-shadow(0 0 6px rgba(229,193,124,0.3)) !important;
+          filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.55)) drop-shadow(0 0 5px rgba(229,193,124,0.3)) !important;
         }
 
         .e2__flap-logo .lk-groom {
           top: 9% !important;
-          left: 3% !important;
+          left: 2% !important;
           right: auto !important;
           text-align: left !important;
         }
 
         .e2__flap-logo .lk-bride {
           top: 41% !important;
-          right: 2% !important;
+          right: 1% !important;
           left: auto !important;
           text-align: right !important;
         }
@@ -2010,12 +2010,12 @@
               --w: min(80vw, 46svh, 380px) !important;
             }
             .e2__flap-logo {
-              left: 5% !important;
-              right: 5% !important;
-              top: 5% !important;
+              left: 26% !important;
+              right: 26% !important;
+              top: 7% !important;
             }
             .e2__flap-logo .lk-name {
-              font-size: clamp(18px, 21cqw, 28px) !important;
+              font-size: 23cqw !important;
             }
             .hero.cover {
               padding-left: 0.75rem !important;
@@ -2057,9 +2057,9 @@
           }
           .e2__flap-logo {
             position: absolute !important;
-            top: 6% !important;
-            left: 5% !important;
-            right: 5% !important;
+            top: 7% !important;
+            left: 26% !important;
+            right: 26% !important;
             pointer-events: none !important;
             z-index: 4 !important;
           }
@@ -2081,26 +2081,26 @@
             background-size: 220% 100% !important;
             -webkit-background-clip: text !important;
             background-clip: text !important;
-            padding: .2em .1em .35em !important;
-            font-size: clamp(19px, 21.5cqw, 32px) !important;
+            padding: .3em .1em .45em !important;
+            font-size: 23cqw !important;
             font-weight: 400 !important;
             line-height: 1 !important;
             position: absolute !important;
             transform: none !important;
             max-width: none !important;
-            filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.55)) drop-shadow(0 0 6px rgba(229,193,124,0.3)) !important;
+            filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.55)) drop-shadow(0 0 5px rgba(229,193,124,0.3)) !important;
           }
 
           .e2__flap-logo .lk-groom {
             top: 9% !important;
-            left: 3% !important;
+            left: 2% !important;
             right: auto !important;
             text-align: left !important;
           }
 
           .e2__flap-logo .lk-bride {
             top: 41% !important;
-            right: 2% !important;
+            right: 1% !important;
             left: auto !important;
             text-align: right !important;
           }
@@ -2112,13 +2112,6 @@
           .e2__flap-logo .lk-heart,
           .e2__flap-logo .lk-orn {
             display: block !important;
-          }
-
-          /* Clean flap presentation: hide asymmetric stray side-swashes on flap */
-          .e2__flap-logo .lk-swash,
-          .e2__flap-logo .lk-swash2,
-          .e2__flap-logo .lk-butterfly {
-            display: none !important;
           }
 
           /* 3. Inside card folding doors vs inner content stacking */
@@ -2567,17 +2560,11 @@
           });
         }
 
-        const isMobileScreen = window.innerWidth <= 640;
-        const flapFontSize = isMobileScreen ? 'clamp(18px, 21cqw, 28px)' : 'clamp(19px, 21.5cqw, 32px)';
-        const cardFontSize = '9.5cqw';
         document.querySelectorAll('.e2__flap-logo .lk-name').forEach(el => {
-          el.style.setProperty('font-size', flapFontSize, 'important');
+          el.style.setProperty('font-size', '23cqw', 'important');
         });
         document.querySelectorAll('.e2__card .lk-name').forEach(el => {
-          el.style.setProperty('font-size', cardFontSize, 'important');
-        });
-        document.querySelectorAll('.e2__card .lk-name').forEach(el => {
-          el.style.setProperty('font-size', cardFontSize, 'important');
+          el.style.setProperty('font-size', '9.5cqw', 'important');
         });
 
         // Ensure inside card only fades in when the doors open
