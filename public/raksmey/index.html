@@ -335,8 +335,14 @@
           .e2 {
             --w: min(80vw, 46svh, 380px) !important;
           }
+          .e2__flap-logo {
+            left: 15% !important;
+            right: 15% !important;
+            top: 6% !important;
+          }
           .e2__flap-logo .lk-name {
-            font-size: clamp(9.5px, 6.8cqw, 13px) !important;
+            font-size: clamp(8.5px, 3.9cqw, 11.5px) !important;
+            max-width: 80% !important;
           }
           .hero.cover {
             padding-left: 0.75rem !important;
@@ -433,10 +439,11 @@
         }
         .e2__flap-logo {
           position: absolute !important;
-          top: 4% !important;
-          left: 6% !important;
-          right: 6% !important;
+          top: 6% !important;
+          left: 14% !important;
+          right: 14% !important;
           pointer-events: none !important;
+          z-index: 4 !important;
         }
 
         .e2__flap-logo .lockup {
@@ -456,19 +463,20 @@
           background-size: 220% 100% !important;
           -webkit-background-clip: text !important;
           background-clip: text !important;
-          padding: .1em .2em .2em !important;
-          font-size: clamp(10px, 7.5cqw, 14.5px) !important;
+          padding: .06em .15em .15em !important;
+          font-size: clamp(9px, 4.4cqw, 13px) !important;
           font-weight: 400 !important;
           line-height: 1.15 !important;
           position: absolute !important;
           left: 50% !important;
           transform: translateX(-50%) !important;
           text-align: center !important;
-          filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.55)) drop-shadow(0 0 6px rgba(229,193,124,0.3)) !important;
+          max-width: 82% !important;
+          filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.6)) drop-shadow(0 0 5px rgba(229,193,124,0.35)) !important;
         }
 
         .e2__flap-logo .lk-groom {
-          top: 5% !important;
+          top: 8% !important;
           left: 50% !important;
           right: auto !important;
           transform: translateX(-50%) !important;
@@ -2002,8 +2010,14 @@
             .e2 {
               --w: min(80vw, 46svh, 380px) !important;
             }
+            .e2__flap-logo {
+              left: 15% !important;
+              right: 15% !important;
+              top: 6% !important;
+            }
             .e2__flap-logo .lk-name {
-              font-size: clamp(9.5px, 6.8cqw, 13px) !important;
+              font-size: clamp(8.5px, 3.9cqw, 11.5px) !important;
+              max-width: 80% !important;
             }
             .hero.cover {
               padding-left: 0.75rem !important;
@@ -2045,10 +2059,11 @@
           }
           .e2__flap-logo {
             position: absolute !important;
-            top: 4% !important;
-            left: 6% !important;
-            right: 6% !important;
+            top: 6% !important;
+            left: 14% !important;
+            right: 14% !important;
             pointer-events: none !important;
+            z-index: 4 !important;
           }
 
           .e2__flap-logo .lockup {
@@ -2068,19 +2083,20 @@
             background-size: 220% 100% !important;
             -webkit-background-clip: text !important;
             background-clip: text !important;
-            padding: .1em .2em .2em !important;
-            font-size: clamp(10px, 7.5cqw, 14.5px) !important;
+            padding: .06em .15em .15em !important;
+            font-size: clamp(9px, 4.4cqw, 13px) !important;
             font-weight: 400 !important;
             line-height: 1.15 !important;
             position: absolute !important;
             left: 50% !important;
             transform: translateX(-50%) !important;
             text-align: center !important;
-            filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.55)) drop-shadow(0 0 6px rgba(229,193,124,0.3)) !important;
+            max-width: 82% !important;
+            filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.6)) drop-shadow(0 0 5px rgba(229,193,124,0.35)) !important;
           }
 
           .e2__flap-logo .lk-groom {
-            top: 5% !important;
+            top: 8% !important;
             left: 50% !important;
             right: auto !important;
             transform: translateX(-50%) !important;
@@ -2539,16 +2555,17 @@
 
         // Refined auto-scaling: comfortable luxury proportions avoiding overflow on full Khmer names
         const maxFlapLen = Math.max(envGroom.length, envBride.length);
-        let flapFontSize = '11cqw';
+        const isMobileScreen = window.innerWidth <= 640;
+        let flapFontSize = isMobileScreen ? 'clamp(8.5px, 3.9cqw, 11.5px)' : 'clamp(9px, 4.4cqw, 13px)';
         let cardFontSize = '9.5cqw';
         if (maxFlapLen > 10) {
-          flapFontSize = '8cqw';
+          flapFontSize = isMobileScreen ? 'clamp(8px, 3.6cqw, 10.5px)' : 'clamp(8.5px, 3.9cqw, 11.5px)';
           cardFontSize = '7.5cqw';
         } else if (maxFlapLen > 6) {
-          flapFontSize = '9.5cqw';
+          flapFontSize = isMobileScreen ? 'clamp(8.5px, 3.9cqw, 11.2px)' : 'clamp(9px, 4.2cqw, 12.5px)';
           cardFontSize = '8.5cqw';
         } else {
-          flapFontSize = '12cqw';
+          flapFontSize = isMobileScreen ? 'clamp(9px, 4.2cqw, 12px)' : 'clamp(9.5px, 4.6cqw, 13.5px)';
           cardFontSize = '10cqw';
         }
         document.querySelectorAll('.e2__flap-logo .lk-name').forEach(el => {
