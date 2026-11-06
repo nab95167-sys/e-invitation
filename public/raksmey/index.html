@@ -343,13 +343,7 @@
           .e2__flap-logo .lk-name {
             font-size: 23cqw !important;
           }
-          .hero.cover {
-            padding-left: 0.75rem !important;
-            padding-right: 0.75rem !important;
-          }
-          .cover__inner {
-            max-width: 95vw !important;
-          }
+
           #hero-guest-welcome {
             padding: 0.35rem 0.9rem !important;
             font-size: 0.8rem !important;
@@ -2017,13 +2011,7 @@
             .e2__flap-logo .lk-name {
               font-size: 23cqw !important;
             }
-            .hero.cover {
-              padding-left: 0.75rem !important;
-              padding-right: 0.75rem !important;
-            }
-            .cover__inner {
-              max-width: 95vw !important;
-            }
+
             #hero-guest-welcome {
               padding: 0.35rem 0.9rem !important;
               font-size: 0.8rem !important;
@@ -2537,11 +2525,9 @@
           document.querySelectorAll('[data-name="groom-short"]').forEach(el => {
             if (el.textContent !== groomShort) el.textContent = groomShort;
           });
-          document.querySelectorAll('.e2__flap-logo .lk-groom').forEach(el => {
-            if (el.textContent !== flapGroom) el.textContent = flapGroom;
-          });
-          document.querySelectorAll('.e2__card .lk-groom').forEach(el => {
-            if (el.textContent !== envGroom) el.textContent = envGroom;
+          document.querySelectorAll('.lk-groom').forEach(el => {
+            const targetName = el.closest('.e2__card') ? envGroom : flapGroom;
+            if (el.textContent !== targetName) el.textContent = targetName;
           });
         }
 
@@ -2552,11 +2538,9 @@
           document.querySelectorAll('[data-name="bride-short"]').forEach(el => {
             if (el.textContent !== brideShort) el.textContent = brideShort;
           });
-          document.querySelectorAll('.e2__flap-logo .lk-bride').forEach(el => {
-            if (el.textContent !== flapBride) el.textContent = flapBride;
-          });
-          document.querySelectorAll('.e2__card .lk-bride').forEach(el => {
-            if (el.textContent !== envBride) el.textContent = envBride;
+          document.querySelectorAll('.lk-bride').forEach(el => {
+            const targetName = el.closest('.e2__card') ? envBride : flapBride;
+            if (el.textContent !== targetName) el.textContent = targetName;
           });
         }
 
