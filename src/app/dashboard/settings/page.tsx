@@ -21,11 +21,15 @@ export default async function SettingsPage() {
     });
   }
 
-  const [totalGuests, totalGifts, totalWishes, totalEvents] = await Promise.all([
+  const [totalGuests, totalGifts, totalWishes, totalEvents, event] = await Promise.all([
     prisma.guest.count().catch(() => 0),
     prisma.gift.count().catch(() => 0),
     prisma.wish.count().catch(() => 0),
     prisma.event.count().catch(() => 0),
+    prisma.event.findFirst({
+      where: session?.role === "SUPERADMIN" ? {} : { userId: session?.userId },
+      select: { id: true, telegramBotToken: true, telegramChatId: true },
+    }).catch(() => null),
   ]);
 
   return (
@@ -45,6 +49,11 @@ export default async function SettingsPage() {
           totalGifts,
           totalWishes,
           totalEvents,
+        }}
+        eventConfig={{
+          id: event?.id || "",
+          telegramBotToken: event?.telegramBotToken || "",
+          telegramChatId: event?.telegramChatId || "",
         }}
       />
     </div>

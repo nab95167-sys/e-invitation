@@ -315,7 +315,8 @@ export async function POST(req: NextRequest) {
     const sideKh = gift.side === "GROOM" ? "ខាងកូនកំលោះ" : gift.side === "BRIDE" ? "ខាងកូនក្រមុំ" : "ទាំងសងខាង";
     const methodKh = gift.paymentMethod === "CASH" ? "💵 សាច់ប្រាក់ (Cash)" : gift.paymentMethod === "TRANSFER" ? "📱 វេរប្រាក់ (Transfer)" : "ផ្សេងៗ";
     sendTelegramNotification(
-      `🎁 <b>កត់ចំណងដៃថ្មីបានជោគជ័យ!</b>\n\n👤 អ្នកចងដៃ: <b>${gift.guestName}</b>\n💰 ចំនួនទឹកប្រាក់: <b>${amountFormatted}</b>\n🏷 វិធីបង់: <b>${methodKh}</b>\n👥 ភាគី: <b>${sideKh}</b>\n✍️ អ្នកកត់: ${gift.recordedBy || "Admin"}`
+      `🎁 <b>កត់ចំណងដៃថ្មីបានជោគជ័យ!</b>\n\n👤 អ្នកចងដៃ: <b>${gift.guestName}</b>\n💰 ចំនួនទឹកប្រាក់: <b>${amountFormatted}</b>\n🏷 វិធីបង់: <b>${methodKh}</b>\n👥 ភាគី: <b>${sideKh}</b>\n✍️ អ្នកកត់: ${gift.recordedBy || "Admin"}`,
+      gift.eventId
     ).catch(() => {});
 
     return NextResponse.json({ success: true, gift });

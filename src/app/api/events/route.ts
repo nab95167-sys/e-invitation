@@ -112,6 +112,8 @@ export async function PUT(req: NextRequest) {
       programme,
       couplePhotoUrl,
       venuePhotoUrl,
+      telegramBotToken,
+      telegramChatId,
     } = body;
 
     if (!id) {
@@ -171,6 +173,8 @@ export async function PUT(req: NextRequest) {
         ...(programme !== undefined && { programme: sanitizeString(programme) }),
         ...(couplePhotoUrl !== undefined && { couplePhotoUrl }),
         ...(venuePhotoUrl !== undefined && { venuePhotoUrl }),
+        ...(telegramBotToken !== undefined && { telegramBotToken: telegramBotToken ? sanitizeString(telegramBotToken) : null }),
+        ...(telegramChatId !== undefined && { telegramChatId: telegramChatId ? sanitizeString(telegramChatId) : null }),
       },
     });
 

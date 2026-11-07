@@ -37,6 +37,7 @@ import {
   MessageCircle,
   Download,
   Users,
+  Bell,
 } from "lucide-react";
 import { normalizeAudioUrl } from "@/components/invitation/MusicPlayer";
 
@@ -788,6 +789,8 @@ export default function EventClient({ initialEvent, initialMedia, initialGuests 
     programme: initialEvent.programme || JSON.stringify(DEFAULT_PROGRAMME),
     couplePhotoUrl: initialEvent.couplePhotoUrl || "/img/cozy-2000.webp",
     venuePhotoUrl: initialEvent.venuePhotoUrl || "",
+    telegramBotToken: initialEvent.telegramBotToken || "",
+    telegramChatId: initialEvent.telegramChatId || "",
   });
 
   const [loading, setLoading] = useState(false);
@@ -808,6 +811,36 @@ export default function EventClient({ initialEvent, initialMedia, initialGuests 
   const [bankConfig, setBankConfig] = useState<BankAccountConfig>(() =>
     parseBankInfo(initialEvent.bankAccountInfo)
   );
+
+  // Telegram Test State
+  const [eventTelegramTesting, setEventTelegramTesting] = useState(false);
+  const [eventTelegramResult, setEventTelegramResult] = useState<{ type: "success" | "error"; text: string } | null>(null);
+
+  const handleEventTelegramTest = async () => {
+    setEventTelegramResult(null);
+    if (!formData.telegramBotToken?.trim() || !formData.telegramChatId?.trim()) {
+      setEventTelegramResult({ type: "error", text: "សូមបញ្ចូល Telegram Bot Token និង Chat ID ជាមុនសិន រួចចុច Save" });
+      return;
+    }
+    try {
+      setEventTelegramTesting(true);
+      const res = await fetch("/api/telegram/test", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          botToken: formData.telegramBotToken.trim(),
+          chatId: formData.telegramChatId.trim(),
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "បរាជ័យ");
+      setEventTelegramResult({ type: "success", text: "✓ " + data.message });
+    } catch (err: any) {
+      setEventTelegramResult({ type: "error", text: err.message || "បរាជ័យក្នុងការតភ្ជាប់" });
+    } finally {
+      setEventTelegramTesting(false);
+    }
+  };
 
   // Letter / Words state
   const [letterConfig, setLetterConfig] = useState(() =>
@@ -4533,6 +4566,79 @@ export default function EventClient({ initialEvent, initialMedia, initialGuests 
                 </button>
               </div>
             )}
+          </div>
+        </div>
+
+        {/* Telegram Bot Realtime Notifications Section */}
+        <div className="bg-white rounded-3xl p-6 sm:p-8 border border-sky-200/80 shadow-card space-y-4">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-2.5 font-serif text-lg font-bold text-[#2C2A29]">
+              <div className="w-8 h-8 rounded-xl bg-sky-500 flex items-center justify-center text-white shadow-xs">
+                <Bell className="w-4.5 h-4.5" />
+              </div>
+              <div>
+                <span>ការជូនដំណឹងតាម Telegram (Telegram Bot Notifications)</span>
+                <p className="font-sans text-xs text-stone-500 font-normal mt-0.5">
+                  ទទួលបានសារស្វ័យប្រវត្តិភ្លាមៗចូល Telegram Group រាល់ពេលមានភ្ញៀវ RSVP ចូលរួម, ជូនពរ, ឬកត់ចំណងដៃ
+                </p>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={handleEventTelegramTest}
+              disabled={eventTelegramTesting}
+              className="px-4 py-2 rounded-xl bg-sky-50 border border-sky-300 text-sky-800 text-xs font-bold hover:bg-sky-100 flex items-center gap-1.5 transition-all shadow-xs"
+            >
+              <Send className="w-3.5 h-3.5 text-sky-600" />
+              <span>{eventTelegramTesting ? "កំពុងតេស្ត..." : "ផ្ញើសារតេស្ត (Test Telegram)"}</span>
+            </button>
+          </div>
+
+          {eventTelegramResult && (
+            <div
+              className={`p-3 rounded-2xl text-xs flex items-center gap-2 ${
+                eventTelegramResult.type === "success"
+                  ? "bg-emerald-50 border border-emerald-200 text-emerald-800"
+                  : "bg-red-50 border border-red-200 text-red-800"
+              }`}
+            >
+              <span>{eventTelegramResult.text}</span>
+            </div>
+          )}
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+            <div>
+              <label className="block text-xs font-semibold text-stone-700 mb-1">
+                Telegram Bot Token
+              </label>
+              <input
+                type="text"
+                value={formData.telegramBotToken}
+                onChange={(e) => setFormData({ ...formData, telegramBotToken: e.target.value })}
+                placeholder="ឧ. 7123456789:AAHk123abc..."
+                className="w-full px-3 py-2 bg-[#FAF8F5] border border-stone-200 rounded-xl text-xs text-[#2C2A29] font-mono focus:outline-none focus:ring-2 focus:ring-sky-400"
+              />
+              <span className="text-[10px] text-stone-400 mt-1 block">
+                បានមកពី <b>@BotFather</b> នៅពេលចុច <code>/newbot</code>
+              </span>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-stone-700 mb-1">
+                Telegram Chat ID (ឬ Group ID)
+              </label>
+              <input
+                type="text"
+                value={formData.telegramChatId}
+                onChange={(e) => setFormData({ ...formData, telegramChatId: e.target.value })}
+                placeholder="ឧ. -1001234567890 ឬ @yourgroup"
+                className="w-full px-3 py-2 bg-[#FAF8F5] border border-stone-200 rounded-xl text-xs text-[#2C2A29] font-mono focus:outline-none focus:ring-2 focus:ring-sky-400"
+              />
+              <span className="text-[10px] text-stone-400 mt-1 block">
+                ID នៃ Telegram Group ឬ Channel ដែល Add Bot ចូល
+              </span>
+            </div>
           </div>
         </div>
 

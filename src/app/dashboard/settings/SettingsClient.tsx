@@ -34,9 +34,14 @@ interface SettingsClientProps {
     totalWishes: number;
     totalEvents: number;
   };
+  eventConfig?: {
+    id: string;
+    telegramBotToken: string;
+    telegramChatId: string;
+  };
 }
 
-export default function SettingsClient({ user, stats }: SettingsClientProps) {
+export default function SettingsClient({ user, stats, eventConfig }: SettingsClientProps) {
   const [activeTab, setActiveTab] = useState<"security" | "backup" | "telegram" | "health">("security");
 
   // Password change state
@@ -47,10 +52,34 @@ export default function SettingsClient({ user, stats }: SettingsClientProps) {
   const [passwordMessage, setPasswordMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
   // Telegram test state
-  const [botToken, setBotToken] = useState("");
-  const [chatId, setChatId] = useState("");
+  const [botToken, setBotToken] = useState(eventConfig?.telegramBotToken || "");
+  const [chatId, setChatId] = useState(eventConfig?.telegramChatId || "");
   const [telegramLoading, setTelegramLoading] = useState(false);
+  const [telegramSaveLoading, setTelegramSaveLoading] = useState(false);
   const [telegramResult, setTelegramResult] = useState<{ type: "success" | "error"; text: string } | null>(null);
+
+  const handleTelegramSave = async () => {
+    setTelegramResult(null);
+    try {
+      setTelegramSaveLoading(true);
+      const res = await fetch("/api/events", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: eventConfig?.id,
+          telegramBotToken: botToken.trim(),
+          telegramChatId: chatId.trim(),
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "បរាជ័យក្នុងការរក្សាទុក");
+      setTelegramResult({ type: "success", text: "✓ បានរក្សាទុកការកំណត់ Telegram Bot ចូលក្នុងប្រព័ន្ធដោយជោគជ័យ!" });
+    } catch (e: any) {
+      setTelegramResult({ type: "error", text: e.message || "មានបញ្ហាក្នុងការរក្សាទុក" });
+    } finally {
+      setTelegramSaveLoading(false);
+    }
+  };
 
   // Backup state
   const [backupLoading, setBackupLoading] = useState(false);
@@ -453,23 +482,44 @@ export default function SettingsClient({ user, stats }: SettingsClientProps) {
               />
             </div>
 
-            <button
-              type="submit"
-              disabled={telegramLoading}
-              className="w-full py-3 rounded-2xl bg-sky-600 hover:bg-sky-700 text-white text-xs font-bold shadow-md transition-all flex items-center justify-center gap-2"
-            >
-              {telegramLoading ? (
-                <>
-                  <RefreshCw className="w-4 h-4 animate-spin" />
-                  <span>កំពុងផ្ញើសារតេស្ត...</span>
-                </>
-              ) : (
-                <>
-                  <Send className="w-4 h-4" />
-                  <span>ផ្ញើសារសាកល្បង (Test Connection)</span>
-                </>
-              )}
-            </button>
+            <div className="flex flex-col sm:flex-row gap-3 pt-2">
+              <button
+                type="button"
+                onClick={handleTelegramSave}
+                disabled={telegramSaveLoading}
+                className="flex-1 py-3 rounded-2xl bg-gradient-to-r from-[#D4AF37] to-[#AA7C11] hover:brightness-105 text-white text-xs font-bold shadow-luxury transition-all flex items-center justify-center gap-2"
+              >
+                {telegramSaveLoading ? (
+                  <>
+                    <RefreshCw className="w-4 h-4 animate-spin" />
+                    <span>កំពុងរក្សាទុក...</span>
+                  </>
+                ) : (
+                  <>
+                    <CheckCircle2 className="w-4 h-4" />
+                    <span>រក្សាទុកការកំណត់ (Save Telegram)</span>
+                  </>
+                )}
+              </button>
+
+              <button
+                type="submit"
+                disabled={telegramLoading}
+                className="flex-1 py-3 rounded-2xl bg-sky-600 hover:bg-sky-700 text-white text-xs font-bold shadow-md transition-all flex items-center justify-center gap-2"
+              >
+                {telegramLoading ? (
+                  <>
+                    <RefreshCw className="w-4 h-4 animate-spin" />
+                    <span>កំពុងផ្ញើសារតេស្ត...</span>
+                  </>
+                ) : (
+                  <>
+                    <Send className="w-4 h-4" />
+                    <span>ផ្ញើសារសាកល្បង (Test Connection)</span>
+                  </>
+                )}
+              </button>
+            </div>
           </form>
         </div>
       )}

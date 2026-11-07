@@ -91,7 +91,8 @@ export async function POST(req: NextRequest) {
 
     // Send Telegram alert for new wedding wish
     sendTelegramNotification(
-      `💐 <b>ពាក្យជូនពរថ្មី!</b>\n\n👤 ពី: <b>${cleanName}</b> ${cleanRelationship ? `(${cleanRelationship})` : ""}\n📜 ពាក្យជូនពរ: <i>"${cleanMessage}"</i>`
+      `💐 <b>ពាក្យជូនពរថ្មី!</b>\n\n👤 ពី: <b>${cleanName}</b> ${cleanRelationship ? `(${cleanRelationship})` : ""}\n📜 ពាក្យជូនពរ: <i>"${cleanMessage}"</i>`,
+      event.id
     ).catch(() => {});
 
     return NextResponse.json({ success: true, wish });

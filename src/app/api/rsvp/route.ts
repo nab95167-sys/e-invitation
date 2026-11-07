@@ -67,7 +67,8 @@ export async function POST(req: NextRequest) {
       // Trigger Telegram instant alert
       const statusKh = rsvpStatus === "ATTENDING" ? `✅ ចូលរួម (${guest.attendeesCount} នាក់)` : "❌ មិនបានចូលរួម";
       sendTelegramNotification(
-        `💌 <b>មានការឆ្លើយតប RSVP ថ្មី!</b>\n\n👤 ឈ្មោះភ្ញៀវ: <b>${guest.name}</b>\n📋 ស្ថានភាព: <b>${statusKh}</b>\n💬 ចំណាំ: ${guest.notes || "គ្មាន"}`
+        `💌 <b>មានការឆ្លើយតប RSVP ថ្មី!</b>\n\n👤 ឈ្មោះភ្ញៀវ: <b>${guest.name}</b>\n📋 ស្ថានភាព: <b>${statusKh}</b>\n💬 ចំណាំ: ${guest.notes || "គ្មាន"}`,
+        event.id
       ).catch(() => {});
 
       return NextResponse.json({
@@ -107,7 +108,8 @@ export async function POST(req: NextRequest) {
     // Trigger Telegram instant alert
     const statusKh = rsvpStatus === "ATTENDING" ? `✅ ចូលរួម (${updated.attendeesCount} នាក់)` : "❌ មិនបានចូលរួម";
     sendTelegramNotification(
-      `💌 <b>មានការឆ្លើយតប RSVP ថ្មី!</b>\n\n👤 ឈ្មោះភ្ញៀវ: <b>${updated.name}</b>\n📋 ស្ថានភាព: <b>${statusKh}</b>\n💬 ចំណាំ: ${updated.notes || "គ្មាន"}`
+      `💌 <b>មានការឆ្លើយតប RSVP ថ្មី!</b>\n\n👤 ឈ្មោះភ្ញៀវ: <b>${updated.name}</b>\n📋 ស្ថានភាព: <b>${statusKh}</b>\n💬 ចំណាំ: ${updated.notes || "គ្មាន"}`,
+      guest.eventId
     ).catch(() => {});
 
     return NextResponse.json({

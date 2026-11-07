@@ -5,21 +5,71 @@
  * - New Wedding Gifts recorded
  * - New Wishes posted
  */
+import { prisma } from "./prisma";
 
-interface TelegramConfig {
+export interface TelegramConfig {
   token?: string;
   chatId?: string;
 }
 
 export async function sendTelegramNotification(
   htmlMessage: string,
-  customConfig?: TelegramConfig
+  eventIdOrConfig?: string | TelegramConfig | null
 ): Promise<boolean> {
-  const token = customConfig?.token || process.env.TELEGRAM_BOT_TOKEN;
-  const chatId = customConfig?.chatId || process.env.TELEGRAM_CHAT_ID;
+  let token: string | undefined;
+  let chatId: string | undefined;
+
+  if (typeof eventIdOrConfig === "object" && eventIdOrConfig !== null) {
+    token = eventIdOrConfig.token;
+    chatId = eventIdOrConfig.chatId;
+  }
+
+  // If not passed explicitly, attempt to load from database Event
+  if (!token || !chatId) {
+    try {
+      let event = null;
+      if (typeof eventIdOrConfig === "string" && eventIdOrConfig.trim()) {
+        const idOrSlug = eventIdOrConfig.trim();
+        event = await prisma.event.findFirst({
+          where: {
+            OR: [{ id: idOrSlug }, { slug: idOrSlug }],
+          },
+          select: { telegramBotToken: true, telegramChatId: true, contacts: true },
+        });
+      }
+
+      // If not found by explicit ID, fallback to the latest active event
+      if (!event) {
+        event = await prisma.event.findFirst({
+          orderBy: { updatedAt: "desc" },
+          select: { telegramBotToken: true, telegramChatId: true, contacts: true },
+        });
+      }
+
+      if (event) {
+        token = token || event.telegramBotToken || undefined;
+        chatId = chatId || event.telegramChatId || undefined;
+
+        // Fallback: check if stored in contacts JSON
+        if ((!token || !chatId) && event.contacts && event.contacts.startsWith("{")) {
+          try {
+            const parsed = JSON.parse(event.contacts);
+            token = token || parsed.telegramBotToken;
+            chatId = chatId || parsed.telegramChatId;
+          } catch {}
+        }
+      }
+    } catch (dbErr) {
+      console.warn("Notice: could not load event telegram config from DB:", dbErr);
+    }
+  }
+
+  // Fallback to process.env
+  token = token || process.env.TELEGRAM_BOT_TOKEN;
+  chatId = chatId || process.env.TELEGRAM_CHAT_ID;
 
   if (!token || !chatId) {
-    // Gracefully skip if Telegram bot is not yet configured
+    console.warn("Telegram notification skipped: Bot Token or Chat ID not configured in Event or ENV.");
     return false;
   }
 
