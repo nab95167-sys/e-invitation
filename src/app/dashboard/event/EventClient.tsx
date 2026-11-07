@@ -584,15 +584,29 @@ export const parseProgramme = (raw: string | null | undefined): ProgrammeDay[] =
   return DEFAULT_PROGRAMME;
 };
 
-export const parseContacts = (raw: string | null | undefined): ContactItem[] => {
-  if (!raw) return DEFAULT_CONTACTS;
+export interface ContactConfig {
+  list: ContactItem[];
+  telegramUrl: string;
+}
+
+export const parseContacts = (raw: string | null | undefined): ContactConfig => {
+  if (!raw) return { list: DEFAULT_CONTACTS, telegramUrl: "" };
   try {
+    if (raw.startsWith("{")) {
+      const parsed = JSON.parse(raw);
+      return {
+        list: Array.isArray(parsed.list) && parsed.list.length > 0 ? parsed.list : DEFAULT_CONTACTS,
+        telegramUrl: parsed.telegramUrl || "",
+      };
+    }
     if (raw.startsWith("[")) {
       const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return { list: parsed, telegramUrl: "" };
+      }
     }
   } catch (e) {}
-  return DEFAULT_CONTACTS;
+  return { list: DEFAULT_CONTACTS, telegramUrl: "" };
 };
 
 export const parseLetterConfig = (raw: string | null | undefined) => {
@@ -802,45 +816,15 @@ export default function EventClient({ initialEvent, initialMedia, initialGuests 
     parseProgramme(initialEvent.programme)
   );
 
-  // Contacts state
-  const [contactsList, setContactsList] = useState<ContactItem[]>(() =>
-    parseContacts(initialEvent.contacts)
-  );
+  // Contacts & Telegram Contact Link state
+  const initialContactsData = parseContacts(initialEvent.contacts);
+  const [contactsList, setContactsList] = useState<ContactItem[]>(initialContactsData.list);
+  const [telegramContactUrl, setTelegramContactUrl] = useState<string>(initialContactsData.telegramUrl);
 
   // Bank Info state
   const [bankConfig, setBankConfig] = useState<BankAccountConfig>(() =>
     parseBankInfo(initialEvent.bankAccountInfo)
   );
-
-  // Telegram Test State
-  const [eventTelegramTesting, setEventTelegramTesting] = useState(false);
-  const [eventTelegramResult, setEventTelegramResult] = useState<{ type: "success" | "error"; text: string } | null>(null);
-
-  const handleEventTelegramTest = async () => {
-    setEventTelegramResult(null);
-    if (!formData.telegramBotToken?.trim() || !formData.telegramChatId?.trim()) {
-      setEventTelegramResult({ type: "error", text: "សូមបញ្ចូល Telegram Bot Token និង Chat ID ជាមុនសិន រួចចុច Save" });
-      return;
-    }
-    try {
-      setEventTelegramTesting(true);
-      const res = await fetch("/api/telegram/test", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          botToken: formData.telegramBotToken.trim(),
-          chatId: formData.telegramChatId.trim(),
-        }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "បរាជ័យ");
-      setEventTelegramResult({ type: "success", text: "✓ " + data.message });
-    } catch (err: any) {
-      setEventTelegramResult({ type: "error", text: err.message || "បរាជ័យក្នុងការតភ្ជាប់" });
-    } finally {
-      setEventTelegramTesting(false);
-    }
-  };
 
   // Letter / Words state
   const [letterConfig, setLetterConfig] = useState(() =>
@@ -1535,7 +1519,10 @@ export default function EventClient({ initialEvent, initialMedia, initialGuests 
         ...sanitizedFormData,
         theme: JSON.stringify(themeConfig),
         programme: JSON.stringify(programmeDays),
-        contacts: JSON.stringify(contactsList),
+        contacts: JSON.stringify({
+          list: contactsList,
+          telegramUrl: telegramContactUrl.trim(),
+        }),
         bankAccountInfo: JSON.stringify(sanitizedBankConfig),
         quote: JSON.stringify(letterConfig),
       };
@@ -4236,6 +4223,47 @@ export default function EventClient({ initialEvent, initialMedia, initialGuests 
                 </div>
               ))}
             </div>
+
+            {/* Telegram Contact Link for Guests */}
+            <div className="pt-3 border-t border-[#D4AF37]/20 space-y-2">
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-bold text-[#2C2A29] flex items-center gap-1.5">
+                  <span className="w-5 h-5 rounded-full bg-[#2AABEE] text-white flex items-center justify-center text-[11px] font-bold">✈</span>
+                  <span>តំណភ្ជាប់ Telegram សម្រាប់ភ្ញៀវឆាត ឬ Call មក (Telegram Contact Link)</span>
+                </label>
+                {telegramContactUrl && (
+                  <a
+                    href={
+                      telegramContactUrl.startsWith("http")
+                        ? telegramContactUrl
+                        : telegramContactUrl.startsWith("@")
+                        ? `https://t.me/${telegramContactUrl.slice(1)}`
+                        : `https://t.me/${telegramContactUrl}`
+                    }
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[11px] text-[#2AABEE] font-semibold hover:underline flex items-center gap-1"
+                  >
+                    <span>សាកល្បងបើក Link</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
+                )}
+              </div>
+
+              <div className="flex items-center gap-2">
+                <input
+                  type="text"
+                  value={telegramContactUrl}
+                  onChange={(e) => setTelegramContactUrl(e.target.value)}
+                  placeholder="e.g. https://t.me/your_username ឬ @your_username"
+                  className="flex-1 px-3 py-2 bg-white border border-[#D4AF37]/40 rounded-xl text-xs text-[#2C2A29] focus:outline-none focus:ring-2 focus:ring-[#2AABEE]"
+                />
+              </div>
+
+              <p className="text-[10px] text-[#3E444A]/70">
+                នៅពេលភ្ញៀវបើកមើលធៀបការ នឹងមានប៊ូតុង <b>«ឆាតតាម Telegram»</b> ពណ៌ខៀវបង្ហាញនៅជាប់លេខទូរស័ព្ទ។ ពេលភ្ញៀវចុច វានឹងបើកឆាត Telegram មកកាន់អ្នកភ្លាមៗ!
+              </p>
+            </div>
           </div>
         </div>
 
@@ -4566,79 +4594,6 @@ export default function EventClient({ initialEvent, initialMedia, initialGuests 
                 </button>
               </div>
             )}
-          </div>
-        </div>
-
-        {/* Telegram Bot Realtime Notifications Section */}
-        <div className="bg-white rounded-3xl p-6 sm:p-8 border border-sky-200/80 shadow-card space-y-4">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div className="flex items-center gap-2.5 font-serif text-lg font-bold text-[#2C2A29]">
-              <div className="w-8 h-8 rounded-xl bg-sky-500 flex items-center justify-center text-white shadow-xs">
-                <Bell className="w-4.5 h-4.5" />
-              </div>
-              <div>
-                <span>ការជូនដំណឹងតាម Telegram (Telegram Bot Notifications)</span>
-                <p className="font-sans text-xs text-stone-500 font-normal mt-0.5">
-                  ទទួលបានសារស្វ័យប្រវត្តិភ្លាមៗចូល Telegram Group រាល់ពេលមានភ្ញៀវ RSVP ចូលរួម, ជូនពរ, ឬកត់ចំណងដៃ
-                </p>
-              </div>
-            </div>
-
-            <button
-              type="button"
-              onClick={handleEventTelegramTest}
-              disabled={eventTelegramTesting}
-              className="px-4 py-2 rounded-xl bg-sky-50 border border-sky-300 text-sky-800 text-xs font-bold hover:bg-sky-100 flex items-center gap-1.5 transition-all shadow-xs"
-            >
-              <Send className="w-3.5 h-3.5 text-sky-600" />
-              <span>{eventTelegramTesting ? "កំពុងតេស្ត..." : "ផ្ញើសារតេស្ត (Test Telegram)"}</span>
-            </button>
-          </div>
-
-          {eventTelegramResult && (
-            <div
-              className={`p-3 rounded-2xl text-xs flex items-center gap-2 ${
-                eventTelegramResult.type === "success"
-                  ? "bg-emerald-50 border border-emerald-200 text-emerald-800"
-                  : "bg-red-50 border border-red-200 text-red-800"
-              }`}
-            >
-              <span>{eventTelegramResult.text}</span>
-            </div>
-          )}
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
-            <div>
-              <label className="block text-xs font-semibold text-stone-700 mb-1">
-                Telegram Bot Token
-              </label>
-              <input
-                type="text"
-                value={formData.telegramBotToken}
-                onChange={(e) => setFormData({ ...formData, telegramBotToken: e.target.value })}
-                placeholder="ឧ. 7123456789:AAHk123abc..."
-                className="w-full px-3 py-2 bg-[#FAF8F5] border border-stone-200 rounded-xl text-xs text-[#2C2A29] font-mono focus:outline-none focus:ring-2 focus:ring-sky-400"
-              />
-              <span className="text-[10px] text-stone-400 mt-1 block">
-                បានមកពី <b>@BotFather</b> នៅពេលចុច <code>/newbot</code>
-              </span>
-            </div>
-
-            <div>
-              <label className="block text-xs font-semibold text-stone-700 mb-1">
-                Telegram Chat ID (ឬ Group ID)
-              </label>
-              <input
-                type="text"
-                value={formData.telegramChatId}
-                onChange={(e) => setFormData({ ...formData, telegramChatId: e.target.value })}
-                placeholder="ឧ. -1001234567890 ឬ @yourgroup"
-                className="w-full px-3 py-2 bg-[#FAF8F5] border border-stone-200 rounded-xl text-xs text-[#2C2A29] font-mono focus:outline-none focus:ring-2 focus:ring-sky-400"
-              />
-              <span className="text-[10px] text-stone-400 mt-1 block">
-                ID នៃ Telegram Group ឬ Channel ដែល Add Bot ចូល
-              </span>
-            </div>
           </div>
         </div>
 

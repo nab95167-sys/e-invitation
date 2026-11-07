@@ -2851,13 +2851,23 @@
         // 5b. Venue & RSVP Contacts
         if (ev.contacts) {
           try {
-            const contactList = typeof ev.contacts === 'string' && ev.contacts.startsWith('[')
-              ? JSON.parse(ev.contacts)
-              : null;
-            if (contactList && Array.isArray(contactList) && contactList.length > 0) {
-              const telContainer = document.getElementById('venue-tels');
-              if (telContainer) {
-                telContainer.innerHTML = contactList.map(c => `
+            let contactList = [];
+            let telegramContactUrl = '';
+            if (typeof ev.contacts === 'string') {
+              if (ev.contacts.startsWith('{')) {
+                const parsed = JSON.parse(ev.contacts);
+                contactList = Array.isArray(parsed.list) ? parsed.list : [];
+                telegramContactUrl = parsed.telegramUrl || '';
+              } else if (ev.contacts.startsWith('[')) {
+                contactList = JSON.parse(ev.contacts);
+              }
+            }
+
+            const telContainer = document.getElementById('venue-tels');
+            if (telContainer) {
+              let html = '';
+              if (Array.isArray(contactList) && contactList.length > 0) {
+                html += contactList.map(c => `
                   <a class="btn tel" href="tel:${c.tel || c.label}" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.6rem 1.1rem;margin:0.25rem">
                     <svg viewBox="0 0 24 24" aria-hidden="true" style="width:1.05rem;height:1.05rem;fill:currentColor">
                       <path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1l-2.3 2.2z"/>
@@ -2866,6 +2876,23 @@
                   </a>
                 `).join('');
               }
+
+              if (telegramContactUrl) {
+                let cleanTg = telegramContactUrl.trim();
+                if (!cleanTg.startsWith('http')) {
+                  cleanTg = cleanTg.startsWith('@') ? `https://t.me/${cleanTg.slice(1)}` : `https://t.me/${cleanTg}`;
+                }
+                html += `
+                  <a class="btn telegram" href="${cleanTg}" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:0.5rem;padding:0.6rem 1.2rem;margin:0.25rem;background:#2AABEE;color:#ffffff;border-radius:999px;font-weight:600;box-shadow:0 4px 14px rgba(42,171,238,0.4);border:1px solid rgba(255,255,255,0.25);transition:all .2s ease">
+                    <svg viewBox="0 0 24 24" aria-hidden="true" style="width:1.15rem;height:1.15rem;fill:currentColor">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 0 0-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.52 2.77-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/>
+                    </svg>
+                    <span>ឆាតតាម Telegram</span>
+                  </a>
+                `;
+              }
+
+              telContainer.innerHTML = html;
             }
           } catch (e) {}
         }

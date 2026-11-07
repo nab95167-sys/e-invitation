@@ -2,13 +2,14 @@
 
 import { RaksmeyAngkor, RaksmeyCorner, RaksmeyDivider } from "./RaksmeyOrnaments";
 import { Language } from "@/lib/translations";
-import { MapPin, Navigation, Phone, ExternalLink } from "lucide-react";
+import { MapPin, Navigation, Phone, ExternalLink, Send } from "lucide-react";
 
 interface RaksmeyVenueProps {
   venueName?: string;
   venueAddress?: string;
   googleMapsUrl?: string;
   venuePhotoUrl?: string;
+  contactsJson?: string;
   lang: Language;
 }
 
@@ -17,14 +18,39 @@ export default function RaksmeyVenue({
   venueAddress = "ភូមិព្រែកហូរលិច១ សង្កាត់ព្រែកហូរ ក្រុងតាខ្មៅ ខេត្តកណ្តាល",
   googleMapsUrl = "https://www.google.com/maps/search/?api=1&query=11.45128,104.93335",
   venuePhotoUrl,
+  contactsJson,
   lang,
 }: RaksmeyVenueProps) {
   const isKm = lang === "km";
 
-  const contacts = [
+  let contactList = [
     { label: isKm ? "ទំនាក់ទំនងខាងស្រី" : "Bride's Family", phone: "096 7 717 278" },
     { label: isKm ? "ទំនាក់ទំនងខាងប្រុស" : "Groom's Family", phone: "077 721 829" },
   ];
+  let telegramUrl = "";
+
+  if (contactsJson) {
+    try {
+      if (contactsJson.startsWith("{")) {
+        const parsed = JSON.parse(contactsJson);
+        if (Array.isArray(parsed.list) && parsed.list.length > 0) {
+          contactList = parsed.list.map((c: any) => ({
+            label: c.label || "ទំនាក់ទំនង",
+            phone: c.tel || c.phone || c.label,
+          }));
+        }
+        telegramUrl = parsed.telegramUrl || "";
+      } else if (contactsJson.startsWith("[")) {
+        const parsed = JSON.parse(contactsJson);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          contactList = parsed.map((c: any) => ({
+            label: c.label || "ទំនាក់ទំនង",
+            phone: c.tel || c.phone || c.label,
+          }));
+        }
+      }
+    } catch {}
+  }
 
   return (
     <section id="venue" className="relative py-20 px-4 bg-[#101209] overflow-hidden">
@@ -118,12 +144,12 @@ export default function RaksmeyVenue({
             />
           </div>
 
-          {/* Phone Contact Helpline */}
+          {/* Phone Contact Helpline & Telegram Direct Chat */}
           <div className="mt-8 pt-6 border-t border-[#d9b15a]/30 grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {contacts.map((contact, idx) => (
+            {contactList.map((contact, idx) => (
               <a
                 key={idx}
-                href={`tel:${contact.phone.replace(/\s+/g, "")}`}
+                href={`tel:${contact.phone.replace(/[^0-9+]/g, "")}`}
                 className="flex items-center justify-between p-3.5 rounded-xl bg-[#2a2f16]/70 border border-[#d9b15a]/30 hover:border-[#d9b15a] transition-all group"
               >
                 <div className="flex items-center gap-3">
@@ -144,6 +170,40 @@ export default function RaksmeyVenue({
                 </span>
               </a>
             ))}
+
+            {/* Telegram Direct Contact Button */}
+            {telegramUrl && (
+              <a
+                href={
+                  telegramUrl.startsWith("http")
+                    ? telegramUrl
+                    : telegramUrl.startsWith("@")
+                    ? `https://t.me/${telegramUrl.slice(1)}`
+                    : `https://t.me/${telegramUrl}`
+                }
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-between p-3.5 rounded-xl bg-gradient-to-r from-[#2AABEE]/20 to-[#229ED9]/30 border border-[#2AABEE]/60 hover:border-[#2AABEE] hover:bg-[#2AABEE]/30 transition-all group col-span-full shadow-lg"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-[#2AABEE] text-white flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
+                    <Send className="w-4.5 h-4.5" />
+                  </div>
+                  <div className="text-left">
+                    <span className="text-[11px] uppercase tracking-wider text-[#2AABEE] font-bold block">
+                      Telegram Contact
+                    </span>
+                    <span className="font-moul text-xs sm:text-sm text-white">
+                      {isKm ? "ទាក់ទង / ឆាតតាម Telegram" : "Chat / Call on Telegram"}
+                    </span>
+                  </div>
+                </div>
+                <span className="text-xs text-white bg-[#2AABEE] px-3 py-1.5 rounded-full font-bold shadow-xs flex items-center gap-1 group-hover:brightness-110 transition-all">
+                  <span>{isKm ? "ឆាតឥឡូវនេះ" : "Open Chat"}</span>
+                  <ExternalLink className="w-3 h-3" />
+                </span>
+              </a>
+            )}
           </div>
         </div>
       </div>
