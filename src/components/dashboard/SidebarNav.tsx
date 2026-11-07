@@ -14,6 +14,7 @@ import {
   Lock,
   Gift,
   Tv,
+  ShieldCheck,
 } from "lucide-react";
 
 interface SidebarNavProps {
@@ -76,6 +77,12 @@ const NAV_ITEMS: NavItem[] = [
     nameKm: "គ្រប់គ្រងអ្នកប្រើ & សិទ្ធិ",
     href: "/dashboard/users",
     icon: ShieldAlert,
+  },
+  {
+    name: "Security & Backup",
+    nameKm: "សុវត្ថិភាព & ទិន្នន័យ",
+    href: "/dashboard/settings",
+    icon: ShieldCheck,
   },
 ];
 

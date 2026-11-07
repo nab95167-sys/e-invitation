@@ -62,6 +62,51 @@ export function checkRateLimit(identifier: string, limit: number = 30, windowMs:
   return { success: true, remaining: limit - userRecord.count };
 }
 
+// Brute-force account lockout protection (5 failed attempts locks for 15 minutes)
+const lockoutMap = new Map<string, { attempts: number; lockUntil: number }>();
+
+export function recordFailedLogin(identifier: string, maxAttempts = 5, lockDurationMs = 15 * 60 * 1000): {
+  isLocked: boolean;
+  remainingAttempts: number;
+  lockMinutes: number;
+} {
+  const now = Date.now();
+  const entry = lockoutMap.get(identifier) || { attempts: 0, lockUntil: 0 };
+
+  if (now > entry.lockUntil && entry.lockUntil > 0) {
+    entry.attempts = 0;
+    entry.lockUntil = 0;
+  }
+
+  entry.attempts += 1;
+  if (entry.attempts >= maxAttempts) {
+    entry.lockUntil = now + lockDurationMs;
+    lockoutMap.set(identifier, entry);
+    return { isLocked: true, remainingAttempts: 0, lockMinutes: Math.ceil(lockDurationMs / 60000) };
+  }
+
+  lockoutMap.set(identifier, entry);
+  return { isLocked: false, remainingAttempts: maxAttempts - entry.attempts, lockMinutes: 0 };
+}
+
+export function isLoginLocked(identifier: string): { isLocked: boolean; remainingLockMinutes: number } {
+  const now = Date.now();
+  const entry = lockoutMap.get(identifier);
+  if (!entry || entry.lockUntil === 0) return { isLocked: false, remainingLockMinutes: 0 };
+
+  if (now < entry.lockUntil) {
+    const mins = Math.max(1, Math.ceil((entry.lockUntil - now) / 60000));
+    return { isLocked: true, remainingLockMinutes: mins };
+  }
+
+  lockoutMap.delete(identifier);
+  return { isLocked: false, remainingLockMinutes: 0 };
+}
+
+export function clearFailedLogin(identifier: string) {
+  lockoutMap.delete(identifier);
+}
+
 // Allowed MIME types and extensions for photos, videos, and music audio
 export const ALLOWED_PHOTO_TYPES = [
   "image/jpeg",

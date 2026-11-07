@@ -6,6 +6,19 @@ export const metadata: Metadata = {
   title: "Royal E-Invitation | Luxury Digital Wedding Invitations",
   description: "Secure, elegant, and personalized wedding digital invitations with role management, RSVP tracking, and media gallery.",
   keywords: ["wedding", "e-invitation", "digital invitation", "wedding rsvp", "luxury invitation"],
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "RoyalInvite",
+  },
+};
+
+export const viewport = {
+  themeColor: "#D4AF37",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
 };
 
 export default function RootLayout({

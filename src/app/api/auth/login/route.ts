@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { verifyPassword, hashPassword, createSessionToken, AUTH_COOKIE_NAME } from "@/lib/auth";
-import { checkRateLimit } from "@/lib/security";
+import { checkRateLimit, isLoginLocked, recordFailedLogin, clearFailedLogin } from "@/lib/security";
 
 export async function POST(req: NextRequest) {
   try {
@@ -32,10 +32,25 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const normalizedEmail = email.toLowerCase().trim();
+
+    // Check account / IP lockout
+    const emailLock = isLoginLocked(`acc-${normalizedEmail}`);
+    const ipLock = isLoginLocked(`ip-${ip}`);
+    if (emailLock.isLocked || ipLock.isLocked) {
+      const remainingMins = Math.max(emailLock.remainingLockMinutes, ipLock.remainingLockMinutes);
+      return NextResponse.json(
+        {
+          error: `គណនី ឬ IP នេះត្រូវបានចាក់សោរបណ្តោះអាសន្នរយៈពេល ${remainingMins} នាទី ដោយសារព្យាយាមបញ្ចូលលេខសម្ងាត់ខុសច្រើនដង (Account temporarily locked for ${remainingMins} min due to multiple failed attempts).`,
+        },
+        { status: 429 }
+      );
+    }
+
     let user = null;
     try {
       user = await prisma.user.findUnique({
-        where: { email: email.toLowerCase().trim() },
+        where: { email: normalizedEmail },
       });
     } catch (lookupErr: any) {
       console.warn("User lookup notice:", lookupErr?.message);
@@ -109,10 +124,10 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Fallback verification for root preset accounts if database is empty, unreachable, or initializing
+    // Strict verification against database hashed password
     let authenticatedUser: { id: string; email: string; name: string; role: any } | null = null;
 
-    if (user) {
+    if (user && user.passwordHash) {
       const isValid = await verifyPassword(password, user.passwordHash).catch(() => false);
       if (isValid) {
         authenticatedUser = {
@@ -124,39 +139,32 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Emergency rescue check for root system accounts if user wasn't authenticated via DB
     if (!authenticatedUser) {
-      const normalizedEmail = email.toLowerCase().trim();
-      if (normalizedEmail === "admin@wedding.com" && password === "Admin@123456") {
-        authenticatedUser = {
-          id: user?.id || "superadmin-root",
-          email: "admin@wedding.com",
-          name: "System Administrator",
-          role: "SUPERADMIN",
-        };
-      } else if (normalizedEmail === "alex.sophia@wedding.com" && password === "Wedding@2026") {
-        authenticatedUser = {
-          id: user?.id || "couple-root",
-          email: "alex.sophia@wedding.com",
-          name: "Alex & Sophia",
-          role: "COUPLE",
-        };
-      } else if (normalizedEmail === "organizer@wedding.com" && password === "Organizer@2026") {
-        authenticatedUser = {
-          id: user?.id || "organizer-root",
-          email: "organizer@wedding.com",
-          name: "Claire Wedding Planner",
-          role: "ORGANIZER",
-        };
-      }
-    }
+      const emailLockResult = recordFailedLogin(`acc-${normalizedEmail}`);
+      const ipLockResult = recordFailedLogin(`ip-${ip}`);
 
-    if (!authenticatedUser) {
+      if (emailLockResult.isLocked || ipLockResult.isLocked) {
+        const lockMins = Math.max(emailLockResult.lockMinutes, ipLockResult.lockMinutes);
+        return NextResponse.json(
+          {
+            error: `លេខសម្ងាត់មិនត្រឹមត្រូវ។ ដោយសារព្យាយាមខុស ៥ ដង ប្រព័ន្ធបានចាក់សោរគណនី/IP នេះរយៈពេល ${lockMins} នាទី (Account locked for ${lockMins} min).`,
+          },
+          { status: 429 }
+        );
+      }
+
+      const attemptsLeft = Math.min(emailLockResult.remainingAttempts, ipLockResult.remainingAttempts);
       return NextResponse.json(
-        { error: "Invalid email or password." },
+        {
+          error: `អ៊ីមែល ឬលេខសម្ងាត់មិនត្រឹមត្រូវ (អ្នកនៅសល់ឱកាសសាកល្បង ${attemptsLeft} ដងទៀត មុននឹងត្រូវចាក់សោរ)។`,
+        },
         { status: 401 }
       );
     }
+
+    // Success! Clear any recorded failed attempts
+    clearFailedLogin(`acc-${normalizedEmail}`);
+    clearFailedLogin(`ip-${ip}`);
 
     const token = await createSessionToken({
       userId: authenticatedUser.id,

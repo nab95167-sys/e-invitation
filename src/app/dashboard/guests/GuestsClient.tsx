@@ -27,6 +27,7 @@ import {
   MapPin,
   Heart,
 } from "lucide-react";
+import GuestQrScannerModal from "@/components/dashboard/GuestQrScannerModal";
 
 interface Guest {
   id: string;
@@ -74,6 +75,7 @@ export default function GuestsClient({
   const [categoryFilter, setCategoryFilter] = useState("ALL");
 
   // Modals state
+  const [isScanModalOpen, setIsScanModalOpen] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
@@ -82,6 +84,21 @@ export default function GuestsClient({
   const [shareCopied, setShareCopied] = useState(false);
   const [linkOnlyCopied, setLinkOnlyCopied] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+
+  const handleCheckInGuest = async (guestId: string) => {
+    const res = await fetch("/api/guests", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id: guestId,
+        rsvpStatus: "ATTENDING",
+      }),
+    });
+    if (!res.ok) throw new Error("Check-in failed");
+    setGuests((prev) =>
+      prev.map((g) => (g.id === guestId ? { ...g, rsvpStatus: "ATTENDING" } : g))
+    );
+  };
 
   // New guest form state
   const [formData, setFormData] = useState({
@@ -451,6 +468,14 @@ ${dateStr ? `📅 កាលបរិច្ឆេទ៖ ${dateStr}\n` : ""}${venu
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
+          <button
+            onClick={() => setIsScanModalOpen(true)}
+            className="px-4 py-2.5 rounded-2xl bg-gradient-to-r from-[#D4AF37]/20 to-[#F3E5AB]/40 border border-[#D4AF37]/50 text-xs font-bold text-[#8B6508] flex items-center gap-2 hover:bg-[#D4AF37]/30 transition-all shadow-xs"
+          >
+            <QrCode className="w-4 h-4 text-[#AA7C11]" />
+            <span>Scan QR / ឆែកវត្តមាន</span>
+          </button>
+
           <a
             href={`/api/guests?eventId=${eventId}&export=csv`}
             className="px-4 py-2.5 rounded-2xl bg-white border border-[#D4AF37]/30 text-xs font-semibold text-[#2C2A29] flex items-center gap-2 hover:bg-[#FAF8F5] transition-all shadow-sm"
@@ -1322,6 +1347,14 @@ ${dateStr ? `📅 កាលបរិច្ឆេទ៖ ${dateStr}\n` : ""}${venu
           </div>
         </div>
       )}
+      {/* Guest QR Scanner Modal */}
+      <GuestQrScannerModal
+        isOpen={isScanModalOpen}
+        onClose={() => setIsScanModalOpen(false)}
+        guests={guests}
+        onCheckInGuest={handleCheckInGuest}
+        eventSlug={eventSlug}
+      />
     </div>
   );
 }

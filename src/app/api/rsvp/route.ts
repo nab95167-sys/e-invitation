@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { checkRateLimit, sanitizeString } from "@/lib/security";
+import { sendTelegramNotification } from "@/lib/telegram";
 
 export async function POST(req: NextRequest) {
   try {
@@ -63,6 +64,12 @@ export async function POST(req: NextRequest) {
         },
       });
 
+      // Trigger Telegram instant alert
+      const statusKh = rsvpStatus === "ATTENDING" ? `✅ ចូលរួម (${guest.attendeesCount} នាក់)` : "❌ មិនបានចូលរួម";
+      sendTelegramNotification(
+        `💌 <b>មានការឆ្លើយតប RSVP ថ្មី!</b>\n\n👤 ឈ្មោះភ្ញៀវ: <b>${guest.name}</b>\n📋 ស្ថានភាព: <b>${statusKh}</b>\n💬 ចំណាំ: ${guest.notes || "គ្មាន"}`
+      ).catch(() => {});
+
       return NextResponse.json({
         success: true,
         message: rsvpStatus === "ATTENDING" ? "Thank you! Your RSVP is confirmed." : "Thank you for letting us know.",
@@ -96,6 +103,12 @@ export async function POST(req: NextRequest) {
         viewsCount: { increment: 1 },
       },
     });
+
+    // Trigger Telegram instant alert
+    const statusKh = rsvpStatus === "ATTENDING" ? `✅ ចូលរួម (${updated.attendeesCount} នាក់)` : "❌ មិនបានចូលរួម";
+    sendTelegramNotification(
+      `💌 <b>មានការឆ្លើយតប RSVP ថ្មី!</b>\n\n👤 ឈ្មោះភ្ញៀវ: <b>${updated.name}</b>\n📋 ស្ថានភាព: <b>${statusKh}</b>\n💬 ចំណាំ: ${updated.notes || "គ្មាន"}`
+    ).catch(() => {});
 
     return NextResponse.json({
       success: true,

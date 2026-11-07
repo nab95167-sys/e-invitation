@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { checkRateLimit, sanitizeString } from "@/lib/security";
 import { getSession } from "@/lib/auth";
+import { sendTelegramNotification } from "@/lib/telegram";
 
 export async function GET(req: NextRequest) {
   try {
@@ -87,6 +88,11 @@ export async function POST(req: NextRequest) {
         isApproved: isApproved !== undefined ? Boolean(isApproved) : true,
       },
     });
+
+    // Send Telegram alert for new wedding wish
+    sendTelegramNotification(
+      `💐 <b>ពាក្យជូនពរថ្មី!</b>\n\n👤 ពី: <b>${cleanName}</b> ${cleanRelationship ? `(${cleanRelationship})` : ""}\n📜 ពាក្យជូនពរ: <i>"${cleanMessage}"</i>`
+    ).catch(() => {});
 
     return NextResponse.json({ success: true, wish });
   } catch (error) {
