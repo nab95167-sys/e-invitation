@@ -6,18 +6,24 @@ import { Language } from "@/lib/translations";
 
 interface RaksmeyCoupleProps {
   groomName: string;
+  groomNameEn?: string;
   brideName: string;
+  brideNameEn?: string;
   lang: Language;
   photoUrl?: string;
 }
 
 export default function RaksmeyCouple({
   groomName,
+  groomNameEn,
   brideName,
+  brideNameEn,
   lang,
   photoUrl,
 }: RaksmeyCoupleProps) {
   const isKm = lang === "km";
+  const displayGroomEn = groomNameEn || "Hoeurn Phanith";
+  const displayBrideEn = brideNameEn || "Seourr Sreynith";
 
   return (
     <section id="couple" className="relative py-20 px-4 bg-[#101209] overflow-hidden">
@@ -49,10 +55,10 @@ export default function RaksmeyCouple({
               {isKm ? "កូនប្រុស" : "The Groom"}
             </span>
             <h3 className="font-moul text-xl sm:text-2xl text-[#ffffff] foil">
-              {groomName}
+              {isKm ? groomName : displayGroomEn}
             </h3>
             <p className="font-serif italic text-sm text-[#d9b15a]/90">
-              {groomName}
+              {displayGroomEn}
             </p>
             <p className="font-khmer text-xs sm:text-sm text-[#f3ebdb]/80 leading-relaxed max-w-xs">
               {isKm
@@ -94,10 +100,10 @@ export default function RaksmeyCouple({
               {isKm ? "កូនស្រី" : "The Bride"}
             </span>
             <h3 className="font-moul text-xl sm:text-2xl text-[#ffffff] foil">
-              {brideName}
+              {isKm ? brideName : displayBrideEn}
             </h3>
             <p className="font-serif italic text-sm text-[#d9b15a]/90">
-              {brideName}
+              {displayBrideEn}
             </p>
             <p className="font-khmer text-xs sm:text-sm text-[#f3ebdb]/80 leading-relaxed max-w-xs">
               {isKm

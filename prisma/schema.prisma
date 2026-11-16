@@ -26,8 +26,10 @@ model Event {
   slug            String       @unique
   title           String
   groomName       String
+  groomNameEn     String?      // Groom full English name
   groomParents    String?
   brideName       String
+  brideNameEn     String?      // Bride full English name
   brideParents    String?
   quote           String?
   story           String?

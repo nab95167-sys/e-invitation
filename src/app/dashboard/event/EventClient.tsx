@@ -448,6 +448,8 @@ export const parseThemeConfig = (raw: string) => {
     animationStyle: "falling-petals",
     envelopeGroom: "",
     envelopeBride: "",
+    groomNameEn: "",
+    brideNameEn: "",
     envelopeTitle: "សិរីសួស្ដីអាពាហ៍ពិពាហ៍",
     envelopeSub: "The Wedding Invitation",
     envelopeGreeting: "សូមគោរពអញ្ជើញ · CORDIALLY INVITING",
@@ -479,6 +481,8 @@ export const parseThemeConfig = (raw: string) => {
         id: parsed.preset || base.id,
         envelopeGroom: parsed.envelopeGroom || "",
         envelopeBride: parsed.envelopeBride || "",
+        groomNameEn: parsed.groomNameEn || "",
+        brideNameEn: parsed.brideNameEn || "",
         envelopeTitle: parsed.envelopeTitle || "សិរីសួស្ដីអាពាហ៍ពិពាហ៍",
         envelopeSub: parsed.envelopeSub || "The Wedding Invitation",
         envelopeGreeting: parsed.envelopeGreeting || "សូមគោរពអញ្ជើញ · CORDIALLY INVITING",
@@ -775,9 +779,33 @@ export default function EventClient({ initialEvent, initialMedia, initialGuests 
     slug: initialEvent.slug || "davita-and-meassa",
     title: initialEvent.title || "",
     groomName: initialEvent.groomName || "",
+    groomNameEn:
+      initialEvent.groomNameEn ||
+      (() => {
+        try {
+          return initialEvent.theme?.startsWith("{")
+            ? JSON.parse(initialEvent.theme).groomNameEn || ""
+            : "";
+        } catch {
+          return "";
+        }
+      })() ||
+      "Hoeurn Phanith",
     groomParents: initialEvent.groomParents || "",
     groomPhotoUrl: initialEvent.groomPhotoUrl || "",
     brideName: initialEvent.brideName || "",
+    brideNameEn:
+      initialEvent.brideNameEn ||
+      (() => {
+        try {
+          return initialEvent.theme?.startsWith("{")
+            ? JSON.parse(initialEvent.theme).brideNameEn || ""
+            : "";
+        } catch {
+          return "";
+        }
+      })() ||
+      "Seourr Sreynith",
     brideParents: initialEvent.brideParents || "",
     bridePhotoUrl: initialEvent.bridePhotoUrl || "",
     quote: initialEvent.quote || "",
@@ -1515,9 +1543,17 @@ export default function EventClient({ initialEvent, initialMedia, initialGuests 
         );
       }
 
+      const updatedTheme = {
+        ...themeConfig,
+        groomNameEn: formData.groomNameEn,
+        brideNameEn: formData.brideNameEn,
+      };
+
       const payload = {
         ...sanitizedFormData,
-        theme: JSON.stringify(themeConfig),
+        groomNameEn: formData.groomNameEn,
+        brideNameEn: formData.brideNameEn,
+        theme: JSON.stringify(updatedTheme),
         programme: JSON.stringify(programmeDays),
         contacts: JSON.stringify({
           list: contactsList,
@@ -3535,15 +3571,31 @@ export default function EventClient({ initialEvent, initialMedia, initialGuests 
               </span>
               <div>
                 <label className="block text-[11px] font-semibold text-[#3E444A] mb-1">
-                  Groom's Full Name *
+                  ឈ្មោះកូនកំលោះ (Groom's Khmer Name) *
                 </label>
                 <input
                   type="text"
                   required
+                  placeholder="ឧ. ហឿន ផានិត"
                   value={formData.groomName}
                   onChange={(e) => setFormData({ ...formData, groomName: e.target.value })}
-                  className="w-full px-3 py-2 bg-white border border-[#D4AF37]/30 rounded-xl text-xs"
+                  className="w-full px-3 py-2 bg-white border border-[#D4AF37]/30 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-[#AA7C11]/30"
                 />
+              </div>
+              <div>
+                <label className="block text-[11px] font-semibold text-[#3E444A] mb-1">
+                  ឈ្មោះកូនកំលោះ ជាអង់គ្លេស (Groom's English Name) *
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. Hoeurn Phanith"
+                  value={formData.groomNameEn || ""}
+                  onChange={(e) => setFormData({ ...formData, groomNameEn: e.target.value })}
+                  className="w-full px-3 py-2 bg-white border border-[#D4AF37]/30 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-[#AA7C11]/30 font-medium"
+                />
+                <p className="text-[10px] text-gray-500 mt-0.5">
+                  បង្ហាញលើតំណភ្ជាប់ផ្ញើជូនភ្ញៀវ (Displayed on guest invitation link &amp; English version)
+                </p>
               </div>
               <div>
                 <label className="block text-[11px] font-semibold text-[#3E444A] mb-1">
@@ -3612,15 +3664,31 @@ export default function EventClient({ initialEvent, initialMedia, initialGuests 
               </span>
               <div>
                 <label className="block text-[11px] font-semibold text-[#3E444A] mb-1">
-                  Bride's Full Name *
+                  ឈ្មោះកូនក្រមុំ (Bride's Khmer Name) *
                 </label>
                 <input
                   type="text"
                   required
+                  placeholder="ឧ. សៀ ស្រីនិត"
                   value={formData.brideName}
                   onChange={(e) => setFormData({ ...formData, brideName: e.target.value })}
-                  className="w-full px-3 py-2 bg-white border border-[#D4AF37]/30 rounded-xl text-xs"
+                  className="w-full px-3 py-2 bg-white border border-[#D4AF37]/30 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-[#AA7C11]/30"
                 />
+              </div>
+              <div>
+                <label className="block text-[11px] font-semibold text-[#3E444A] mb-1">
+                  ឈ្មោះកូនក្រមុំ ជាអង់គ្លេស (Bride's English Name) *
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. Seourr Sreynith"
+                  value={formData.brideNameEn || ""}
+                  onChange={(e) => setFormData({ ...formData, brideNameEn: e.target.value })}
+                  className="w-full px-3 py-2 bg-white border border-[#D4AF37]/30 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-[#AA7C11]/30 font-medium"
+                />
+                <p className="text-[10px] text-gray-500 mt-0.5">
+                  បង្ហាញលើតំណភ្ជាប់ផ្ញើជូនភ្ញៀវ (Displayed on guest invitation link &amp; English version)
+                </p>
               </div>
               <div>
                 <label className="block text-[11px] font-semibold text-[#3E444A] mb-1">

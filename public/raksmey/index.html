@@ -2502,6 +2502,9 @@
         const envGroom = customEnvGroom || groomShort || groom;
         const envBride = customEnvBride || brideShort || bride;
 
+        const groomEn = decodeEntities(ev.groomNameEn || themeObj.groomNameEn || 'Hoeurn Phanith');
+        const brideEn = decodeEntities(ev.brideNameEn || themeObj.brideNameEn || 'Seourr Sreynith');
+
         window.__customGroomInit = flapGroom.charAt(0) || groom.charAt(0) || 'ផ';
         window.__customBrideInit = flapBride.charAt(0) || bride.charAt(0) || 'ស';
 
@@ -2518,9 +2521,14 @@
         if (badgeSpan && badgeSpan.textContent.trim() !== envGreeting) badgeSpan.textContent = envGreeting;
 
         // 1. Couple Names & Calligraphy Monograms
+        const isEnMode = document.body.getAttribute('data-lang') === 'en';
         if (groom) {
-          document.querySelectorAll('[data-name="groom-local"], [data-name="groom-km"]').forEach(el => {
+          document.querySelectorAll('[data-name="groom-km"]').forEach(el => {
             if (el.textContent !== groom) el.textContent = groom;
+          });
+          document.querySelectorAll('[data-name="groom-local"]').forEach(el => {
+            const target = isEnMode ? groomEn : groom;
+            if (el.textContent !== target) el.textContent = target;
           });
           document.querySelectorAll('[data-name="groom-short"]').forEach(el => {
             if (el.textContent !== groomShort) el.textContent = groomShort;
@@ -2532,8 +2540,12 @@
         }
 
         if (bride) {
-          document.querySelectorAll('[data-name="bride-local"], [data-name="bride-km"]').forEach(el => {
+          document.querySelectorAll('[data-name="bride-km"]').forEach(el => {
             if (el.textContent !== bride) el.textContent = bride;
+          });
+          document.querySelectorAll('[data-name="bride-local"]').forEach(el => {
+            const target = isEnMode ? brideEn : bride;
+            if (el.textContent !== target) el.textContent = target;
           });
           document.querySelectorAll('[data-name="bride-short"]').forEach(el => {
             if (el.textContent !== brideShort) el.textContent = brideShort;
@@ -2542,6 +2554,30 @@
             const targetName = el.closest('.e2__card') ? envBride : flapBride;
             if (el.textContent !== targetName) el.textContent = targetName;
           });
+        }
+
+        // Dynamically update English names
+        document.querySelectorAll('[data-name="groom-en"]').forEach(el => {
+          if (el.textContent !== groomEn) el.textContent = groomEn;
+        });
+        document.querySelectorAll('[data-name="bride-en"]').forEach(el => {
+          if (el.textContent !== brideEn) el.textContent = brideEn;
+        });
+        const namesEn = document.getElementById('names-en');
+        if (namesEn && namesEn.textContent !== `${groomEn}  &  ${brideEn}`) {
+          namesEn.textContent = `${groomEn}  &  ${brideEn}`;
+        }
+
+        // Update runtime i18n object if initialized
+        if (window.__I18N_EVENT__ && window.__I18N_EVENT__.couple) {
+          if (window.__I18N_EVENT__.couple.groom) {
+            window.__I18N_EVENT__.couple.groom.en = groomEn;
+            if (groom) window.__I18N_EVENT__.couple.groom.km = groom;
+          }
+          if (window.__I18N_EVENT__.couple.bride) {
+            window.__I18N_EVENT__.couple.bride.en = brideEn;
+            if (bride) window.__I18N_EVENT__.couple.bride.km = bride;
+          }
         }
 
         document.querySelectorAll('.e2__flap-logo .lk-name').forEach(el => {
@@ -2573,8 +2609,8 @@
           const fullTitle = decodeEntities(ev.title) || (`សិរីសួស្តីអាពាហ៍ពិពាហ៍ · ${groom} & ${bride}`);
           if (document.title !== fullTitle) document.title = fullTitle;
           const namesEn = document.getElementById('names-en');
-          if (namesEn && !namesEn.textContent.includes(groom)) {
-            namesEn.textContent = `${groom}  &  ${bride}`;
+          if (namesEn) {
+            namesEn.textContent = `${groomEn}  &  ${brideEn}`;
           }
           document.querySelectorAll('.lockup').forEach(el => {
             el.setAttribute('aria-label', `${groom} & ${bride}`);

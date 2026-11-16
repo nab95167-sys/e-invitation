@@ -136,6 +136,22 @@ export async function GET(
       } catch (e) {}
     }
 
+    // SSR Replacement for Groom and Bride English Names from Dashboard
+    const groomEn = event?.groomNameEn || themeConfig?.groomNameEn || "Hoeurn Phanith";
+    const brideEn = event?.brideNameEn || themeConfig?.brideNameEn || "Seourr Sreynith";
+    html = html.replace(
+      /<div class="person__en" data-name="groom-en">.*?<\/div>/gi,
+      `<div class="person__en" data-name="groom-en">${groomEn}</div>`
+    );
+    html = html.replace(
+      /<div class="person__en" data-name="bride-en">.*?<\/div>/gi,
+      `<div class="person__en" data-name="bride-en">${brideEn}</div>`
+    );
+    html = html.replace(
+      /<span id="names-en">.*?<\/span>/gi,
+      `<span id="names-en">${groomEn}  &  ${brideEn}</span>`
+    );
+
     // 6. Preload SSR data into window.__SSR_EVENT__ and window.__SSR_GUEST_NAME__
     const ssrData = `<script>
       window.__SSR_SLUG__ = ${JSON.stringify(slug || "")};

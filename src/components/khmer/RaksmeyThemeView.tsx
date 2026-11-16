@@ -132,7 +132,21 @@ export default function RaksmeyThemeView({
       {/* 5. The Groom & The Bride */}
       <RaksmeyCouple
         groomName={event.groomName}
+        groomNameEn={event.groomNameEn || (() => {
+          try {
+            return typeof event.theme === "string" && event.theme.startsWith("{")
+              ? JSON.parse(event.theme).groomNameEn
+              : undefined;
+          } catch { return undefined; }
+        })() || "Hoeurn Phanith"}
         brideName={event.brideName}
+        brideNameEn={event.brideNameEn || (() => {
+          try {
+            return typeof event.theme === "string" && event.theme.startsWith("{")
+              ? JSON.parse(event.theme).brideNameEn
+              : undefined;
+          } catch { return undefined; }
+        })() || "Seourr Sreynith"}
         lang={lang}
       />
 
