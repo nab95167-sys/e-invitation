@@ -2256,15 +2256,44 @@
             border: 1px solid ${pal.accent}35 !important;
           }
 
-          /* STORY TRACK & GIFT CARDS */
+          /* STORY TRACK HORIZONTAL SCROLL - 100% PORTRAIT & STRAIGHT IN LINE */
+          .story__track {
+            align-items: center !important;
+            gap: 2rem !important;
+          }
+          .shot,
+          .shot--up,
+          .shot--down {
+            align-self: center !important;
+            margin-top: 0 !important;
+            margin-bottom: 0 !important;
+            transform: none !important;
+          }
+          .shot__img {
+            aspect-ratio: 3/4 !important;
+            --ar: 3/4 !important;
+            height: 62svh !important;
+            max-height: 520px !important;
+            min-height: 360px !important;
+            border-radius: 20px !important;
+            overflow: hidden !important;
+            border: 2px solid ${pal.accent}99 !important;
+            box-shadow: 0 16px 40px rgba(0,0,0,0.65), 0 0 20px ${pal.accent}30 !important;
+          }
+          .shot__img img {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: cover !important;
+            object-position: center !important;
+          }
+          .shot figcaption {
+            justify-content: center !important;
+            text-align: center !important;
+          }
           #story-track > div {
             background: ${pal.primary}f0 !important;
             border: 1.5px solid ${pal.accent}80 !important;
             box-shadow: 0 15px 35px rgba(0,0,0,0.6), 0 0 20px ${pal.accent}25 !important;
-          }
-          .shot__img {
-            border: 1.5px solid ${pal.accent}66 !important;
-            box-shadow: 0 12px 30px rgba(0,0,0,0.6), 0 0 15px ${pal.accent}20 !important;
           }
           #gift-cards > div {
             background: linear-gradient(145deg, ${pal.card}, ${pal.primary}) !important;
@@ -3102,12 +3131,13 @@
 
           storyPhotos.forEach((item, idx) => {
             const fig = document.createElement('figure');
-            fig.className = `shot ${idx % 2 === 0 ? 'shot--up' : 'shot--down'}`;
-            fig.style.cssText = '--ar:3/2;--h:54svh;min-width:320px;flex-shrink:0;margin:0 1.2rem;';
+            fig.className = 'shot';
+            fig.style.cssText = '--ar:3/4;--h:62svh;aspect-ratio:3/4;min-width:280px;max-width:390px;flex-shrink:0;margin:0 1.2rem;align-self:center;';
             fig.innerHTML = `
-              <div class="shot__img" style="border-radius:18px;overflow:hidden;border:1.5px solid rgba(179,135,237,0.45);box-shadow:0 12px 30px rgba(0,0,0,0.6),0 0 15px rgba(124,58,237,0.2);height:100%">
-                <img src="${item.url}" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover" />
+              <div class="shot__img" style="aspect-ratio:3/4;height:62svh;max-height:520px;border-radius:20px;overflow:hidden;border:2px solid #d9b15a;box-shadow:0 16px 40px rgba(0,0,0,0.65),0 0 20px rgba(217,177,90,0.25);">
+                <img src="${item.url}" alt="${item.title || ''}" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:center;border-radius:18px" />
               </div>
+              ${item.title ? `<figcaption style="margin-top:0.8rem;justify-content:center;text-align:center"><span style="color:#fbefc0;font-family:var(--f-moul);font-size:0.95rem">${item.title}</span></figcaption>` : ''}
             `;
             storyTrack.appendChild(fig);
           });

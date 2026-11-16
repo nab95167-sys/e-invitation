@@ -19,24 +19,24 @@ export default function RaksmeyGallery({ photos, lang }: RaksmeyGalleryProps) {
     {
       src: "/raksmey-assets/img/hero-2000.webp",
       alt: "Raksmey & Pheakdey Wedding Portrait",
-      span: "col-span-1 md:col-span-2 row-span-2",
     },
     {
       src: "/raksmey-assets/img/words-1280.webp",
       alt: "Couple Traditional Attire",
-      span: "col-span-1",
     },
     {
       src: "/raksmey-assets/img/cozy-1280.webp",
       alt: "Sweet Moment Together",
-      span: "col-span-1",
     },
     {
       src: "/raksmey-assets/img/pond-1280.webp",
       alt: "Romantic Evening Lotus Pond",
-      span: "col-span-1 md:col-span-2",
     },
   ];
+
+  const displayPhotos = photos && photos.length > 0
+    ? photos.map((src, i) => ({ src, alt: `Wedding Photo ${i + 1}` }))
+    : defaultPhotos;
 
   return (
     <section id="gallery" className="relative py-20 px-4 bg-[#14160b] overflow-hidden">
@@ -54,21 +54,21 @@ export default function RaksmeyGallery({ photos, lang }: RaksmeyGalleryProps) {
           </div>
         </div>
 
-        {/* Gallery Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {defaultPhotos.map((photo, index) => (
+        {/* Gallery Grid - Uniform Straight Portrait (3:4) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {displayPhotos.map((photo, index) => (
             <div
               key={index}
               onClick={() => setSelectedPhoto(photo.src)}
-              className={`relative rounded-2xl overflow-hidden border border-[#d9b15a]/40 bg-[#1d2010] shadow-xl cursor-pointer group min-h-[260px] ${photo.span}`}
+              className="relative aspect-[3/4] rounded-2xl overflow-hidden border-2 border-[#d9b15a]/50 bg-[#1d2010] shadow-xl cursor-pointer group hover:border-[#d9b15a] hover:shadow-[0_16px_36px_rgba(217,177,90,0.25)] transition-all duration-300"
             >
               <Image
                 src={photo.src}
                 alt={photo.alt}
                 fill
-                className="object-cover object-center transition-transform duration-700 group-hover:scale-105 filter brightness-[0.92] group-hover:brightness-100"
+                className="object-cover object-center transition-transform duration-700 group-hover:scale-105 filter brightness-[0.95] group-hover:brightness-100"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#1d2010]/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-between p-4">
+              <div className="absolute inset-0 bg-gradient-to-t from-[#1d2010]/85 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-between p-4">
                 <span className="font-khmer text-xs text-[#fbefc0] font-medium drop-shadow">
                   {photo.alt}
                 </span>

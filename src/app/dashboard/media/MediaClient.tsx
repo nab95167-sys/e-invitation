@@ -452,12 +452,23 @@ export default function MediaClient({ initialMedia, eventId, eventSlug }: MediaC
         </div>
       </div>
 
+      {/* Portrait Notice Banner */}
+      <div className="flex items-center gap-3 p-4 bg-[#FAF8F5] border border-[#D4AF37]/40 rounded-2xl text-xs text-[#2C2A29] shadow-sm">
+        <Sparkles className="w-5 h-5 text-[#AA7C11] shrink-0" />
+        <div>
+          <span className="font-bold text-[#AA7C11]">កម្រងរូបភាពទម្រង់បញ្ឈរ (Portrait 3:4) ត្រង់ជួរស្អាត៖</span>{" "}
+          <span>
+            រូបថតទាំងអស់ត្រូវបានរៀបចំជាទម្រង់បញ្ឈរត្រង់ជួរស្មើគ្នាយ៉ាងស្រស់ស្អាត ទាំងក្នុងផ្ទាំងគ្រប់គ្រងនេះ និងលើតំណភ្ជាប់ផ្ញើជូនភ្ញៀវ (Story Scroll &amp; Gallery Grid)។
+          </span>
+        </div>
+      </div>
+
       {/* Gallery Media Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">
         {media.map((item) => (
           <div
             key={item.id}
-            className="group relative rounded-2xl overflow-hidden aspect-[4/5] bg-stone-100 border border-[#D4AF37]/20 shadow-card"
+            className="group relative rounded-2xl overflow-hidden aspect-[3/4] bg-stone-900/10 border-2 border-[#D4AF37]/30 shadow-card hover:border-[#D4AF37] hover:shadow-xl transition-all duration-300"
           >
             {item.mediaType === "VIDEO" ? (
               <div className="w-full h-full flex items-center justify-center bg-stone-900 relative">

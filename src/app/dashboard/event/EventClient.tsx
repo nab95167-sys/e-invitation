@@ -4024,16 +4024,19 @@ export default function EventClient({ initialEvent, initialMedia, initialGuests 
             </div>
           </div>
 
-          <p className="text-xs text-[#3E444A]/70">
-            រូបថតដែលបានផ្ទុកឡើងនៅទីនេះ នឹងបង្ហាញដោយស្វ័យប្រវត្តិនៅលើទំព័រលិខិតអញ្ជើញ (Photo Gallery &amp; Story) សម្រាប់ភ្ញៀវទស្សនា។
-          </p>
+          <div className="flex items-center gap-2.5 p-3.5 bg-[#FAF8F5] border border-[#D4AF37]/35 rounded-2xl text-xs text-[#2C2A29]">
+            <Sparkles className="w-4 h-4 text-[#AA7C11] shrink-0" />
+            <span>
+              <strong>រូបភាពទម្រង់បញ្ឈរ (Portrait 3:4) ត្រង់ជួរស្អាត៖</strong> រូបថតទាំងអស់ត្រូវបានតម្រង់ជួរជាទម្រង់បញ្ឈរស្មើគ្នា ទាំងក្នុង Dashboard និងលើ Link ផ្ញើជូនភ្ញៀវ (Story Scroll)។
+            </span>
+          </div>
 
           {mediaList.length > 0 ? (
-            <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
               {mediaList.map((item) => (
                 <div
                   key={item.id}
-                  className="group relative aspect-[3/4] rounded-2xl overflow-hidden border border-[#D4AF37]/30 bg-[#FAF8F5] shadow-sm hover:shadow-md transition-all"
+                  className="group relative aspect-[3/4] rounded-2xl overflow-hidden border-2 border-[#D4AF37]/30 bg-[#FAF8F5] shadow-sm hover:border-[#D4AF37] hover:shadow-md transition-all duration-300"
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
