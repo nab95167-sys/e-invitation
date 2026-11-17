@@ -2480,6 +2480,172 @@
         if (metaTheme) metaTheme.content = pal.primary;
       }
 
+      function toEnNum(val) {
+        const map = { '០': '0', '១': '1', '២': '2', '៣': '3', '៤': '4', '៥': '5', '៦': '6', '៧': '7', '៨': '8', '៩': '9' };
+        return String(val || '').replace(/[០-៩]/g, ch => map[ch] || ch);
+      }
+
+      const enDays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      const enMonths = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+      const CEREMONY_EN_MAP = {
+        'ពិធីសែនក្រុងពាលី': 'Sen Krong Peali — offering to guardian spirits',
+        'ពិធីសូត្រមន្តចម្រើនព្រះបរិត្ត': 'Monks chant the blessing (Soth Mon)',
+        'ពិធីជុំពេលា និងជាវខាន់ស្លា': 'Chum Pelea and Chav Khan Sla ceremonies',
+        'អញ្ជើញភ្ញៀវកិត្តិយសពិសាអាហារពេលល្ងាច': 'Dinner reception for honoured guests',
+        'ជួបជុំភ្ញៀវកិត្តិយសដើម្បីរៀបចំហែជំនូន': 'Guests gather for the procession',
+        'ពិធីហែជំនូនកំណត់ចូលរោងជ័យ': 'Groom’s gift procession (Hai Chomnoun)',
+        'ពិធីចៅមហានិយាយជើងការ សែនព្រេន រៀបរាប់ផ្លែឈើ និងពិសាភោជនាហារពេលព្រឹក': 'Fruit presentation ceremony & breakfast',
+        'ពិធីបំពាក់ចិញ្ចៀនអាពាហ៍ពិពាហ៍': 'Ring exchange ceremony',
+        'ពិធីកាត់សក់បង្កក់សិរី កូនប្រុស-កូនស្រី': 'Cleansing & Hair-cutting blessing',
+        'ពិធីសំពះផ្ទឹមចងដៃ បង្វិលពពិល និងព្រះថោងតោងស្បៃ': 'Knot tying & candle blessing (Sompeas Ptem)',
+        'អញ្ជើញភ្ញៀវកិត្តិយសពិសាអាហារថ្ងៃត្រង់ បញ្ចប់កិច្ចអាពាហ៍ពិពាហ៍ពេលព្រឹក': 'Lunch reception for morning ceremony',
+        'អញ្ជើញភ្ញៀវកិត្តិយសពិសាភោជនាហារពេលល្ងាច ដោយមេត្រីភាព': 'Grand wedding evening banquet'
+      };
+
+      function formatEnglishTime(kmTimeStr) {
+        let s = toEnNum(kmTimeStr);
+        s = s.replace(/ម៉ោង\s*/g, '').trim();
+        let period = 'AM';
+        if (s.includes('រសៀល') || s.includes('ល្ងាច') || s.includes('យប់') || s.includes('ថ្ងៃត្រង់') || s.includes('PM') || s.includes('pm')) {
+          period = 'PM';
+        } else if (s.includes('ព្រឹក') || s.includes('AM') || s.includes('am')) {
+          period = 'AM';
+        }
+        s = s.replace(/រសៀល|ល្ងាច|យប់|ព្រឹក|ថ្ងៃត្រង់|AM|PM|am|pm/g, '').trim();
+        s = s.replace(/^0/, '');
+        return `${s} ${period}`.trim();
+      }
+
+      function buildTriLeftHTML(ev, isEn) {
+        let days = [];
+        try {
+          if (typeof ev.programme === 'string' && ev.programme.startsWith('[')) {
+            days = JSON.parse(ev.programme);
+          } else if (Array.isArray(ev.programme)) {
+            days = ev.programme;
+          }
+        } catch (e) {}
+
+        const d2 = ev.eventDate ? new Date(ev.eventDate) : new Date(2027, 1, 19);
+        const d1 = new Date(d2.getTime() - 24 * 60 * 60 * 1000);
+
+        const day1DateKm = `ថ្ងៃ${kmDays[d1.getDay()]} ទី${toKmNum(d1.getDate())} ខែ${kmMonths[d1.getMonth()]} ឆ្នាំ${toKmNum(d1.getFullYear())}`;
+        const day2DateKm = `ថ្ងៃ${kmDays[d2.getDay()]} ទី${toKmNum(d2.getDate())} ខែ${kmMonths[d2.getMonth()]} ឆ្នាំ${toKmNum(d2.getFullYear())}`;
+
+        const day1DateEn = `Day 1 · ${enDays[d1.getDay()]} ${d1.getDate()} ${enMonths[d1.getMonth()]} ${d1.getFullYear()}`;
+        const day2DateEn = `Day 2 · ${enDays[d2.getDay()]} ${d2.getDate()} ${enMonths[d2.getMonth()]} ${d2.getFullYear()}`;
+
+        const cardTitle = isEn ? 'The Wedding Ceremonies' : 'កម្មវិធីសិរីមង្គលអាពាហ៍ពិពាហ៍';
+
+        let html = `<div class="tri-prog" style="height:100%;overflow-y:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;"><h4>${cardTitle}</h4>`;
+
+        if (Array.isArray(days) && days.length > 0) {
+          days.forEach((day, idx) => {
+            let title = '';
+            if (isEn) {
+              title = idx === 0 ? day1DateEn : day2DateEn;
+            } else {
+              const defaultDate = idx === 0 ? day1DateKm : day2DateKm;
+              const numLabel = idx === 0 ? 'កម្មវិធីទី១' : 'កម្មវិធីទី២';
+              title = `${numLabel} ${defaultDate}`;
+            }
+
+            html += `<h5>${title}</h5><ol>`;
+            (day.rows || []).forEach(row => {
+              let timeStr = decodeEntities(row.time || '');
+              let nameStr = decodeEntities(row.name || '');
+              if (isEn) {
+                timeStr = formatEnglishTime(timeStr);
+                nameStr = decodeEntities(row.nameEn || CEREMONY_EN_MAP[nameStr] || nameStr);
+              } else {
+                if (!timeStr.startsWith('ម៉ោង') && /^[0-9០-៩]/.test(timeStr)) {
+                  timeStr = 'ម៉ោង ' + timeStr;
+                }
+              }
+              html += `<li><span>${timeStr}</span><span>${nameStr}</span></li>`;
+            });
+            html += `</ol>`;
+          });
+        } else {
+          html += `<h5>${isEn ? day1DateEn : ('កម្មវិធីទី១ ' + day1DateKm)}</h5>
+            <ol>
+              <li><span>${isEn ? '3:00 PM' : 'ម៉ោង ០៣:០០ រសៀល'}</span><span>${isEn ? 'Sen Krong Peali — offering to guardian spirits' : 'ពិធីសែនក្រុងពាលី'}</span></li>
+              <li><span>${isEn ? '4:00 PM' : 'ម៉ោង ០៤:០០ រសៀល'}</span><span>${isEn ? 'Monks chant the blessing (Soth Mon)' : 'ពិធីសូត្រមន្តចម្រើនព្រះបរិត្ត'}</span></li>
+              <li><span>${isEn ? '5:00 PM' : 'ម៉ោង ០៥:០០ ល្ងាច'}</span><span>${isEn ? 'Chum Pelea and Chav Khan Sla ceremonies' : 'ពិធីជុំពេលា និងជាវខាន់ស្លា'}</span></li>
+              <li><span>${isEn ? '6:30 PM' : 'ម៉ោង ០៦:៣០ ល្ងាច'}</span><span>${isEn ? 'Dinner reception for honoured guests' : 'អញ្ជើញភ្ញៀវកិត្តិយសពិសាអាហារពេលល្ងាច'}</span></li>
+            </ol>
+            <h5>${isEn ? day2DateEn : ('កម្មវិធីទី២ ' + day2DateKm)}</h5>
+            <ol>
+              <li><span>${isEn ? '6:30 AM' : 'ម៉ោង ០៦:៣០ ព្រឹក'}</span><span>${isEn ? 'Guests gather for the procession' : 'ជួបជុំភ្ញៀវកិត្តិយសដើម្បីរៀបចំហែជំនូន'}</span></li>
+              <li><span>${isEn ? '7:00 AM' : 'ម៉ោង ០៧:០០ ព្រឹក'}</span><span>${isEn ? 'Groom’s gift procession (Hai Chomnoun)' : 'ពិធីហែជំនូនកំណត់ចូលរោងជ័យ'}</span></li>
+              <li><span>${isEn ? '7:30 AM' : 'ម៉ោង ០៧:៣០ ព្រឹក'}</span><span>${isEn ? 'Fruit presentation ceremony & breakfast' : 'ពិធីចៅមហានិយាយជើងការ សែនព្រេន...'}</span></li>
+              <li><span>${isEn ? '8:00 AM' : 'ម៉ោង ០៨:០០ ព្រឹក'}</span><span>${isEn ? 'Ring exchange ceremony' : 'ពិធីបំពាក់ចិញ្ចៀនអាពាហ៍ពិពាហ៍'}</span></li>
+              <li><span>${isEn ? '9:00 AM' : 'ម៉ោង ០៩:០០ ព្រឹក'}</span><span>${isEn ? 'Cleansing & Hair-cutting blessing' : 'ពិធីកាត់សក់បង្កក់សិរី កូនប្រុស-កូនស្រី'}</span></li>
+              <li><span>${isEn ? '11:00 AM' : 'ម៉ោង ១១:០០ ព្រឹក'}</span><span>${isEn ? 'Knot tying & candle blessing (Sompeas Ptem)' : 'ពិធីសំពះផ្ទឹមចងដៃ បង្វិលពពិល...'}</span></li>
+              <li><span>${isEn ? '12:00 PM' : 'ម៉ោង ១២:០០ ថ្ងៃត្រង់'}</span><span>${isEn ? 'Lunch reception for morning ceremony' : 'អញ្ជើញភ្ញៀវកិត្តិយសពិសាអាហារថ្ងៃត្រង់'}</span></li>
+              <li><span>${isEn ? '4:00 PM' : 'ម៉ោង ០៤:០០ រសៀល'}</span><span>${isEn ? 'Grand wedding evening banquet' : 'អញ្ជើញភ្ញៀវកិត្តិយសពិសាភោជនាហារពេលល្ងាច'}</span></li>
+            </ol>`;
+        }
+
+        html += `</div>`;
+        return html;
+      }
+
+      function buildTriRightHTML(ev, isEn, existingSvg) {
+        let contactList = [];
+        let telegramUrl = '';
+        try {
+          if (typeof ev.contacts === 'string') {
+            if (ev.contacts.startsWith('{')) {
+              const cp = JSON.parse(ev.contacts);
+              contactList = Array.isArray(cp.list) ? cp.list : [];
+              telegramUrl = cp.telegramUrl || '';
+            } else if (ev.contacts.startsWith('[')) {
+              contactList = JSON.parse(ev.contacts);
+            }
+          } else if (Array.isArray(ev.contacts)) {
+            contactList = ev.contacts;
+          }
+        } catch (e) {}
+
+        if (contactList.length === 0) {
+          contactList = [
+            { label: '096 7 717 278', tel: '+855967717278' },
+            { label: '070 895 623', tel: '+85570895623' }
+          ];
+        }
+
+        const heading = isEn ? 'Host Contact Numbers' : 'លេខម្ចាស់កម្មវិធីការ';
+
+        let contactsHtml = contactList.map(c => `
+          <p><a href="tel:${c.tel || c.label}" style="color:inherit;text-decoration:none;">${decodeEntities(c.label)}</a></p>
+        `).join('');
+
+        if (telegramUrl) {
+          let cleanTg = telegramUrl.trim();
+          if (!cleanTg.startsWith('http')) {
+            cleanTg = cleanTg.startsWith('@') ? `https://t.me/${cleanTg.slice(1)}` : `https://t.me/${cleanTg}`;
+          }
+          contactsHtml += `
+            <p style="margin-top:0.35em;">
+              <a href="${cleanTg}" target="_blank" rel="noopener noreferrer" style="color:inherit;text-decoration:none;display:inline-flex;align-items:center;gap:0.35em;opacity:0.95;">
+                <svg viewBox="0 0 24 24" style="width:1.2em;height:1.2em;fill:#2AABEE;vertical-align:middle;display:inline-block;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 0 0-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.52 2.77-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
+                <span style="font-size:0.92em;letter-spacing:0.02em;">Telegram</span>
+              </a>
+            </p>
+          `;
+        }
+
+        return `
+          <div class="tri-map" style="height:100%;overflow-y:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;">
+            ${existingSvg || ''}
+            <h5>${heading}</h5>
+            ${contactsHtml}
+          </div>
+        `;
+      }
+
       const applyEventDOM = () => {
         if (!activeEventData) return;
         const ev = activeEventData;
@@ -2901,12 +3067,12 @@
           langToggle.dataset.venueHooked = "true";
           langToggle.addEventListener('click', () => {
             setTimeout(() => {
-              if (activeEventData && activeEventData.venuePhotoUrl) {
+              if (activeEventData) {
                 applyEventDOM();
               }
             }, 60);
             setTimeout(() => {
-              if (activeEventData && activeEventData.venuePhotoUrl) {
+              if (activeEventData) {
                 applyEventDOM();
               }
             }, 350);
@@ -3085,6 +3251,64 @@
               </section>
             `;
           }
+        }
+
+        // 6b. 3D Gate Envelope Flaps: Left (Programme & Date) & Right (Host Contacts & Map)
+        const isCurrentEn = document.body.getAttribute('data-lang') === 'en';
+        const triL = document.getElementById('tri-l');
+        const triR = document.getElementById('tri-r');
+        if (triL) {
+          const triLContent = triL.querySelector('.tri__content');
+          if (triLContent) {
+            triLContent.dataset.lastSyncLang = isCurrentEn ? 'en' : 'km';
+            triLContent.innerHTML = buildTriLeftHTML(ev, isCurrentEn);
+          }
+        }
+        if (triR) {
+          const triRContent = triR.querySelector('.tri__content');
+          if (triRContent) {
+            triRContent.dataset.lastSyncLang = isCurrentEn ? 'en' : 'km';
+            const existingSvg = triRContent.querySelector('svg.linemap');
+            if (existingSvg) {
+              const labelEl = existingSvg.querySelector('.lm-label');
+              if (labelEl && ev.venueName) {
+                labelEl.textContent = decodeEntities(ev.venueName.split('(')[0].trim());
+              }
+              window.__lastTriLinemapSvg = existingSvg.outerHTML;
+            }
+            triRContent.innerHTML = buildTriRightHTML(ev, isCurrentEn, window.__lastTriLinemapSvg || '');
+          }
+        }
+
+        // Observer to sync Flaps instantly whenever #tri-l / #tri-r mount into DOM
+        if (!window.__triFlapsObserverAttached) {
+          window.__triFlapsObserverAttached = true;
+          const triObs = new MutationObserver(() => {
+            const tL = document.getElementById('tri-l');
+            const tR = document.getElementById('tri-r');
+            if (tL && tR && activeEventData) {
+              const cL = tL.querySelector('.tri__content');
+              const cR = tR.querySelector('.tri__content');
+              const curLang = document.body.getAttribute('data-lang') === 'en';
+              if (cL && (!cL.dataset.lastSyncLang || cL.dataset.lastSyncLang !== (curLang ? 'en' : 'km'))) {
+                cL.dataset.lastSyncLang = curLang ? 'en' : 'km';
+                cL.innerHTML = buildTriLeftHTML(activeEventData, curLang);
+              }
+              if (cR && (!cR.dataset.lastSyncLang || cR.dataset.lastSyncLang !== (curLang ? 'en' : 'km'))) {
+                cR.dataset.lastSyncLang = curLang ? 'en' : 'km';
+                const exSvg = cR.querySelector('svg.linemap');
+                if (exSvg) {
+                  const lbl = exSvg.querySelector('.lm-label');
+                  if (lbl && activeEventData.venueName) {
+                    lbl.textContent = decodeEntities(activeEventData.venueName.split('(')[0].trim());
+                  }
+                  window.__lastTriLinemapSvg = exSvg.outerHTML;
+                }
+                cR.innerHTML = buildTriRightHTML(activeEventData, curLang, window.__lastTriLinemapSvg || '');
+              }
+            }
+          });
+          triObs.observe(document.body, { childList: true, subtree: true });
         }
 
         // 7. Love Quote & Story & Letter
