@@ -52,6 +52,7 @@ model Event {
   programme       String?      // Wedding ceremonies & schedule JSON
   couplePhotoUrl  String?      // Center couple photo
   venuePhotoUrl   String?      // Venue / location photo
+  mapQrUrl        String?      // Venue / Map QR code for scan-to-navigate
   telegramBotToken String?     // Telegram Bot Token for instant notifications
   telegramChatId   String?     // Telegram Group / Channel Chat ID
   isPublished     Boolean      @default(true)

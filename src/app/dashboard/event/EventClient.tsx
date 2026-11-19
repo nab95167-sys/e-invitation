@@ -831,6 +831,7 @@ export default function EventClient({ initialEvent, initialMedia, initialGuests 
     programme: initialEvent.programme || JSON.stringify(DEFAULT_PROGRAMME),
     couplePhotoUrl: initialEvent.couplePhotoUrl || "/img/cozy-2000.webp",
     venuePhotoUrl: initialEvent.venuePhotoUrl || "",
+    mapQrUrl: initialEvent.mapQrUrl || "",
     telegramBotToken: initialEvent.telegramBotToken || "",
     telegramChatId: initialEvent.telegramChatId || "",
   });
@@ -1239,6 +1240,7 @@ export default function EventClient({ initialEvent, initialMedia, initialGuests 
     | "couplePhotoUrl"
     | "qrImageUrl"
     | "venuePhotoUrl"
+    | "mapQrUrl"
     | null
   >(null);
 
@@ -1249,7 +1251,8 @@ export default function EventClient({ initialEvent, initialMedia, initialGuests 
       | "bridePhotoUrl"
       | "couplePhotoUrl"
       | "qrImageUrl"
-      | "venuePhotoUrl",
+      | "venuePhotoUrl"
+      | "mapQrUrl",
     file: File
   ) => {
     if (!file) return;
@@ -1523,6 +1526,7 @@ export default function EventClient({ initialEvent, initialMedia, initialGuests 
         "groomPhotoUrl",
         "bridePhotoUrl",
         "venuePhotoUrl",
+        "mapQrUrl",
       ] as const;
 
       for (const k of imageKeys) {
@@ -4229,6 +4233,82 @@ export default function EventClient({ initialEvent, initialMedia, initialGuests 
                 )}
                 <p className="text-[10px] text-[#3E444A]/60">
                   រូបភាពនេះបង្ហាញក្នុងផ្នែក Venue នៃធៀបការ ។ ត្រូវជា JPG, PNG ឬ WEBP ។
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Venue Map QR Code Upload */}
+          <div className="space-y-3 p-4 rounded-2xl bg-[#FAF8F5] border border-[#D4AF37]/20">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div>
+                <span className="text-xs font-bold uppercase tracking-wider text-[#AA7C11] flex items-center gap-1.5">
+                  <QrCode className="w-4 h-4" />
+                  QR Code ផែនទីទីតាំង (Venue / Location Map QR Code)
+                </span>
+                <p className="text-[11px] text-[#3E444A]/70 mt-0.5">
+                  Upload រូបភាព QR Code ផែនទី Google Maps ឬទិសដៅធ្វើដំណើរ ដើម្បីឱ្យភ្ញៀវស្កេនបើកមើលទីតាំងបានភ្លាមៗ
+                </p>
+              </div>
+              <label className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-[#D4AF37]/40 text-xs font-semibold text-[#2C2A29] hover:bg-[#FAF8F5] transition shadow-xs w-fit shrink-0">
+                <Upload className="w-3.5 h-3.5 text-[#AA7C11]" />
+                <span>{uploadingImageField === "mapQrUrl" ? "Uploading..." : "Upload Map QR"}</span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  disabled={uploadingImageField === "mapQrUrl"}
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) handleImageUpload("mapQrUrl", file);
+                    e.target.value = "";
+                  }}
+                />
+              </label>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 items-center">
+              <div className="sm:col-span-1 flex justify-center sm:justify-start">
+                <div className="relative w-28 h-28 sm:w-32 sm:h-32 rounded-xl overflow-hidden border border-[#D4AF37]/30 bg-white p-2 flex items-center justify-center shadow-xs">
+                  {formData.mapQrUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={formData.mapQrUrl}
+                      alt="Venue Map QR Preview"
+                      className="w-full h-full object-contain"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).style.display = "none";
+                      }}
+                    />
+                  ) : (
+                    <div className="flex flex-col items-center gap-1 text-[#3E444A]/40 text-center">
+                      <QrCode className="w-8 h-8" />
+                      <span className="text-[10px]">No Map QR</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="sm:col-span-3 space-y-2">
+                <input
+                  type="text"
+                  value={formData.mapQrUrl}
+                  onChange={(e) => setFormData({ ...formData, mapQrUrl: e.target.value })}
+                  placeholder="e.g. /uploads/map-qr.png or https://..."
+                  className="w-full px-3 py-2 bg-white border border-[#D4AF37]/30 rounded-xl text-xs text-[#2C2A29]"
+                />
+                {formData.mapQrUrl && (
+                  <button
+                    type="button"
+                    onClick={() => setFormData({ ...formData, mapQrUrl: "" })}
+                    className="text-[11px] text-red-500 hover:underline flex items-center gap-1"
+                  >
+                    <Trash2 className="w-3 h-3" />
+                    <span>Remove Map QR</span>
+                  </button>
+                )}
+                <p className="text-[10px] text-[#3E444A]/60">
+                  រូបភាព QR Code នេះនឹងបង្ហាញនៅក្នុងផ្នែក Venue / Map នៃទំព័រអញ្ជើញភ្ញៀវ ដើម្បីឱ្យភ្ញៀវស្កេនតាមទូរស័ព្ទបើកមើលទីតាំង Google Maps ។
                 </p>
               </div>
             </div>

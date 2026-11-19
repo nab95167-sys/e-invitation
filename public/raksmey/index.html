@@ -1242,6 +1242,36 @@
         <figcaption class="caps" data-t="mapKicker"></figcaption>
         <div id="line-map"></div>
       </figure>
+
+      <!-- 5c. Custom Venue Map QR Code (Scan to open Google Maps) -->
+      <div id="venue-qr-block" style="display:none;margin:2rem auto;max-width:360px;text-align:center;">
+        <div class="venue-qr-card" style="position:relative;background:linear-gradient(145deg, rgba(30,12,50,0.85), rgba(15,5,26,0.95));border:1.5px solid rgba(217,177,90,0.45);border-radius:20px;padding:1.4rem 1.2rem 1.2rem;box-shadow:0 12px 32px rgba(0,0,0,0.5), inset 0 0 16px rgba(217,177,90,0.1);backdrop-filter:blur(8px);">
+          <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(217,177,90,0.15);border:1px solid rgba(217,177,90,0.4);border-radius:999px;padding:4px 14px;margin-bottom:0.8rem;">
+            <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:var(--foil-hi, #d9b15a);"><path d="M3 3h8v8H3V3zm2 2v4h4V5H5zm8-2h8v8h-8V3zm2 2v4h4V5h-4zM3 13h8v8H3v-8zm2 2v4h4v-4H5zm13-2h3v2h-3v-2zm-5 0h2v3h-2v-3zm2 3h3v2h-3v-2zm3 3h3v3h-3v-3zm-3 0h2v3h-2v-3zm-5-3h3v3h-3v-3z"/></svg>
+            <span class="venue-qr-badge" style="font-size:0.75rem;font-weight:700;letter-spacing:0.04em;color:var(--foil-hi, #fbefc0);font-family:var(--f-kh, sans-serif);">QR CODE ផែនទី</span>
+          </div>
+
+          <h4 class="venue-qr-title" style="font-family:var(--f-moul, serif);font-size:1.05rem;color:var(--foil-hi, #fbefc0);margin:0 0 0.4rem;font-weight:400;text-shadow:0 2px 6px rgba(0,0,0,0.6);">
+            ស្កេនដើម្បីបើកផែនទី Google Maps
+          </h4>
+          <p class="venue-qr-sub" style="font-size:0.8rem;color:rgba(255,255,255,0.78);margin:0 0 1.1rem;line-height:1.5;font-family:var(--f-kh, sans-serif);">
+            សូមស្កេនតាមរយៈទូរស័ព្ទដៃ ដើម្បីមើលទីតាំង ឬធ្វើដំណើរមកកាន់គេហដ្ឋានកម្មវិធី
+          </p>
+
+          <div style="display:inline-block;padding:12px;background:#ffffff;border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,0.4), 0 0 0 2px rgba(217,177,90,0.6);margin:0 auto 1.1rem;">
+            <a id="venue-qr-link" href="#" target="_blank" rel="noopener noreferrer" style="display:block;cursor:pointer;">
+              <img id="venue-qr-img" src="" alt="Google Maps QR Code" style="width:180px;height:180px;object-fit:contain;display:block;margin:0 auto;" />
+            </a>
+          </div>
+
+          <div>
+            <a id="venue-qr-btn" href="#" target="_blank" rel="noopener noreferrer" class="btn" style="display:inline-flex;align-items:center;gap:0.45rem;padding:0.6rem 1.4rem;font-size:0.85rem;border-radius:999px;background:linear-gradient(135deg, #d9b15a, #b38b2e);color:#1a0529;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(217,177,90,0.35);transition:all 0.2s ease;">
+              <svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:currentColor;"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z"/></svg>
+              <span class="venue-qr-btn-text">បើកមើលលើ Google Maps</span>
+            </a>
+          </div>
+        </div>
+      </div>
       <div class="venue__contacts">
         <div class="caps" data-t="contactTitle"></div>
         <div class="venue__tels" id="venue-tels"></div>
@@ -2637,6 +2667,17 @@
           `;
         }
 
+        if (ev.mapQrUrl) {
+          contactsHtml += `
+            <p style="margin-top:0.35em;">
+              <a href="#venue" style="color:inherit;text-decoration:none;display:inline-flex;align-items:center;gap:0.35em;opacity:0.95;">
+                <svg viewBox="0 0 24 24" style="width:1.15em;height:1.15em;fill:var(--foil-hi, #d9b15a);vertical-align:middle;display:inline-block;"><path d="M3 3h8v8H3V3zm2 2v4h4V5H5zm8-2h8v8h-8V3zm2 2v4h4V5h-4zM3 13h8v8H3v-8zm2 2v4h4v-4H5zm13-2h3v2h-3v-2zm-5 0h2v3h-2v-3zm2 3h3v2h-3v-2zm3 3h3v3h-3v-3zm-3 0h2v3h-2v-3zm-5-3h3v3h-3v-3z"/></svg>
+                <span style="font-size:0.92em;letter-spacing:0.02em;">${isEn ? 'Map QR Code' : 'QR Code ផែនទី'}</span>
+              </a>
+            </p>
+          `;
+        }
+
         return `
           <div class="tri-map" style="height:100%;overflow-y:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;">
             ${existingSvg || ''}
@@ -3126,6 +3167,41 @@
               telContainer.innerHTML = html;
             }
           } catch (e) {}
+        }
+
+        // 5c. Custom Venue Map QR Code (Scan to open Google Maps)
+        const qrBlock = document.getElementById('venue-qr-block');
+        if (qrBlock) {
+          if (ev.mapQrUrl) {
+            qrBlock.style.display = 'block';
+            const qrImg = document.getElementById('venue-qr-img');
+            const qrLink = document.getElementById('venue-qr-link');
+            const qrBtn = document.getElementById('venue-qr-btn');
+            const mapTargetUrl = ev.googleMapsUrl || ev.mapQrUrl;
+
+            if (qrImg && qrImg.getAttribute('src') !== ev.mapQrUrl) {
+              qrImg.src = ev.mapQrUrl;
+            }
+            if (qrLink && qrLink.getAttribute('href') !== mapTargetUrl) {
+              qrLink.href = mapTargetUrl;
+            }
+            if (qrBtn && qrBtn.getAttribute('href') !== mapTargetUrl) {
+              qrBtn.href = mapTargetUrl;
+            }
+
+            const isEn = document.body.getAttribute('data-lang') === 'en';
+            const qrBadge = qrBlock.querySelector('.venue-qr-badge');
+            const qrTitle = qrBlock.querySelector('.venue-qr-title');
+            const qrSub = qrBlock.querySelector('.venue-qr-sub');
+            const qrBtnText = qrBlock.querySelector('.venue-qr-btn-text');
+
+            if (qrBadge) qrBadge.textContent = isEn ? 'LOCATION QR CODE' : 'QR CODE ផែនទី';
+            if (qrTitle) qrTitle.textContent = isEn ? 'Scan to Open Google Maps' : 'ស្កេនដើម្បីបើកផែនទី Google Maps';
+            if (qrSub) qrSub.textContent = isEn ? 'Scan with your mobile phone camera to open directions in Google Maps' : 'សូមស្កេនតាមរយៈទូរស័ព្ទដៃ ដើម្បីមើលទីតាំង ឬធ្វើដំណើរមកកាន់គេហដ្ឋានកម្មវិធី';
+            if (qrBtnText) qrBtnText.textContent = isEn ? 'Open in Google Maps' : 'បើកមើលលើ Google Maps';
+          } else {
+            qrBlock.style.display = 'none';
+          }
         }
 
         // 6. Programme Schedule (Authentic Traditional Khmer Wedding Ceremonies or Custom Schedule)
