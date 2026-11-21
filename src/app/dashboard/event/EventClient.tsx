@@ -554,6 +554,103 @@ export const DEFAULT_CONTACTS: ContactItem[] = [
   { label: "070 895 623", tel: "+85570895623" },
 ];
 
+export interface DressCodeColor {
+  name: string;
+  nameEn?: string;
+  hex: string;
+}
+
+export interface DressCodeConfig {
+  description: string;
+  colors: DressCodeColor[];
+}
+
+export const DEFAULT_DRESS_CODE_COLORS: DressCodeColor[] = [
+  { name: "ពណ៌ទឹកមាស (Gold)", hex: "#D4AF37" },
+  { name: "ពណ៌ស្វាយរាជវាំង (Royal Purple)", hex: "#4A154B" },
+  { name: "ពណ៌ផ្កាឈូក (Rose Gold)", hex: "#E0A9AF" },
+  { name: "ពណ៌ក្រែម (Champagne)", hex: "#F7E7CE" },
+];
+
+export const PRESET_DRESS_PALETTES = [
+  {
+    name: "ស្វាយរាជវាំង & ទឹកមាស",
+    colors: [
+      { name: "ពណ៌ស្វាយរាជវាំង (Royal Purple)", hex: "#4A154B" },
+      { name: "ពណ៌ទឹកមាស (Gold)", hex: "#D4AF37" },
+      { name: "ពណ៌ផ្កាឈូក (Rose Gold)", hex: "#E0A9AF" },
+      { name: "ពណ៌ក្រែម (Champagne)", hex: "#F7E7CE" },
+    ],
+  },
+  {
+    name: "ទឹកមាស & ក្រែម",
+    colors: [
+      { name: "ពណ៌ទឹកមាសចាស់ (Rich Gold)", hex: "#B8860B" },
+      { name: "ពណ៌ទឹកមាសភ្លឺ (Bright Gold)", hex: "#D4AF37" },
+      { name: "ពណ៌ក្រែមស្រាល (Warm Cream)", hex: "#F7E7CE" },
+      { name: "ពណ៌ស (Pearl White)", hex: "#FFFFFF" },
+    ],
+  },
+  {
+    name: "ផ្កាឈូក & កូលាបស្រទន់",
+    colors: [
+      { name: "ពណ៌ផ្កាឈូកស្រាល (Blush Pink)", hex: "#FFD1DC" },
+      { name: "ពណ៌កូលាបស្រទន់ (Dusty Rose)", hex: "#D8A1A8" },
+      { name: "ពណ៌ទឹកមាសកូលាប (Rose Gold)", hex: "#B76E79" },
+      { name: "ពណ៌សូកូឡាស្រាល (Warm Nude)", hex: "#FAF0E6" },
+    ],
+  },
+  {
+    name: "ត្បូងមរកត & ទឹកមាស",
+    colors: [
+      { name: "ពណ៌បៃតងត្បូងមរកត (Emerald Green)", hex: "#046307" },
+      { name: "ពណ៌បៃតងស្រាល (Sage Green)", hex: "#50C878" },
+      { name: "ពណ៌ទឹកមាស (Gold)", hex: "#D4AF37" },
+      { name: "ពណ៌ក្រែម (Beige)", hex: "#F5F5DC" },
+    ],
+  },
+  {
+    name: "ក្រហមស្រា & ទឹកមាស",
+    colors: [
+      { name: "ពណ៌ក្រហមស្រា (Burgundy)", hex: "#800020" },
+      { name: "ពណ៌ក្រហមដិត (Wine Red)", hex: "#A52A2A" },
+      { name: "ពណ៌ទឹកមាស (Gold)", hex: "#D4AF37" },
+      { name: "ពណ៌ក្រែម (Champagne)", hex: "#FFF8DC" },
+    ],
+  },
+  {
+    name: "ផ្ទៃមេឃ & ប្រាក់",
+    colors: [
+      { name: "ពណ៌ផ្ទៃមេឃស្រាល (Baby Blue)", hex: "#89CFF0" },
+      { name: "ពណ៌ខៀវទឹកសមុទ្រ (Ocean Blue)", hex: "#4682B4" },
+      { name: "ពណ៌ប្រាក់ (Silver Metallic)", hex: "#C0C0C0" },
+      { name: "ពណ៌ស (Pure White)", hex: "#F0F8FF" },
+    ],
+  },
+];
+
+export const parseDressCode = (raw: string | null | undefined): DressCodeConfig => {
+  if (!raw) {
+    return {
+      description: "សម្លៀកបំពាក់ប្រពៃណីខ្មែរ ឬ សម្លៀកបំពាក់សមរម្យ (Traditional Khmer / Formal Attire)",
+      colors: DEFAULT_DRESS_CODE_COLORS,
+    };
+  }
+  try {
+    if (typeof raw === "string" && raw.trim().startsWith("{")) {
+      const parsed = JSON.parse(raw);
+      return {
+        description: parsed.description || "សម្លៀកបំពាក់ប្រពៃណីខ្មែរ ឬ សម្លៀកបំពាក់សមរម្យ",
+        colors: Array.isArray(parsed.colors) && parsed.colors.length > 0 ? parsed.colors : DEFAULT_DRESS_CODE_COLORS,
+      };
+    }
+  } catch (e) {}
+  return {
+    description: String(raw),
+    colors: DEFAULT_DRESS_CODE_COLORS,
+  };
+};
+
 export interface BankAccountConfig {
   bankName: string;
   accountNumber: string;
@@ -821,7 +918,11 @@ export default function EventClient({ initialEvent, initialMedia, initialGuests 
     coverImageUrl: initialEvent.coverImageUrl || "",
     musicUrl: initialEvent.musicUrl || "",
     videoUrl: initialEvent.videoUrl || "",
-    dressCode: initialEvent.dressCode || "",
+    dressCode: initialEvent.dressCode
+      ? (typeof initialEvent.dressCode === "string" && initialEvent.dressCode.trim().startsWith("{")
+          ? initialEvent.dressCode
+          : JSON.stringify(parseDressCode(initialEvent.dressCode)))
+      : JSON.stringify(parseDressCode(null)),
     bankAccountInfo: initialEvent.bankAccountInfo || "",
     theme: initialEvent.theme || "royal_khmer_purple",
     lunarDate:
@@ -854,6 +955,19 @@ export default function EventClient({ initialEvent, initialMedia, initialGuests 
   const [bankConfig, setBankConfig] = useState<BankAccountConfig>(() =>
     parseBankInfo(initialEvent.bankAccountInfo)
   );
+
+  // Dress Code & Attire Palette state
+  const [dressCodeConfig, setDressCodeConfig] = useState<DressCodeConfig>(() =>
+    parseDressCode(initialEvent.dressCode)
+  );
+
+  const updateDressCodeConfig = (newConfig: DressCodeConfig) => {
+    setDressCodeConfig(newConfig);
+    setFormData((prev) => ({
+      ...prev,
+      dressCode: JSON.stringify(newConfig),
+    }));
+  };
 
   // Letter / Words state
   const [letterConfig, setLetterConfig] = useState(() =>
@@ -4649,17 +4763,188 @@ export default function EventClient({ initialEvent, initialMedia, initialGuests 
             </div>
           </div>
 
-          <div>
-            <label className="block text-xs font-semibold uppercase text-[#3E444A] mb-1">
-              Dress Code Instructions
-            </label>
-            <input
-              type="text"
-              value={formData.dressCode}
-              onChange={(e) => setFormData({ ...formData, dressCode: e.target.value })}
-              placeholder="Black Tie / Formal Evening Attire"
-              className="w-full px-4 py-2.5 bg-[#FAF8F5] border border-[#D4AF37]/30 rounded-xl text-xs text-[#2C2A29]"
-            />
+          {/* Dress Code & Attire Color Palette */}
+          <div className="space-y-4 p-5 rounded-2xl bg-[#FAF8F5] border border-[#D4AF37]/30 shadow-xs">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#D4AF37]/20 pb-3">
+              <div>
+                <span className="text-xs font-bold uppercase tracking-wider text-[#AA7C11] flex items-center gap-1.5">
+                  <Sparkles className="w-4 h-4 text-[#D4AF37]" />
+                  ពណ៌សម្លៀកបំពាក់ចូលរួម (Dress Code &amp; Attire Color Palette)
+                </span>
+                <p className="text-[11px] text-[#3E444A]/70 mt-0.5">
+                  កំណត់ការណែនាំអំពីការស្លៀកពាក់ និងពណ៌សម្លៀកបំពាក់ (Dress Code Colors) សម្រាប់ភ្ញៀវកិត្តិយស
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  const updatedColors = [
+                    ...dressCodeConfig.colors,
+                    { name: "ពណ៌ថ្មី (New Color)", hex: "#D4AF37" },
+                  ];
+                  updateDressCodeConfig({ ...dressCodeConfig, colors: updatedColors });
+                }}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-[#D4AF37]/40 text-xs font-semibold text-[#AA7C11] hover:bg-[#FAF8F5] transition shadow-xs w-fit shrink-0 cursor-pointer"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>+ បន្ថែមពណ៌ (Add Color)</span>
+              </button>
+            </div>
+
+            {/* Dress code note input */}
+            <div>
+              <label className="block text-xs font-semibold text-[#3E444A] mb-1">
+                ការណែនាំអំពីសម្លៀកបំពាក់ (Dress Code Description)
+              </label>
+              <input
+                type="text"
+                value={dressCodeConfig.description}
+                onChange={(e) => {
+                  updateDressCodeConfig({
+                    ...dressCodeConfig,
+                    description: e.target.value,
+                  });
+                }}
+                placeholder="ឧ. សម្លៀកបំពាក់ប្រពៃណីខ្មែរ ឬ សម្លៀកបំពាក់សមរម្យ (Traditional Khmer / Formal Attire)"
+                className="w-full px-4 py-2.5 bg-white border border-[#D4AF37]/30 rounded-xl text-xs text-[#2C2A29] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
+              />
+            </div>
+
+            {/* Quick Presets */}
+            <div>
+              <label className="block text-[11px] font-semibold text-[#3E444A]/80 mb-1.5">
+                ជ្រើសរើសគំរូពណ៌ពេញនិយម (Popular Color Presets) ៖
+              </label>
+              <div className="flex flex-wrap gap-2">
+                {PRESET_DRESS_PALETTES.map((preset, pIdx) => (
+                  <button
+                    key={pIdx}
+                    type="button"
+                    onClick={() => {
+                      updateDressCodeConfig({
+                        ...dressCodeConfig,
+                        colors: preset.colors,
+                      });
+                    }}
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white border border-[#D4AF37]/30 hover:border-[#D4AF37] hover:bg-[#FAF8F5] text-[11px] text-[#2C2A29] transition shadow-2xs cursor-pointer"
+                  >
+                    <div className="flex -space-x-1">
+                      {preset.colors.map((c, cIdx) => (
+                        <span
+                          key={cIdx}
+                          className="w-3 h-3 rounded-full border border-white"
+                          style={{ backgroundColor: c.hex }}
+                        />
+                      ))}
+                    </div>
+                    <span>{preset.name}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Color Swatches Grid */}
+            <div className="space-y-2">
+              <label className="block text-[11px] font-semibold text-[#3E444A]/80">
+                បញ្ជីពណ៌សម្លៀកបំពាក់ជាក់ស្តែង (Attire Colors) ៖
+              </label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {dressCodeConfig.colors.map((color, idx) => (
+                  <div
+                    key={idx}
+                    className="flex items-center gap-2.5 p-2 bg-white rounded-xl border border-[#D4AF37]/30 shadow-2xs"
+                  >
+                    {/* Color picker circle */}
+                    <div className="relative shrink-0">
+                      <div
+                        className="w-8 h-8 rounded-full border-2 border-white shadow-xs cursor-pointer ring-1 ring-[#D4AF37]/40"
+                        style={{ backgroundColor: color.hex }}
+                      />
+                      <input
+                        type="color"
+                        value={color.hex.startsWith("#") ? color.hex : "#D4AF37"}
+                        onChange={(e) => {
+                          const updated = [...dressCodeConfig.colors];
+                          updated[idx] = { ...updated[idx], hex: e.target.value };
+                          updateDressCodeConfig({ ...dressCodeConfig, colors: updated });
+                        }}
+                        className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
+                      />
+                    </div>
+
+                    {/* Hex code */}
+                    <input
+                      type="text"
+                      value={color.hex}
+                      onChange={(e) => {
+                        const updated = [...dressCodeConfig.colors];
+                        updated[idx] = { ...updated[idx], hex: e.target.value };
+                        updateDressCodeConfig({ ...dressCodeConfig, colors: updated });
+                      }}
+                      className="w-20 px-2 py-1.5 bg-[#FAF8F5] border border-gray-200 rounded-lg text-xs font-mono text-[#2C2A29]"
+                      placeholder="#D4AF37"
+                    />
+
+                    {/* Color Name */}
+                    <input
+                      type="text"
+                      value={color.name}
+                      onChange={(e) => {
+                        const updated = [...dressCodeConfig.colors];
+                        updated[idx] = { ...updated[idx], name: e.target.value };
+                        updateDressCodeConfig({ ...dressCodeConfig, colors: updated });
+                      }}
+                      className="flex-1 min-w-0 px-2.5 py-1.5 bg-[#FAF8F5] border border-gray-200 rounded-lg text-xs text-[#2C2A29]"
+                      placeholder="e.g. ពណ៌ទឹកមាស (Gold)"
+                    />
+
+                    {/* Delete button */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const updated = dressCodeConfig.colors.filter((_, i) => i !== idx);
+                        updateDressCodeConfig({ ...dressCodeConfig, colors: updated });
+                      }}
+                      className="p-1.5 text-gray-400 hover:text-red-500 rounded-lg hover:bg-red-50 transition shrink-0 cursor-pointer"
+                      title="Delete Color"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Live Preview of Dress Code Card */}
+            <div className="pt-2 border-t border-[#D4AF37]/20">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-[#AA7C11]/80 block mb-2">
+                គំរូបង្ហាញលើធៀបការ (Live Invitation Preview)
+              </span>
+              <div className="p-4 rounded-xl bg-[#230E3D] border border-[#D4AF37]/40 text-center max-w-md mx-auto shadow-sm">
+                <span className="inline-block px-3 py-0.5 rounded-full bg-[#D4AF37]/20 border border-[#D4AF37]/50 text-[10px] font-bold text-[#FBEFC0] tracking-wider mb-2">
+                  DRESS CODE
+                </span>
+                <h5 className="text-sm font-serif text-[#FBEFC0] mb-1 font-bold">
+                  ពណ៌សម្លៀកបំពាក់ចូលរួម
+                </h5>
+                <p className="text-xs text-white/80 mb-3 font-sans">
+                  {dressCodeConfig.description || "សម្លៀកបំពាក់ប្រពៃណីខ្មែរ ឬ សម្លៀកបំពាក់សមរម្យ"}
+                </p>
+                <div className="flex flex-wrap justify-center items-center gap-3">
+                  {dressCodeConfig.colors.map((c, i) => (
+                    <div key={i} className="flex flex-col items-center gap-1">
+                      <div
+                        className="w-9 h-9 rounded-full border-2 border-white shadow-md ring-2 ring-[#D4AF37]/60"
+                        style={{ backgroundColor: c.hex }}
+                      />
+                      <span className="text-[10px] font-medium text-[#FBEFC0] max-w-[70px] truncate">
+                        {c.name}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Digital Gift & KHQR Upload */}

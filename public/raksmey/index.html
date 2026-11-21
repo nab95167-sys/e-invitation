@@ -1281,6 +1281,27 @@
         <a class="btn" id="map-link" target="_blank" rel="noopener"><span data-t="openMap"></span></a>
         <button class="btn" id="ics-btn" type="button"><span data-t="addCalendar"></span></button>
       </div>
+
+      <!-- 5d. Custom Dress Code & Attire Color Palette -->
+      <div id="dresscode-block" style="display:none;margin:2.5rem auto 1rem;max-width:480px;text-align:center;">
+        <div class="dresscode-card" style="position:relative;background:linear-gradient(145deg, rgba(30,12,50,0.88), rgba(15,5,26,0.96));border:1.5px solid rgba(217,177,90,0.45);border-radius:22px;padding:1.6rem 1.4rem 1.5rem;box-shadow:0 12px 32px rgba(0,0,0,0.55), inset 0 0 16px rgba(217,177,90,0.1);backdrop-filter:blur(8px);">
+          <!-- Top badge -->
+          <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(217,177,90,0.15);border:1px solid rgba(217,177,90,0.4);border-radius:999px;padding:4px 14px;margin-bottom:0.8rem;">
+            <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:var(--foil-hi, #d9b15a);"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <span class="dresscode-badge" style="font-size:0.75rem;font-weight:700;letter-spacing:0.04em;color:var(--foil-hi, #fbefc0);font-family:var(--f-kh, sans-serif);">DRESS CODE</span>
+          </div>
+
+          <h4 class="dresscode-title" style="font-family:var(--f-moul, serif);font-size:1.1rem;color:var(--foil-hi, #fbefc0);margin:0 0 0.4rem;font-weight:400;text-shadow:0 2px 6px rgba(0,0,0,0.6);">
+            ពណ៌សម្លៀកបំពាក់ចូលរួម
+          </h4>
+
+          <p class="dresscode-desc" style="font-size:0.85rem;color:rgba(255,255,255,0.85);margin:0 0 1.2rem;line-height:1.6;font-family:var(--f-kh, sans-serif);">
+            សម្លៀកបំពាក់ប្រពៃណីខ្មែរ ឬ សម្លៀកបំពាក់សមរម្យ
+          </p>
+
+          <div class="dresscode-swatches" style="display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:1rem 1.2rem;margin:0 auto 0.2rem;"></div>
+        </div>
+      </div>
       <p class="venue__meta" data-venue="note" style="margin-top:1.4rem;font-size:.9rem"></p>
     </section>
 
@@ -2687,6 +2708,34 @@
         `;
       }
 
+      function parseDressCodeData(raw) {
+        if (!raw) return null;
+        try {
+          if (typeof raw === 'string' && raw.trim().startsWith('{')) {
+            const parsed = JSON.parse(raw);
+            return {
+              description: parsed.description || 'សម្លៀកបំពាក់ប្រពៃណីខ្មែរ ឬ សម្លៀកបំពាក់សមរម្យ',
+              colors: Array.isArray(parsed.colors) && parsed.colors.length > 0 ? parsed.colors : [
+                { name: 'ពណ៌ទឹកមាស (Gold)', hex: '#D4AF37' },
+                { name: 'ពណ៌ស្វាយរាជវាំង (Royal Purple)', hex: '#4A154B' },
+                { name: 'ពណ៌ផ្កាឈូក (Rose Gold)', hex: '#E0A9AF' },
+                { name: 'ពណ៌ក្រែម (Champagne)', hex: '#F7E7CE' }
+              ]
+            };
+          }
+        } catch (e) {}
+
+        return {
+          description: String(raw),
+          colors: [
+            { name: 'ពណ៌ទឹកមាស (Gold)', hex: '#D4AF37' },
+            { name: 'ពណ៌ស្វាយរាជវាំង (Royal Purple)', hex: '#4A154B' },
+            { name: 'ពណ៌ផ្កាឈូក (Rose Gold)', hex: '#E0A9AF' },
+            { name: 'ពណ៌ក្រែម (Champagne)', hex: '#F7E7CE' }
+          ]
+        };
+      }
+
       const applyEventDOM = () => {
         if (!activeEventData) return;
         const ev = activeEventData;
@@ -3501,10 +3550,40 @@
           }
         }
 
-        // 9. Dress Code
-        if (ev.dressCode) {
-          const dressEl = document.querySelector('[data-venue="note"]');
-          if (dressEl) dressEl.textContent = `សម្លៀកបំពាក់៖ ${decodeEntities(ev.dressCode)}`;
+        // 9. Dress Code & Attire Color Palette
+        const dressBlock = document.getElementById('dresscode-block');
+        if (dressBlock) {
+          const dressData = parseDressCodeData(ev.dressCode);
+          if (dressData && (dressData.description || (dressData.colors && dressData.colors.length > 0))) {
+            dressBlock.style.display = 'block';
+            const isEn = document.body.getAttribute('data-lang') === 'en';
+
+            const badgeEl = dressBlock.querySelector('.dresscode-badge');
+            const titleEl = dressBlock.querySelector('.dresscode-title');
+            const descEl = dressBlock.querySelector('.dresscode-desc');
+            const swatchesEl = dressBlock.querySelector('.dresscode-swatches');
+
+            if (badgeEl) badgeEl.textContent = isEn ? 'DRESS CODE' : 'ពណ៌សម្លៀកបំពាក់';
+            if (titleEl) titleEl.textContent = isEn ? 'Attire & Color Palette' : 'ពណ៌សម្លៀកបំពាក់ចូលរួម';
+            if (descEl) descEl.textContent = decodeEntities(dressData.description || '');
+
+            if (swatchesEl) {
+              if (Array.isArray(dressData.colors) && dressData.colors.length > 0) {
+                swatchesEl.innerHTML = dressData.colors.map(c => `
+                  <div class="dresscode-swatch" style="display:flex;flex-direction:column;align-items:center;gap:6px;min-width:64px;transition:transform 0.2s ease;">
+                    <div style="width:42px;height:42px;border-radius:50%;background:${c.hex || '#D4AF37'};box-shadow:0 4px 12px rgba(0,0,0,0.4), 0 0 0 2px rgba(217,177,90,0.6);border:2px solid #ffffff;"></div>
+                    <span style="font-size:0.75rem;font-weight:600;color:#fbefc0;text-align:center;font-family:var(--f-kh, sans-serif);line-height:1.3;max-width:85px;">${decodeEntities(isEn ? (c.nameEn || c.name) : c.name)}</span>
+                  </div>
+                `).join('');
+                swatchesEl.style.display = 'flex';
+              } else {
+                swatchesEl.innerHTML = '';
+                swatchesEl.style.display = 'none';
+              }
+            }
+          } else {
+            dressBlock.style.display = 'none';
+          }
         }
 
         // 10. Background Music Audio Sync (Unified Single Audio Manager)
